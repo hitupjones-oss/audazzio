@@ -140,3 +140,5 @@
   .az-dialog--film { margin: auto; }
   .az-dialog--film .az-dialog__sheet { border-radius: 16px; }
 }
+/* in Elementor's editor the floating pieces stay out of the way */
+.elementor-editor-active .az-notify, .elementor-editor-active .az-bar { display: none !important; }

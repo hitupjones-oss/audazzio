@@ -19,7 +19,7 @@ $az_pp = function_exists( 'az_opt' ) ? az_opt( 'privacy_url' ) : home_url( '/pri
 					<span class="az-foot__type" aria-hidden="true"><?php echo az_theme_mark( 'logotype' ); // phpcs:ignore ?></span>
 				</a>
 				<p class="az-foot__line">It comes in waves.</p>
-				<p class="az-foot__sub">Live QR&trade; second-screen technology for broadcasts and live events.</p>
+				<p class="az-foot__sub">Live QR&reg; second-screen technology for broadcasts and live events.</p>
 			</div>
 			<nav class="az-foot__links" aria-label="Footer">
 				<?php az_theme_links( 'footer', 'az-foot__link' ); ?>
@@ -32,7 +32,7 @@ $az_pp = function_exists( 'az_opt' ) ? az_opt( 'privacy_url' ) : home_url( '/pri
 			</div>
 		</div>
 		<div class="az-foot__base">
-			<p>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> Audazzio, Inc. All rights reserved. Audazzio&reg; and Live QR&trade; are trademarks of Audazzio, Inc.</p>
+			<p>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> Audazzio, Inc. All rights reserved. Audazzio&reg;, Live QR&reg; and It Comes in Waves&reg; are registered trademarks of Audazzio, Inc.</p>
 			<?php if ( function_exists( 'az_credit' ) ) { echo az_credit(); } // phpcs:ignore ?>
 			<nav aria-label="Legal"><a href="<?php echo esc_url( $az_pp ); ?>">Privacy Policy</a></nav>
 		</div>

@@ -1,5 +1,6 @@
-// Try Audazzio: the demo player, the phone beside it, the four-step checklist, the QR code to get the
-// app, and the "Try Audazzio now" notification that slides in on the home page.
+// Try Audazzio: the demo player (with a choice of demo clips), the phone beside it, the four-step
+// checklist, the QR code that opens the listener on a phone, and the "Try Audazzio now" notification that
+// slides in on the home page.
 import qrcode from "qrcode-generator";
 import { $, $$, reduced } from "./ui.js";
 import { openDialog } from "./dialogs.js";
@@ -43,56 +44,65 @@ function setupPlayer(p) {
   const sim = Sim(stage ? $("[data-az-sim]", stage) : null);
   const scope = p.closest(".az-try, .az-dialog");
   const steps = scope ? $("[data-az-trysteps]", scope) : null;
-  let yt = null, video = null, started = false;
+  const clips = CFG().demos && CFG().demos.length ? CFG().demos : [CFG().demo || {}];
+  let clip = 0, yt = null, video = null, started = false;
   const state = (playing) => {
     p.classList.toggle("is-playing", playing);
     stage && stage.classList.toggle("is-playing", playing);
     playing ? sim.start() : sim.stop();
     if (playing && steps) markSteps(steps, 3);
   };
-  const start = async () => {
-    const d = CFG().demo || {};
-    if (!started) {
-      started = true;
-      p.classList.add("is-started");
-      if (d.type === "file" && d.src) {
-        video = document.createElement("video");
-        video.src = d.src; video.playsInline = true; video.controls = true; video.autoplay = true;
-        video.addEventListener("play", () => state(true));
-        video.addEventListener("pause", () => state(false));
-        video.addEventListener("ended", () => state(false));
-        media.replaceChildren(video);
-        video.play().catch(() => {});
-      } else if (d.type === "youtube" && d.id) {
-        const host = document.createElement("div");
-        media.replaceChildren(host);
-        try {
-          const YT = await loadYT();
-          yt = new YT.Player(host, {
-            host: "https://www.youtube-nocookie.com", videoId: d.id,
-            playerVars: { autoplay: 1, playsinline: 1, rel: 0, modestbranding: 1 },
-            events: { onStateChange: (e) => state(e.data === 1 || e.data === 3) },
-          });
-          state(true);
-        } catch {
-          const f = document.createElement("iframe");
-          f.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(d.id)}?autoplay=1&rel=0&playsinline=1`;
-          f.allow = "autoplay; encrypted-media; fullscreen"; f.title = "Audazzio demo";
-          media.replaceChildren(f);
-          state(true);
-        }
-      } else {
-        // no clip set yet: the phone still shows what would arrive
+  const stop = () => { try { video && video.pause(); yt && yt.pauseVideo && yt.pauseVideo(); } catch {} };
+  const load = async () => {
+    const d = clips[clip] || {};
+    started = true; video = null; yt = null;
+    p.classList.add("is-started");
+    if (d.type === "file" && d.src) {
+      video = document.createElement("video");
+      video.src = d.src; video.playsInline = true; video.controls = true; video.autoplay = true;
+      video.addEventListener("play", () => state(true));
+      video.addEventListener("pause", () => state(false));
+      video.addEventListener("ended", () => state(false));
+      media.replaceChildren(video);
+      video.play().catch(() => {});
+    } else if (d.type === "youtube" && d.id) {
+      const host = document.createElement("div");
+      media.replaceChildren(host);
+      try {
+        const YT = await loadYT();
+        yt = new YT.Player(host, {
+          host: "https://www.youtube-nocookie.com", videoId: d.id,
+          playerVars: { autoplay: 1, playsinline: 1, rel: 0, modestbranding: 1 },
+          events: { onStateChange: (e) => state(e.data === 1 || e.data === 3) },
+        });
+        state(true);
+      } catch {
+        const f = document.createElement("iframe");
+        f.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(d.id)}?autoplay=1&rel=0&playsinline=1`;
+        f.allow = "autoplay; encrypted-media; fullscreen"; f.title = "Audazzio demo";
+        media.replaceChildren(f);
         state(true);
       }
-    } else if (video) { video.paused ? video.play() : video.pause(); }
-    else if (yt && yt.getPlayerState) { yt.getPlayerState() === 1 ? yt.pauseVideo() : yt.playVideo(); }
-    else state(!p.classList.contains("is-playing"));
+    } else {
+      // no clip set yet: the phone still shows what would arrive
+      state(true);
+    }
+  };
+  const start = () => {
+    if (!started) return load();
+    if (video) return video.paused ? video.play() : video.pause();
+    if (yt && yt.getPlayerState) return yt.getPlayerState() === 1 ? yt.pauseVideo() : yt.playVideo();
+    state(!p.classList.contains("is-playing"));
   };
   $$("[data-az-play]", p).forEach((b) => b.addEventListener("click", start));
+  $$("[data-az-clip]", p).forEach((b) => b.addEventListener("click", () => {
+    clip = +b.dataset.azClip;
+    $$("[data-az-clip]", p).forEach((x) => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+    if (started) { stop(); load(); }
+  }));
   // stop the sound when the sheet closes
   const dlg = p.closest("dialog");
-  if (dlg) dlg.addEventListener("az:closed", () => { try { video && video.pause(); yt && yt.pauseVideo && yt.pauseVideo(); } catch {} state(false); });
+  if (dlg) dlg.addEventListener("az:closed", () => { stop(); state(false); });
 }
 
 function markSteps(list, upTo) {
@@ -122,13 +132,13 @@ function qr() {
   });
 }
 
-/** /try/?get=app on a phone: straight to the right store. */
+/** /try/?get=app on a phone (older printed QR codes): straight to the listener, or the store when an app exists. */
 function storeHop() {
   const p = new URLSearchParams(location.search);
   if (p.get("get") !== "app") return;
   const ua = navigator.userAgent || "", apps = CFG().apps || {};
   const ios = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
-  const url = ios ? apps.ios : /Android/i.test(ua) ? apps.android : "";
+  const url = (ios ? apps.ios : /Android/i.test(ua) ? apps.android : "") || (/Mobi|Android|iPhone|iPad/i.test(ua) ? CFG().listener : "");
   if (url) location.replace(url);
 }
 

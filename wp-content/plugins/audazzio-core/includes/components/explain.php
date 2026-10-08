@@ -106,9 +106,9 @@ function az_schema_flow() {
 		'icon'   => 'eicon-flow',
 		'fields' => az_head_fields( 'Step by step', "From the speaker\n*to the screen.*", 'The same seven steps run at home and in the stands. Only the speaker changes.', 'mist' ) + array(
 			'tab_a'   => az_f( 'text', 'First tab', 'Broadcast' ),
-			'steps_a' => az_f( 'textarea', 'First tab steps (one per line: icon | step)', "mic | The viewer’s phone microphone is on\ntv | The TV speakers send out an embedded micro-signal\nphone | The phone’s microphone hears the micro-signal\nlink | The TV speakers and the phone connect\nqr | The signal asks the phone to load a preset URL\ncloud | The Audazzio™ cloud directs the phone to the desired content\nimage | The viewer sees the content on their phone", array( 'rows' => 8 ) ),
+			'steps_a' => az_f( 'textarea', 'First tab steps (one per line: icon | step)', "mic | The viewer’s phone microphone is on\ntv | The TV speakers send out an embedded micro-signal\nphone | The phone’s microphone hears the micro-signal\nlink | The TV speakers and the phone connect\nqr | The signal asks the phone to load a preset URL\ncloud | The Audazzio® cloud directs the phone to the desired content\nimage | The viewer sees the content on their phone", array( 'rows' => 8 ) ),
 			'tab_b'   => az_f( 'text', 'Second tab', 'Live event' ),
-			'steps_b' => az_f( 'textarea', 'Second tab steps (one per line: icon | step)', "mic | The fan’s phone microphone is on\nstadium | The seating bowl sound system sends out an embedded micro-signal\nphone | The phone’s microphone hears the micro-signal\nlink | The sound system and the phone connect\nqr | The signal asks the phone to load a preset URL\ncloud | The Audazzio™ cloud directs the phone to the desired content\nimage | The fan sees the content on their phone", array( 'rows' => 8 ) ),
+			'steps_b' => az_f( 'textarea', 'Second tab steps (one per line: icon | step)', "mic | The fan’s phone microphone is on\nstadium | The seating bowl sound system sends out an embedded micro-signal\nphone | The phone’s microphone hears the micro-signal\nlink | The sound system and the phone connect\nqr | The signal asks the phone to load a preset URL\ncloud | The Audazzio® cloud directs the phone to the desired content\nimage | The fan sees the content on their phone", array( 'rows' => 8 ) ),
 		),
 	);
 }
@@ -161,7 +161,7 @@ function az_schema_canvas() {
 				array( 'icon' => 'dice', 'label' => 'Betting and gaming', 'text' => 'Frictionless wagering, voting and polling.' ),
 				array( 'icon' => 'gift', 'label' => 'Rewards', 'text' => 'Rewards and incentives for the people watching.' ),
 			), array( 'fields' => array( 'icon' => az_f( 'select', 'Icon', 'image', array( 'options' => az_icon_options() ) ), 'label' => az_f( 'text', 'Label', '' ), 'text' => az_f( 'textarea', 'Text', '' ) ), 'title' => '{{{ label }}}' ) ),
-			'kicker' => az_f( 'textarea', 'Closing line', "*Creating new inventory.* The Audazzio Live QR™ technology creates a new marketing channel, with an all-new advertising inventory for broadcasters and event producers to sell." ),
+			'kicker' => az_f( 'textarea', 'Closing line', "*Creating new inventory.* The Audazzio Live QR® technology creates a new marketing channel, with an all-new advertising inventory for broadcasters and event producers to sell." ),
 		),
 	);
 }

@@ -19,6 +19,7 @@ function az_redirect_map() {
 		'contact'            => '/join/',
 		'contact-typ'        => '/join/',
 		'demo'               => '/try/',
+		'explainer'          => '/live-qr/#explainer',
 	) );
 }
 

@@ -12,28 +12,51 @@ function az_ver( $rel ) {
 }
 
 /** What the front end needs to know: where to send the form, the store links, the demo clip. */
-function az_front_config() {
-	$demo = (string) az_opt( 'demo_video' );
-	$yt   = az_youtube_id( $demo );
+/** A clip setting as what the player needs: YouTube id, or the file address. */
+function az_clip( $url, $label = '' ) {
+	$yt = az_youtube_id( $url );
 	return array(
-		'rest'   => esc_url_raw( rest_url( 'audazzio/v1/join' ) ),
-		'assets' => esc_url_raw( AZ_URL . 'assets/' ),
-		'home'   => esc_url_raw( home_url( '/' ) ),
-		'apps'   => array(
+		'type'  => $yt ? 'youtube' : ( $url ? 'file' : '' ),
+		'id'    => $yt,
+		'src'   => $yt ? '' : esc_url_raw( az_media( $url ) ),
+		'label' => (string) $label,
+	);
+}
+
+/** The demo clips: the main one, then "Name | link" lines. */
+function az_demo_clips() {
+	$clips = array();
+	$main  = (string) az_opt( 'demo_video' );
+	if ( $main ) {
+		$clips[] = az_clip( $main, (string) az_opt( 'demo_label' ) );
+	}
+	foreach ( az_pairs( (string) az_opt( 'demo_more' ) ) as $p ) {
+		if ( ! empty( $p[1] ) ) {
+			$clips[] = az_clip( $p[1], $p[0] );
+		}
+	}
+	return $clips;
+}
+
+/** What the front end needs to know: where to send the form, the listener, the demo clips. */
+function az_front_config() {
+	$clips = az_demo_clips();
+	return array(
+		'rest'     => esc_url_raw( rest_url( 'audazzio/v1/join' ) ),
+		'assets'   => esc_url_raw( AZ_URL . 'assets/' ),
+		'home'     => esc_url_raw( home_url( '/' ) ),
+		'listener' => esc_url_raw( (string) az_opt( 'listener_url' ) ),
+		'apps'     => array(
 			'ios'     => esc_url_raw( (string) az_opt( 'app_store' ) ),
 			'android' => esc_url_raw( (string) az_opt( 'play_store' ) ),
 		),
-		'demo'   => array(
-			'type'   => $yt ? 'youtube' : ( $demo ? 'file' : '' ),
-			'id'     => $yt,
-			'src'    => $yt ? '' : esc_url_raw( az_media( $demo ) ),
-			'poster' => esc_url_raw( az_media( az_opt( 'demo_poster' ) ) ),
-		),
-		'notify' => array(
+		'demos'    => $clips,
+		'demo'     => array_merge( $clips ? $clips[0] : az_clip( '' ), array( 'poster' => esc_url_raw( az_media( az_opt( 'demo_poster' ) ) ) ) ),
+		'notify'   => array(
 			'on'    => 'no' !== strtolower( trim( (string) az_opt( 'notify' ) ) ),
 			'delay' => max( 0, (float) az_opt( 'notify_delay' ) ),
 		),
-		'thanks' => (string) az_opt( 'thanks_line' ),
+		'thanks'   => (string) az_opt( 'thanks_line' ),
 	);
 }
 

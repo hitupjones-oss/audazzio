@@ -73,7 +73,7 @@ await sharp(Buffer.from(fav(180, 34, 0, "url(#g)"))).png().toFile(P("assets", "b
     for (let x = -10; x <= 1210; x += 10) { const d = x - 600, env = Math.exp(-(d * d) / (380 * 380)); pts.push(`${x},${(y0 + env * 46 * (1 - Math.abs(i - 4) / 5 * 0.55) * Math.sin(d / 42 + i * 0.55)).toFixed(1)}`); }
     return `<polyline points="${pts.join(" ")}" fill="none" stroke="rgba(12,18,34,${(0.3 * (1 - Math.abs(i - 4) / 5 * 0.6)).toFixed(2)})" stroke-width="1.4" stroke-dasharray="6 6"/>`;
   }).join("");
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"><rect width="1200" height="630" fill="#ffffff"/>${lines}<g transform="translate(96 108) scale(.1)" fill="#F89C68"><path d="${symbolPath}"/></g><text x="96" y="268" font-family="Inter Tight, Inter, Helvetica, Arial, sans-serif" font-weight="600" font-size="92" letter-spacing="-4" fill="#0C1222">It comes in waves.</text><text x="98" y="560" font-family="Helvetica, Arial, sans-serif" font-size="22" letter-spacing="3" fill="#6B7080">AUDAZZIO · LIVE QR™ SECOND-SCREEN TECHNOLOGY</text></svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"><rect width="1200" height="630" fill="#ffffff"/>${lines}<g transform="translate(96 108) scale(.1)" fill="#F89C68"><path d="${symbolPath}"/></g><text x="96" y="268" font-family="Inter Tight, Inter, Helvetica, Arial, sans-serif" font-weight="600" font-size="92" letter-spacing="-4" fill="#0C1222">It comes in waves.</text><text x="98" y="560" font-family="Helvetica, Arial, sans-serif" font-size="22" letter-spacing="3" fill="#6B7080">AUDAZZIO · LIVE QR® SECOND-SCREEN TECHNOLOGY</text></svg>`;
   await sharp(Buffer.from(svg)).jpeg({ quality: 88 }).toFile(P("assets", "brand", "og.jpg"));
 }
 fs.writeFileSync(P("assets", "brand", "brand.json"), JSON.stringify({ name: "Audazzio", colors: { ink: "#0C1222", slate: "#3B4152", grey: "#6B7080", mist: "#F5F5F7", line: "#E3E4E8", white: "#FFFFFF", wave: "#F26A2E", peach: "#F89C68" }, type: "Inter Tight (headlines), Inter (text), Geist Mono (labels)" }, null, 2));
@@ -97,7 +97,7 @@ const pages = JSON.parse(JSON.stringify(PAGES).replace('"@privacy"', JSON.string
 fs.writeFileSync(P("seed", "pages.json"), JSON.stringify(pages));
 const site = {
   company: SITE.COMPANY,
-  apps: { app_store: apps.app_store || "", play_store: apps.play_store || "", demo_video: `https://www.youtube.com/watch?v=${SITE.DEMO.id}`, demo_poster: "asset:img/poster-demo.jpg" },
+  apps: { listener: SITE.LISTENER, app_store: apps.app_store || "", play_store: apps.play_store || "", demo_video: `https://www.youtube.com/watch?v=${SITE.DEMO.id}`, demo_more: SITE.DEMOS.slice(1).map((d) => `${d.label} | https://www.youtube.com/watch?v=${d.id}`).join("\n"), demo_label: SITE.DEMO.label, demo_poster: "asset:img/poster-demo.jpg" },
   videos: SITE.VIDEOS.map((v) => ({ title: v.title, label: v.label, length: v.length, url: `https://www.youtube.com/watch?v=${v.id}`, poster: `poster-${v.id}.jpg` })),
   screens: SITE.SCREENS,
   cases: SITE.CASES,

@@ -10,7 +10,7 @@ function az_schema_hero() {
 		'title'  => 'Home hero',
 		'icon'   => 'eicon-banner',
 		'fields' => array(
-			'eyebrow'   => az_f( 'text', 'Small line above the headline', 'Live QR™ second-screen technology' ),
+			'eyebrow'   => az_f( 'text', 'Small line above the headline', 'Live QR® second-screen technology' ),
 			'title'     => az_f( 'textarea', 'Headline', "It comes\nin waves." ),
 			'intro'     => az_f( 'textarea', 'Intro', 'Audazzio hides inaudible signals inside the sound of a broadcast or live event. Every phone that hears one shows the right content at the exact moment. No scanning, no searching.' ),
 			'cta'       => az_f( 'text', 'First button', 'Try it now' ),

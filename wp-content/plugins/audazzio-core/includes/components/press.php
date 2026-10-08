@@ -61,7 +61,12 @@ function az_render_logos( $a ) {
 	az_open( $a, 'az-logos' );
 	?>
 	<div class="az-logos__in">
-		<?php if ( $a['eyebrow'] ) : ?><p class="az-logos__eb az-label"><?php echo esc_html( $a['eyebrow'] ); ?></p><?php endif; ?>
+		<?php if ( $a['eyebrow'] ) : ?>
+			<div class="az-logos__head">
+				<svg class="az-bracket" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 14H440C500 14 500 106 560 106H880C940 106 940 14 1000 14H1440"/></svg>
+				<p class="az-logos__eb az-label"><?php echo esc_html( $a['eyebrow'] ); ?></p>
+			</div>
+		<?php endif; ?>
 		<div class="az-marquee" data-az-marquee style="--az-loop:<?php echo esc_attr( max( 12, (int) $a['speed'] ) ); ?>s">
 			<ul class="az-marquee__track">
 				<?php foreach ( $items as $l ) { echo $cell( $l, false ); } // phpcs:ignore ?>

@@ -22,9 +22,12 @@ function az_settings_schema() {
 		'try'   => array(
 			'title'  => 'Try Audazzio',
 			'fields' => array(
-				'app_store'       => array( 'App Store link', '', 'The Audazzio app on the Apple App Store.' ),
-				'play_store'      => array( 'Google Play link', '', 'The Audazzio app on Google Play.' ),
-				'demo_video'      => array( 'Demo video', '', 'The clip the Try Audazzio player plays: a YouTube link, or the address of an MP4 uploaded to the Media Library. Use an MP4 for the real signal demo: video sites re-encode sound and can strip the high frequencies the signal rides on.' ),
+				'listener_url'    => array( 'Phone listener link', '', 'The page a phone opens to listen (Audazzio\'s web listener). The Try Audazzio steps link to it and its QR code points to it.' ),
+				'app_store'       => array( 'App Store link (optional)', '', 'When there is an Audazzio app on the App Store, paste its link and an App Store button appears beside the listener.' ),
+				'play_store'      => array( 'Google Play link (optional)', '', 'The same for Google Play.' ),
+				'demo_video'      => array( 'Demo clip', '', 'The clip the Try Audazzio player plays first: a YouTube link, or the address of an MP4 uploaded to the Media Library. Its soundtrack must carry the signal. An MP4 is safest: video sites re-encode sound and can strip the high frequencies the signal rides on.' ),
+				'demo_label'      => array( 'Demo clip name', '', 'A short name for the first clip, shown on its button (for example "Formula 1").' ),
+				'demo_more'       => array( 'More demo clips', '', 'Optional. One per line: Name | link. Each becomes a button above the player.', 'textarea' ),
 				'demo_poster'     => array( 'Demo poster', '', 'Optional. The picture shown before the demo plays (address of an image in the Media Library).' ),
 				'notify'          => array( 'Show the "Try Audazzio now" notification', 'yes', '"yes" or "no". The notification slides in on the home page after a few seconds.' ),
 				'notify_delay'    => array( 'Notification delay (seconds)', '4', '' ),
@@ -59,9 +62,10 @@ function az_settings_defaults() {
 		}
 	}
 	$apps = az_data( 'apps' );
-	foreach ( array( 'app_store', 'play_store', 'demo_video', 'demo_poster' ) as $k ) {
-		if ( '' === $d[ $k ] && ! empty( $apps[ $k ] ) ) {
-			$d[ $k ] = $apps[ $k ];
+	foreach ( array( 'listener_url' => 'listener', 'app_store' => 'app_store', 'play_store' => 'play_store', 'demo_video' => 'demo_video', 'demo_label' => 'demo_label', 'demo_more' => 'demo_more', 'demo_poster' => 'demo_poster' ) as $k => $from ) {
+		if ( '' === $d[ $k ] && ! empty( $apps[ $from ] ) ) {
+			$d[ $k ] = $apps[ $from ];
+			continue;
 		}
 	}
 	return $d;
@@ -90,9 +94,10 @@ add_action( 'admin_init', function () {
 		'type'              => 'array',
 		'sanitize_callback' => function ( $in ) {
 			$out = array();
-			foreach ( az_settings_schema() as $group ) {
+			foreach ( az_settings_schema() as $gk => $group ) {
 				foreach ( array_keys( $group['fields'] ) as $k ) {
-					$out[ $k ] = isset( $in[ $k ] ) ? sanitize_text_field( wp_unslash( $in[ $k ] ) ) : '';
+					$f         = az_settings_schema()[ $gk ]['fields'][ $k ];
+					$out[ $k ] = isset( $in[ $k ] ) ? ( 'textarea' === ( $f[3] ?? '' ) ? sanitize_textarea_field( wp_unslash( $in[ $k ] ) ) : sanitize_text_field( wp_unslash( $in[ $k ] ) ) ) : '';
 				}
 			}
 			return $out;
@@ -111,8 +116,9 @@ function az_settings_page() {
 		echo '<h2>' . esc_html( $group['title'] ) . '</h2><table class="form-table" role="presentation">';
 		foreach ( $group['fields'] as $k => $f ) {
 			$def = az_settings_defaults()[ $k ] ?? '';
+			$area = 'textarea' === ( $f[3] ?? '' );
 			printf(
-				'<tr><th scope="row"><label for="az-%1$s">%2$s</label></th><td><input class="regular-text" type="text" id="az-%1$s" name="az_settings[%1$s]" value="%3$s" placeholder="%4$s">%5$s</td></tr>',
+				$area ? '<tr><th scope="row"><label for="az-%1$s">%2$s</label></th><td><textarea class="large-text" rows="4" id="az-%1$s" name="az_settings[%1$s]" placeholder="%4$s">%3$s</textarea>%5$s</td></tr>' : '<tr><th scope="row"><label for="az-%1$s">%2$s</label></th><td><input class="regular-text" type="text" id="az-%1$s" name="az_settings[%1$s]" value="%3$s" placeholder="%4$s">%5$s</td></tr>',
 				esc_attr( $k ),
 				esc_html( $f[0] ),
 				esc_attr( $saved[ $k ] ?? '' ),

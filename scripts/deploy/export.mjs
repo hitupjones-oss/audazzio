@@ -75,9 +75,11 @@ if (notFound.includes("az-main")) { const out = rewrite(notFound); collect(out);
 console.log(`pages: ${pages.length - failed.length} saved${failed.length ? ", FAILED: " + failed.join(" ") : ""}${notFound ? ", plus the not-found page" : ""}`);
 
 /* ----------------------------------------------------------------- assets */
-// files that Elementor's scripts ask for by name once the page is running
-const CHUNKS = "container-grid-container nested-tabs shared-frontend-handlers text-editor";
-for (const c of CHUNKS.split(" ")) assets.add(`/wp-content/plugins/elementor/assets/js/chunks/${c}.min.js`);
+// files that Elementor's front-end script loads by name once the page is running (its webpack chunks):
+// all of them, read from the dev site's copy of Elementor when it is there
+const CHUNK_DIR = path.join(ROOT, ".wp", "wordpress", "wp-content", "plugins", "elementor", "assets", "js", "chunks");
+const CHUNKS = fs.existsSync(CHUNK_DIR) ? fs.readdirSync(CHUNK_DIR).filter((f) => f.endsWith(".min.js")) : "accordion alert background-slideshow background-video container-grid-container counter image-carousel lightbox nested-tabs progress shared-frontend-handlers text-editor toggle video".split(" ").map((c) => c + ".min.js");
+for (const c of CHUNKS) assets.add(`/wp-content/plugins/elementor/assets/js/chunks/${c}`);
 // every picture, font, film poster and document the plugin ships
 for (const e of fs.readdirSync(path.join(PLUGIN, "assets"), { withFileTypes: true, recursive: true })) {
   if (e.isFile()) assets.add("/wp-content/plugins/audazzio-core/assets/" + path.relative(path.join(PLUGIN, "assets"), path.join(e.parentPath ?? e.path, e.name)).replace(/\\/g, "/"));
@@ -107,7 +109,7 @@ console.log(`files: ${got} saved${real.length ? ", MISSING: " + real.slice(0, 8)
 /* ------------------------------------------------------------ host config */
 fs.copyFileSync(path.join(PLUGIN, "assets", "brand", "favicon.svg"), path.join(OUT, "favicon.svg"));
 // today's addresses on audazzio.com, sent to their new pages (the WordPress plugin does the same)
-const REDIRECTS = [["/liveqr", "/live-qr/"], ["/applications", "/solutions/#beyond"], ["/broadcasters", "/solutions/#broadcasters"], ["/teams-leagues", "/solutions/#teams"], ["/sponsors-brands", "/solutions/#sponsors"], ["/resources-audazzio", "/newsroom/"], ["/resources", "/newsroom/"], ["/about-0-0", "/about/"], ["/contact", "/join/"], ["/contact-typ", "/join/"], ["/demo", "/try/"]];
+const REDIRECTS = [["/liveqr", "/live-qr/"], ["/applications", "/solutions/#beyond"], ["/broadcasters", "/solutions/#broadcasters"], ["/teams-leagues", "/solutions/#teams"], ["/sponsors-brands", "/solutions/#sponsors"], ["/resources-audazzio", "/newsroom/"], ["/resources", "/newsroom/"], ["/about-0-0", "/about/"], ["/contact", "/join/"], ["/contact-typ", "/join/"], ["/demo", "/try/"], ["/explainer", "/live-qr/#explainer"]];
 fs.writeFileSync(path.join(ROOT, "vercel.json"), JSON.stringify({
   $schema: "https://openapi.vercel.sh/vercel.json",
   framework: null,

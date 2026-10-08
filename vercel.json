@@ -61,6 +61,11 @@
       "source": "/demo",
       "destination": "/try/",
       "permanent": true
+    },
+    {
+      "source": "/explainer",
+      "destination": "/live-qr/#explainer",
+      "permanent": true
     }
   ],
   "headers": [

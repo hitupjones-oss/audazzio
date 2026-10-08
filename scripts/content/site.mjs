@@ -20,9 +20,16 @@ export const VIDEOS = [
   { id: "FDXRxD3zHm4", title: "Rugby sevens demonstration", label: "Example · Broadcast", length: "About 2 min" },
   { id: "PL6hqRwk830", title: "The Audazzio explainer", label: "How it works", length: "2 min" },
 ];
-// The clip the Try Audazzio player plays until the new demo arrives: today's "Audazzio in Action"
-// (its poster reads "Audazzio functional demo").
-export const DEMO = { id: "UhPIcspc2-k", title: "Audazzio in action", length: "About 1 min" };
+// Try Audazzio. There is no public Audazzio app in the stores (October 2026): phones listen through
+// Audazzio's web listener, the page today's audazzio.com/demo sends people to with its QR code.
+export const LISTENER = "https://cdn.audazz.io/tools/browser-decoder/viewer.html?clientId=demo&clientKey=EB";
+// The demo clips from audazzio.com/demo (their soundtracks carry the signal), placeholders for new ones.
+export const DEMOS = [
+  { id: "C8tkbLRltjA", label: "Formula 1", title: "Audazzio Formula 1 live demonstration" },
+  { id: "FDXRxD3zHm4", label: "Rugby sevens", title: "Audazzio rugby demonstration" },
+  { id: "JBQM5iC7CpQ", label: "USA Swimming", title: "Audazzio at USA Swimming" },
+];
+export const DEMO = DEMOS[0];
 
 // What the phone beside the player shows, one screen per signal (Audazzio's own mock-ups).
 export const SCREENS = [

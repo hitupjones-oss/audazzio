@@ -38,7 +38,7 @@ svg.w{position:absolute;inset:0}
 .sym{width:56px;height:auto;color:#F89C68;display:block;margin-bottom:56px}
 .eb{font:500 22px "Geist Mono";letter-spacing:.14em;text-transform:uppercase;color:#6b7080}
 h1{margin-top:22px;font:600 104px/0.98 "Inter Tight";letter-spacing:-.045em;color:#0c1222;max-width:13em}
-h1 em{font-style:normal;color:#9a9eaa}
+h1 em{font-style:normal;color:#868a96}
 .len{position:absolute;right:120px;top:128px;font:500 22px "Geist Mono";letter-spacing:.1em;text-transform:uppercase;color:#6b7080}
 </style></head><body><div class="p"><svg class="w" viewBox="0 0 1600 900">${waves(1600, 900, 0.78, 1.3 + i * 0.9)}</svg><div class="in">${sym}<p class="eb">${p.eb}</p><h1>${p.title}</h1></div></div></body></html>`;
 

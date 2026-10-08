@@ -21,7 +21,7 @@ function az_run_seed() {
 	az_seed_menus( $pages );
 	az_seed_elementor_kit();
 	update_option( 'blogname', 'Audazzio' );
-	update_option( 'blogdescription', 'It comes in waves. Audazzio’s Live QR™ technology hides inaudible signals in the sound of a broadcast or live event, so phones show the right content at the exact moment. No scanning.' );
+	update_option( 'blogdescription', 'It comes in waves. Audazzio’s Live QR® technology hides inaudible signals in the sound of a broadcast or live event, so phones show the right content at the exact moment. No scanning.' );
 	update_option( 'az_seeded', time() );
 	delete_option( 'az_seed_pending' );
 	flush_rewrite_rules();

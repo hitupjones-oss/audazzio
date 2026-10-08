@@ -1,7 +1,11 @@
 /* ==========================================================================
    Try Audazzio: the player, the phone that shows what lands, the checklist, the stores, the QR.
    ========================================================================== */
-.az-try__grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: clamp(32px, 5vw, 80px); align-items: start; }
+.az-try { overflow: hidden; isolation: isolate; }
+.az-try::before { content: ""; position: absolute; z-index: -1; width: 1100px; height: 1100px; left: 50%; top: 56%; margin: -550px 0 0 -550px; border-radius: 50%; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='49.6' fill='none' stroke='%23868A96' stroke-width='.12' stroke-dasharray='.6 .9'/%3E%3Ccircle cx='50' cy='50' r='34' fill='none' stroke='%23868A96' stroke-width='.12' stroke-dasharray='.4 1.1'/%3E%3C/svg%3E") center / contain no-repeat; opacity: .7; animation: az-spin 32s linear infinite; pointer-events: none; }
+@keyframes az-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .az-try::before { animation: none; } }
+.az-try__grid { position: relative; display: grid; grid-template-columns: 1.2fr .8fr; gap: clamp(32px, 5vw, 80px); align-items: start; }
 @media (max-width: 960px) { .az-try__grid { grid-template-columns: 1fr; } }
 .az-try__stage, .az-sheet__stage { position: relative; padding-bottom: 64px; padding-right: clamp(40px, 9%, 110px); }
 
@@ -55,7 +59,7 @@
 .az-sim__cap { margin-top: 14px; text-align: center; font-size: 10.5px; line-height: 1.4; }
 .is-playing .az-sim__phone { animation: az-buzz .5s var(--az-ease) 1.6s 1; }
 @keyframes az-buzz { 0%, 100% { transform: none; } 25% { transform: rotate(-1.4deg); } 75% { transform: rotate(1.4deg); } }
-@media (max-width: 560px) { .az-try__stage, .az-sheet__stage { padding-right: 0; padding-bottom: 0; } .az-sim { position: relative; width: 58%; margin: -40px 0 0 auto; } }
+@media (max-width: 560px) { .az-try__stage, .az-sheet__stage { padding-right: 0; padding-bottom: 0; } .az-sim { position: relative; width: 42%; margin: -28px 8px 0 auto; } .az-player__bar { padding-right: 46%; } .az-sim__cap { font-size: 9.5px; } }
 
 /* the checklist */
 .az-trysteps { display: grid; gap: 8px; counter-reset: s; }
@@ -89,3 +93,11 @@
 .az-qr__code svg path, .az-qr__code svg rect[fill="black"], .az-qr__code svg rect:not([fill="white"]) { fill: var(--az-ink); }
 .az-qr__cap { font-size: 13.5px; color: var(--az-ink-3); line-height: 1.45; }
 @media (hover: none), (max-width: 700px) { .az-qr { display: none; } }
+
+/* pick a demo */
+.az-player__pick { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 14px; }
+.az-player__pick .az-label { margin-right: 6px; }
+.az-player__clip { height: 34px; padding: 0 14px; border-radius: 999px; font-size: 13.5px; font-weight: 500; color: var(--az-ink-2); box-shadow: inset 0 0 0 1px var(--az-line-2); transition: background-color .2s, color .2s, box-shadow .2s; }
+.az-player__clip:hover { background: rgba(12, 18, 34, .04); }
+.az-player__clip[aria-pressed="true"] { background: var(--az-ink); color: #fff; box-shadow: none; }
+.az-trysteps__open { justify-self: start; }

@@ -106,7 +106,13 @@
 /* -------------------------------------------------------- logo carousel */
 .az-logos { padding: clamp(56px, 7vw, 96px) 0; }
 .az-logos__in { position: relative; }
-.az-logos__eb { text-align: center; margin-bottom: 36px; padding: 0 var(--az-gut); }
+.az-logos__head { position: relative; height: 120px; margin-bottom: 28px; }
+.az-bracket { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.az-bracket path { fill: none; stroke: var(--az-ink-4); stroke-width: 1; vector-effect: non-scaling-stroke; stroke-dasharray: 6 6; animation: az-dash 10s linear infinite; }
+@keyframes az-dash { to { stroke-dashoffset: -240; } }
+.az-logos__eb { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-20%); text-align: center; padding: 0 var(--az-gut); }
+@media (max-width: 700px) { .az-logos__head { height: 96px; } .az-bracket { display: none; } .az-logos__eb { position: static; transform: none; padding-top: 36px; } }
+@media (prefers-reduced-motion: reduce) { .az-bracket path { animation: none; } }
 .az-marquee { overflow: hidden; -webkit-mask: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); mask: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
 .az-marquee__track { display: flex; align-items: center; gap: clamp(48px, 6vw, 88px); width: max-content; animation: az-marquee var(--az-loop, 48s) linear infinite; animation-play-state: paused; }
 .az-marquee.is-running .az-marquee__track { animation-play-state: running; }
@@ -162,3 +168,5 @@
 .az-quotes__dot { width: 28px; height: 28px; display: grid; place-items: center; }
 .az-quotes__dot i { width: 7px; height: 7px; border-radius: 999px; background: var(--az-line-2); transition: width .4s var(--az-out), background-color .3s; }
 .az-quotes__dot[aria-selected="true"] i { width: 22px; background: var(--az-ink); }
+.az-films:has(> .az-film:only-child) { grid-template-columns: 1fr; max-width: 980px; }
+.az-films:has(> .az-film:only-child) .az-film--lead { grid-column: auto; grid-row: auto; }

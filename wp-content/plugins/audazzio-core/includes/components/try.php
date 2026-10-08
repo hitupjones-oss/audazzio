@@ -9,10 +9,10 @@ defined( 'ABSPATH' ) || exit;
 
 function az_try_default_steps() {
 	return array(
-		array( 'title' => 'Get the app', 'text' => 'Download Audazzio from the App Store or Google Play.' ),
-		array( 'title' => 'Allow the microphone', 'text' => 'Open the app and allow microphone access. That is how your phone hears the signal.' ),
-		array( 'title' => 'Turn your speakers on', 'text' => 'Volume up on this computer, TV or tablet. Keep your phone close by.' ),
-		array( 'title' => 'Press play', 'text' => 'Start the demo and watch your phone. The content arrives in sync with the video.' ),
+		array( 'title' => 'Open the listener on your phone', 'text' => 'Scan the code with your phone’s camera, or tap the button if you are on your phone. It opens in the browser: nothing to download.' ),
+		array( 'title' => 'Tap the logo, allow the microphone', 'text' => 'Tap the Audazzio logo in the middle of the screen and allow microphone access. The peach circle means your phone is listening.' ),
+		array( 'title' => 'Turn your speakers on', 'text' => 'Volume up on this computer, TV or tablet, loud enough to be heard. Keep your phone close by.' ),
+		array( 'title' => 'Press play', 'text' => 'Start a demo here and watch your phone. New content arrives in sync with the video, with a ding.' ),
 	);
 }
 
@@ -30,9 +30,16 @@ function az_store_buttons( $class = '' ) {
 	$and = (string) az_opt( 'play_store' );
 	$apple = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.03-1.5-2.62-1.7-3.18-1.73-1.35-.14-2.65.8-3.33.8-.69 0-1.75-.78-2.88-.76-1.48.02-2.85.86-3.61 2.19-1.54 2.67-.39 6.62 1.1 8.79.73 1.06 1.6 2.25 2.74 2.2 1.1-.04 1.52-.71 2.85-.71 1.33 0 1.7.71 2.87.69 1.19-.02 1.94-1.08 2.66-2.15.84-1.23 1.19-2.42 1.2-2.48-.03-.01-2.3-.88-2.3-3.53ZM14.2 6.13c.6-.74 1.01-1.75.9-2.77-.87.04-1.93.58-2.55 1.31-.56.64-1.05 1.68-.92 2.67.97.07 1.96-.49 2.57-1.21Z"/></svg>';
 	$play  = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M4.2 2.6c-.2.2-.3.55-.3.98v16.84c0 .43.1.78.3.98l.05.05 9.43-9.43v-.04L4.25 2.55l-.05.05Zm12.62 12.57-3.14-3.15v-.04l3.14-3.15.07.04 3.72 2.11c1.06.6 1.06 1.59 0 2.2l-3.72 2.11-.07.04Zm-.07.04-3.21-3.21-9.48 9.48c.35.37.93.42 1.58.05l11.11-6.32Zm0-6.43L5.64 2.47c-.65-.37-1.23-.32-1.58.05l9.48 9.48 3.21-3.22Z"/></svg>';
+	if ( ! $ios && ! $and ) {
+		return '';
+	}
 	$h = '<div class="az-stores ' . esc_attr( $class ) . '">';
-	$h .= sprintf( '<a class="az-store" href="%s"%s>%s<span><small>Download on the</small>App Store</span></a>', esc_url( $ios ?: '#' ), $ios ? ' target="_blank" rel="noopener"' : ' aria-disabled="true"', $apple );
-	$h .= sprintf( '<a class="az-store" href="%s"%s>%s<span><small>Get it on</small>Google Play</span></a>', esc_url( $and ?: '#' ), $and ? ' target="_blank" rel="noopener"' : ' aria-disabled="true"', $play );
+	if ( $ios ) {
+		$h .= sprintf( '<a class="az-store" href="%s" target="_blank" rel="noopener">%s<span><small>Download on the</small>App Store</span></a>', esc_url( $ios ), $apple );
+	}
+	if ( $and ) {
+		$h .= sprintf( '<a class="az-store" href="%s" target="_blank" rel="noopener">%s<span><small>Get it on</small>Google Play</span></a>', esc_url( $and ), $play );
+	}
 	return $h . '</div>';
 }
 
@@ -40,9 +47,16 @@ function az_store_buttons( $class = '' ) {
 function az_player( $poster = '' ) {
 	$cfg    = az_front_config();
 	$poster = $poster ? $poster : ( $cfg['demo']['poster'] ? $cfg['demo']['poster'] : ( $cfg['demo']['id'] ? az_asset( 'img/yt-' . $cfg['demo']['id'] . '.jpg' ) : '' ) );
+	$clips  = az_demo_clips();
 	ob_start();
 	?>
 	<div class="az-player" data-az-player>
+		<?php if ( count( $clips ) > 1 ) : ?>
+			<div class="az-player__pick" role="group" aria-label="Pick a demo">
+				<span class="az-label">Pick a demo</span>
+				<?php foreach ( $clips as $i => $c ) : ?><button type="button" class="az-player__clip" aria-pressed="<?php echo 0 === $i ? 'true' : 'false'; ?>" data-az-clip="<?php echo (int) $i; ?>"><?php echo esc_html( $c['label'] ? $c['label'] : 'Demo ' . ( $i + 1 ) ); ?></button><?php endforeach; ?>
+			</div>
+		<?php endif; ?>
 		<div class="az-player__screen">
 			<?php if ( $poster ) : ?><img class="az-player__poster" src="<?php echo esc_url( $poster ); ?>" alt="" loading="lazy" decoding="async"><?php endif; ?>
 			<div class="az-player__media" data-az-player-media></div>
@@ -80,7 +94,7 @@ function az_phone_sim() {
 				<div class="az-sim__toast"><span class="az-sim__toast-ico"><?php echo az_mark( 'symbol' ); // phpcs:ignore ?></span><span><b>Audazzio</b><span data-az-sim-label>Content received</span></span></div>
 			</div>
 		</div>
-		<figcaption class="az-sim__cap az-label">No app yet? This is what your phone shows.</figcaption>
+		<figcaption class="az-sim__cap az-label">No phone handy? This is what it shows.</figcaption>
 	</figure>
 	<?php
 	return (string) ob_get_clean();
@@ -98,10 +112,13 @@ function az_try_steps( $steps = null ) {
 				<div class="az-trysteps__c">
 					<h3 class="az-trysteps__t"><?php echo esc_html( $s['title'] ?? '' ); ?></h3>
 					<p class="az-trysteps__p"><?php echo esc_html( $s['text'] ?? '' ); ?></p>
-					<?php if ( 0 === $i ) : ?>
+					<?php if ( 0 === $i ) : $listener = (string) az_opt( 'listener_url' ); ?>
 						<div class="az-trysteps__get">
+							<?php if ( $listener ) : ?>
+								<a class="az-btn az-btn--ink az-btn--sm az-trysteps__open" href="<?php echo esc_url( $listener ); ?>" target="_blank" rel="noopener"><span>Open the Audazzio listener</span><?php echo az_icon( 'arrow-ur' ); // phpcs:ignore ?></a>
+								<div class="az-qr" data-az-qr="<?php echo esc_attr( $listener ); ?>"><span class="az-qr__code" aria-hidden="true"></span><span class="az-qr__cap">On a computer? Point your phone’s camera here to open the listener.</span></div>
+							<?php endif; ?>
 							<?php echo az_store_buttons(); // phpcs:ignore ?>
-							<div class="az-qr" data-az-qr="<?php echo esc_attr( home_url( '/try/?get=app' ) ); ?>"><span class="az-qr__code" aria-hidden="true"></span><span class="az-qr__cap">On a computer? Scan with your phone’s camera to get the app.</span></div>
 						</div>
 					<?php endif; ?>
 				</div>
@@ -116,10 +133,10 @@ function az_schema_try() {
 	return array(
 		'title'  => 'Try Audazzio (player)',
 		'icon'   => 'eicon-play',
-		'note'   => 'The demo clip, its poster and the App Store and Google Play links are set once under Audazzio > Settings, and every player on the site uses them.',
-		'fields' => az_head_fields( 'Try Audazzio now', "Turn your speakers on.\n*Watch your phone.*", 'Have the Audazzio app on your phone? Press play and see Live QR work right here, from this page’s sound.', 'mist' ) + array(
+		'note'   => 'The listener link, the demo clips, the poster and any App Store or Google Play links are set once under Audazzio > Settings, and every player on the site uses them.',
+		'fields' => az_head_fields( 'Try Audazzio now', "Turn your speakers on.\n*Watch your phone.*", 'No app to download. Open the Audazzio listener on your phone, press play here, and see Live QR work from this page’s sound.', 'mist' ) + array(
 			'steps'  => az_f( 'repeater', 'Steps', az_try_default_steps(), array( 'fields' => array( 'title' => az_f( 'text', 'Step', '' ), 'text' => az_f( 'textarea', 'Text', '' ) ), 'title' => '{{{ title }}}' ) ),
-			'mobile' => az_f( 'textarea', 'Note for phone visitors', 'On your phone right now? Open this page on a computer, TV or tablet, press play there, and keep the app open on your phone.' ),
+			'mobile' => az_f( 'textarea', 'Note for phone visitors', 'On your phone right now? Open the listener here, then play the demo on a computer, TV or tablet: audazzio.com/try.' ),
 		),
 	);
 }
@@ -157,7 +174,7 @@ function az_try_sheet() {
 	</div>
 	<div class="az-sheet__grid az-sheet__grid--try">
 		<div class="az-sheet__stage"><?php echo az_player() . az_phone_sim(); // phpcs:ignore ?></div>
-		<div class="az-sheet__steps"><?php echo az_try_steps(); // phpcs:ignore ?><p class="az-try__mobile"><?php echo az_icon( 'info' ); // phpcs:ignore ?>On your phone right now? Open audazzio.com/try on a computer, TV or tablet, press play there, and keep the app open on your phone.</p></div>
+		<div class="az-sheet__steps"><?php echo az_try_steps(); // phpcs:ignore ?><p class="az-try__mobile"><?php echo az_icon( 'info' ); // phpcs:ignore ?>On your phone right now? Open the listener here, then play the demo on a computer, TV or tablet: audazzio.com/try.</p></div>
 	</div>
 	<?php
 	return (string) ob_get_clean();

@@ -16,7 +16,7 @@ export const PAGES = [
   {
     slug: "home", title: "Home", order: 0,
     doc_title: "Audazzio | It comes in waves.",
-    description: "Audazzio’s Live QR™ technology hides inaudible signals in the sound of a broadcast or live event, so every phone that hears one shows the right content at the exact moment. No scanning.",
+    description: "Audazzio’s Live QR® technology hides inaudible signals in the sound of a broadcast or live event, so every phone that hears one shows the right content at the exact moment. No scanning.",
     widgets: [
       ["hero", {}],
       ["steps", { tone: "white" }],
@@ -32,12 +32,13 @@ export const PAGES = [
   },
   {
     slug: "live-qr", title: "Live QR", order: 1,
-    doc_title: "How Live QR™ works | Audazzio",
-    description: "Live QR™ embeds inaudible micro-signals in the audio of a broadcast or live event. Phones that hear them load the content you chose, in less than a second. It’s like a QR code, but no one has to scan it.",
+    doc_title: "How Live QR® works | Audazzio",
+    description: "Live QR® embeds inaudible micro-signals in the audio of a broadcast or live event. Phones that hear them load the content you chose, in less than a second. It’s like a QR code, but no one has to scan it.",
     widgets: [
-      ["page-hero", { eyebrow: "Live QR™ technology", title: "It’s like a QR code.\n*No one has to scan it.*", intro: "Our Live QR technology embeds inaudible micro-signals in the audio of a broadcast or live event. Every phone that hears one loads the content you chose, in less than a second.", cta: "Try it now", cta_url: "/try/", alt: "Talk to us", alt_url: "/join/", waves: "spectrum" }],
+      ["page-hero", { eyebrow: "Live QR® technology", title: "It’s like a QR code.\n*No one has to scan it.*", intro: "Our Live QR technology embeds inaudible micro-signals in the audio of a broadcast or live event. Every phone that hears one loads the content you chose, in less than a second.", cta: "Try it now", cta_url: "/try/", alt: "Talk to us", alt_url: "/join/", waves: "spectrum" }],
       ["flow", { tone: "mist" }],
       ["canvas", { tone: "white" }],
+      ["videos", { tone: "white", anchor: "explainer", eyebrow: "The explainer", title: "Two minutes.\n*The whole idea.*", layout: "feature", items: [{ title: "The Audazzio explainer", label: "How it works", video: "https://www.youtube.com/watch?v=PL6hqRwk830", poster: "asset:img/poster-PL6hqRwk830.jpg", length: "2 min" }] }],
       ["numbers", {
         tone: "mist", size: "compact", eyebrow: "Proven live", title: "Fans opt in.\n*Then they act.*",
         items: [
@@ -50,7 +51,7 @@ export const PAGES = [
         tone: "white",
         items: [
           { q: "Can people hear the signal?", a: "No. The micro-signals are inaudible to the human ear and ride inside the normal audio of the broadcast or the venue’s sound system. Phones hear them; people hear the show." },
-          { q: "What does a viewer need?", a: "A phone or tablet with an app that carries Audazzio, and its microphone on. That can be the Audazzio app or a partner’s own app: at the Olympic Trials, NBC Sports invited fans to simply download or open the USA Swimming app." },
+          { q: "What does a viewer need?", a: "A phone or tablet listening through Audazzio, with its microphone on. That can be a partner’s own app (at the Olympic Trials, NBC Sports invited fans to simply download or open the USA Swimming app) or the browser, like the demo on this site." },
           { q: "How fast does content arrive?", a: "In less than a second, fully synchronized with the broadcast or the event, regardless of when or where it is watched." },
           { q: "Does it survive broadcast and streaming?", a: "Yes. On NBC Sports’ Tour de France broadcast, Audazzio survived the rigors of signal transcoding and transmission, and worked across traditional MVPD, vMVPD and DTC." },
           { q: "What can it put on the phone?", a: "Any web page, at any time, on any device within range of the signal: player profiles, stats, replays, polls and votes, contests, offers, shopping and sponsored content." },
@@ -162,9 +163,9 @@ export const PAGES = [
   {
     slug: "try", title: "Try Audazzio", order: 5,
     doc_title: "Try Audazzio now: turn your speakers on",
-    description: "Get the Audazzio app, turn your speakers on and press play. Your phone shows the content in sync with the video: Live QR™, working right here.",
+    description: "Get the Audazzio app, turn your speakers on and press play. Your phone shows the content in sync with the video: Live QR®, working right here.",
     widgets: [
-      ["page-hero", { eyebrow: "Try Audazzio now", title: "Turn your speakers on.\n*Watch your phone.*", intro: "Four steps, about a minute. If your phone has the Audazzio app, it hears the signal in this page’s sound and shows the content in sync.", waves: "spectrum" }],
+      ["page-hero", { eyebrow: "Try Audazzio now", title: "Turn your speakers on.\n*Watch your phone.*", intro: "Four steps, about a minute, nothing to download. Your phone listens in the browser, hears the signal in this page’s sound and shows the content in sync.", waves: "spectrum" }],
       ["try", { tone: "mist", eyebrow: "", title: "", intro: "" }],
       ["steps", { tone: "white", eyebrow: "What just happened", title: "The sound carried\n*a signal.*", cta: "How Live QR works", cta_url: "/live-qr/" }],
       cta,
@@ -173,7 +174,7 @@ export const PAGES = [
   {
     slug: "join", title: "Join the Wave", order: 6,
     doc_title: "Join the Wave: talk to Audazzio",
-    description: "Tell Audazzio about your broadcast, venue or brand, and see what Live QR™ can do for your audience. Four short steps.",
+    description: "Tell Audazzio about your broadcast, venue or brand, and see what Live QR® can do for your audience. Four short steps.",
     widgets: [
       ["join", {}],
       ["logos", { tone: "white" }],
