@@ -1,7 +1,7 @@
 // Join the Wave: four steps (you, your idea, scale, send), checked as the visitor goes, then sent to
 // WordPress (POST /wp-json/audazzio/v1/join), which grades and files the inquiry. On the static preview
 // nothing is sent: the form grades the answers with the same table and shows the team's view.
-import { $, $$ } from "./ui.js";
+import { $, $$, fresh } from "./ui.js";
 
 const TABLE = () => { try { return JSON.parse(($("#az-join-config") || {}).textContent || "{}"); } catch { return {}; } };
 const LABELS = { name: "Name", position: "Position", company: "Company", email: "Email", phone: "Phone", details: "In your words" };
@@ -27,13 +27,17 @@ function grade(d) {
   return { score, grade: g, label: (T.grades[g] || [])[1], advice: (T.grades[g] || [])[2], nature };
 }
 
+/** Mark a field or question as wrong (or right again). The message lands a moment later, so screen readers announce it. */
 function err(el, msg) {
   const host = el.closest(".az-field, .az-q, .az-check") || el;
   host.classList.toggle("is-bad", !!msg);
-  let m = $(".az-field__err", host);
-  if (!m && host.classList.contains("az-q")) { m = document.createElement("span"); m.className = "az-field__err"; m.setAttribute("aria-live", "polite"); host.appendChild(m); }
-  if (m) m.textContent = msg || "";
-  if (el.setAttribute) el.setAttribute("aria-invalid", msg ? "true" : "false");
+  const m = $(".az-field__err", host);
+  if (m) {
+    m.__msg = msg || "";
+    if (!msg) m.textContent = "";
+    else if (m.textContent !== msg) { m.textContent = ""; setTimeout(() => { if (m.__msg) m.textContent = m.__msg; }, 60); }
+  }
+  (host.matches(".az-q") ? $$("input", host) : [el]).forEach((i) => i.setAttribute("aria-invalid", msg ? "true" : "false"));
   return !msg;
 }
 
@@ -46,15 +50,20 @@ function read(f) {
   return d;
 }
 
-function check(f, n) {
+const focusBad = (step) => { const bad = $(".is-bad input, .is-bad textarea", step); bad && bad.focus(); };
+
+/** Check one step; with focus, the first wrong answer gets the focus. */
+function check(f, n, focus = true) {
   const step = $(`[data-az-jstep="${n}"]`, f);
+  if (!step) return true;
   let ok = true;
-  const field = (name, test, msg) => { const el = $(`[name="${name}"]`, step); if (el) ok = err(el, test(el.value.trim()) ? "" : msg) && ok; };
+  const field = (name, test, msg) => { const el = $(`[name="${name}"]`, step); if (el) { const v = el.value.trim(), m = test(v); ok = err(el, m === true ? "" : typeof m === "string" ? m : msg) && ok; } };
   if (n === 1) {
     field("name", (v) => v.length > 1, "Please add your name.");
     field("position", (v) => v.length > 1, "Please add your position.");
     field("company", (v) => v.length > 1, "Please add your company or organization.");
-    field("email", (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v), "Please check the email address.");
+    // WordPress drops letters it cannot use in an address (josé@ becomes jos@), so the server refuses them too
+    field("email", (v) => (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? false : /[^\x21-\x7e]/.test(v) ? "Please use an email address without accents or special characters." : true), "Please check the email address.");
     field("phone", (v) => v.replace(/\D/g, "").length >= 7, "Please add a phone number.");
   }
   if (n === 2 || n === 3) {
@@ -64,8 +73,8 @@ function check(f, n) {
     });
     if (n === 2) field("details", (v) => v.length >= 20, "A sentence or two, please (20 characters or more).");
   }
-  if (n === 4) { const c = $('[name="consent"]', step); ok = err(c, c.checked ? "" : "Please tick the box so we can reply.") && ok; }
-  if (!ok) { const bad = $(".is-bad input, .is-bad textarea", step); bad && bad.focus(); }
+  if (n === 4) { const c = $('[name="consent"]', step); if (c) ok = err(c, c.checked ? "" : "Please tick the box so we can reply.") && ok; }
+  if (!ok && focus) focusBad(step);
   return ok;
 }
 
@@ -81,9 +90,9 @@ function review(f) {
   dl.replaceChildren(...out.flatMap(([a, b]) => { const dt = document.createElement("dt"), dd = document.createElement("dd"); dt.textContent = a; dd.textContent = b || "–"; return [dt, dd]; }));
 }
 
-export function join() {
-  $$("[data-az-form]").forEach((f) => {
-    let n = 1, t0 = 0;
+export function join(root = document) {
+  fresh(root, "[data-az-form]", "__az").forEach((f) => {
+    let n = 1, t0 = 0, busy = false;
     const total = 4, back = $("[data-az-back]", f), next = $("[data-az-next]", f), send = $("[data-az-send]", f), msg = $(".az-join__msg", f);
     f.addEventListener("focusin", () => { if (!t0) t0 = Date.now(); }, { once: true });
     const go = (to, quiet) => {
@@ -102,20 +111,46 @@ export function join() {
     };
     next.addEventListener("click", () => { if (check(f, n)) go(n + 1); });
     back.addEventListener("click", () => go(Math.max(1, n - 1)));
-    f.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.tagName === "INPUT" && e.target.type !== "checkbox" && n < total) { e.preventDefault(); next.click(); } });
+    // Enter moves on a step from any answer, as Continue does (Send only sends from the last step)
+    f.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.tagName === "INPUT" && n < total) { e.preventDefault(); next.click(); } });
     f.addEventListener("change", (e) => { const h = e.target.closest(".is-bad"); if (h) err(e.target.closest(".az-q") || e.target, ""); });
     f.addEventListener("input", (e) => { const h = e.target.closest(".az-field.is-bad"); if (h) err(e.target, ""); });
 
+    // The server names the answer it could not take: back to its step, with the message on it.
+    const problem = (text, name) => {
+      text = text || "Something went wrong. Please try again.";
+      const el = name && /^[a-z_]+$/.test(name) && $(`[name="${name}"], [name="${name}[]"]`, f);
+      const at = el && el.closest("[data-az-jstep]");
+      if (at) {
+        const host = el.closest(".az-q") || el;
+        go(+at.dataset.azJstep, true);
+        err(host, text);
+        (host === el ? el : $("input", host)).focus();
+        return;
+      }
+      msg.textContent = text;
+      msg.hidden = false;
+      if (!f.contains(document.activeElement)) send.focus();
+    };
+
     f.addEventListener("submit", async (e) => {
       e.preventDefault();
-      if (!check(f, n)) return;
+      if (busy) return;
+      // before the last step this is Enter in an answer: check the step and move on
+      if (n < total) { if (check(f, n)) go(n + 1); return; }
+      for (let k = 1; k <= total; k++) {
+        if (check(f, k, k === n)) continue;
+        if (k !== n) { go(k, true); focusBad($(`[data-az-jstep="${k}"]`, f)); }
+        return;
+      }
       const d = read(f);
       d.t = t0 ? Date.now() - t0 : 0;
       d.source = location.href;
       d.consent = d.consent ? 1 : 0;
-      send.disabled = true; send.classList.add("is-busy"); msg.hidden = true;
+      // the button keeps the focus while it works, so it is never disabled
+      busy = true; send.setAttribute("aria-disabled", "true"); send.classList.add("is-busy"); msg.hidden = true;
       const cfg = window.AZ_CONFIG || {};
-      let ok = false, text = cfg.thanks || "";
+      let ok = false, text = cfg.thanks || "", j = {};
       if (cfg.static) {
         await new Promise((r) => setTimeout(r, 700));
         ok = true;
@@ -126,17 +161,13 @@ export function join() {
       } else {
         try {
           const r = await fetch(cfg.rest, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(d) });
-          const j = await r.json().catch(() => ({}));
+          j = await r.json().catch(() => ({}));
           ok = r.ok && j.ok !== false;
           text = j.message || text;
-          if (!ok) throw new Error(j.message || "Something went wrong. Please try again.");
-        } catch (x) {
-          msg.textContent = x.message || "Something went wrong. Please try again.";
-          msg.hidden = false;
-        }
+        } catch {}
       }
-      send.disabled = false; send.classList.remove("is-busy");
-      if (!ok) return;
+      busy = false; send.removeAttribute("aria-disabled"); send.classList.remove("is-busy");
+      if (!ok) return problem(j.message, j.field);
       if (text) $("[data-az-thanks]", f).textContent = text;
       $$(".az-join__steps, .az-join__nav, .az-join__top", f).forEach((x) => (x.hidden = true));
       const done = $("[data-az-done]", f);

@@ -109,7 +109,13 @@
 .az-notify__x .az-ico { width: 13px; height: 13px; }
 .az-notify:hover .az-notify__x, .az-notify:focus-within .az-notify__x { opacity: 1; transform: none; }
 @media (hover: none) { .az-notify__x { opacity: 1; transform: none; } }
-@media (max-width: 600px) { .az-notify { top: calc(12px + 56px + 10px); right: 12px; left: 12px; width: auto; transform-origin: top center; } }
+.az-notify__x::after { content: ""; position: absolute; inset: -9px; }
+/* up to 1000px it rises from the foot of the screen instead, clear of the hero's copy, and the Join the Wave bar waits until it goes */
+@media (max-width: 1000px) {
+  .az-notify { top: auto; bottom: calc(14px + env(safe-area-inset-bottom)); transform: translate3d(0, 18px, 0) scale(.96); transform-origin: bottom right; }
+  .az-notifying .az-bar.is-on { opacity: 0; transform: translate3d(0, 140%, 0); visibility: hidden; transition: transform .6s var(--az-out), opacity .4s, visibility 0s .6s; }
+}
+@media (max-width: 600px) { .az-notify { right: 12px; left: 12px; width: auto; transform-origin: bottom center; } }
 
 /* -------------------------------------------------------------- dialogs */
 .az-dialog { width: min(1120px, calc(100vw - 32px)); max-width: none; max-height: calc(100dvh - 32px); padding: 0; border: 0; background: transparent; color: var(--az-ink); overflow: visible; }

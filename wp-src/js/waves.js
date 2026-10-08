@@ -173,7 +173,8 @@ function spectrum(o = {}) {
 const PRESETS = {
   hero: (S) => [curtain({ height: S.narrow ? 0.34 : 0.46, spread: S.narrow ? 0.42 : 0.34, pitch: S.narrow ? 6 : 7 }), lines({ cy: S.narrow ? 0.9 : 0.885, alpha: 0.28, amp: 34 })],
   lines: () => [lines({ cy: 0.78, amp: 30, alpha: 0.24, count: 7 })],
-  rings: (S) => [rings({ ox: S.narrow ? 0.5 : 0.78, oy: 0.5, alpha: 0.26 })],
+  // on a phone the text runs full width: the source sits top right, between the header and the eyebrow
+  rings: (S) => [rings({ ox: S.narrow ? 0.84 : 0.78, oy: S.narrow ? Math.min(0.5, 112 / S.h) : 0.5, alpha: 0.26 })],
   card: () => [rings({ ox: 0.94, oy: 0.06, alpha: 0.2, count: 5, period: 8 })],
   spectrum: () => [spectrum({ baseline: 0.96, height: 0.46, alpha: 0.26 })],
   cta: (S) => [curtain({ height: 0.55, spread: 0.36, alpha: 0.6 }), lines({ cy: 0.88, amp: 26, alpha: 0.22, count: 7 })],
@@ -205,7 +206,7 @@ class Scene {
     if (!this.visible || (this.bar && !this.bar.classList.contains("is-on"))) return false;
     return !(html.classList.contains("az-modal") || html.classList.contains("az-lock")) || !!this.c.closest("dialog[open]");
   }
-  drop() { this.ro.disconnect(); this.io.disconnect(); scenes.delete(this); }
+  drop() { this.ro.disconnect(); this.io.disconnect(); scenes.delete(this); this.c.__az = null; }
   resize() {
     const r = this.box.getBoundingClientRect();
     const dpr = Math.min(window.devicePixelRatio || 1, 2);

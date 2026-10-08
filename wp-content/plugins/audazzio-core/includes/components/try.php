@@ -16,6 +16,23 @@ function az_try_default_steps() {
 	);
 }
 
+/** The steps set under Audazzio > Settings ("Title | text" lines), else the four above. The popup shows these, and so does any Try section whose own list is empty. */
+function az_try_shared_steps() {
+	$out = array();
+	foreach ( az_pairs( (string) az_opt( 'try_steps' ) ) as $p ) {
+		if ( '' !== $p[0] ) {
+			$out[] = array( 'title' => $p[0], 'text' => $p[1] );
+		}
+	}
+	return $out ? $out : az_try_default_steps();
+}
+
+/** A text set under Audazzio > Settings, else the one it has always had. */
+function az_try_text( $key, $fallback ) {
+	$v = trim( (string) az_opt( $key ) );
+	return '' !== $v ? $v : $fallback;
+}
+
 /** The phone screens the simulation cycles through (Audazzio's own second-screen mock-ups). */
 function az_try_screens() {
 	$out = array();
@@ -48,6 +65,7 @@ function az_player( $poster = '' ) {
 	$cfg    = az_front_config();
 	$poster = $poster ? $poster : ( $cfg['demo']['poster'] ? $cfg['demo']['poster'] : ( $cfg['demo']['id'] ? az_asset( 'img/yt-' . $cfg['demo']['id'] . '.jpg' ) : '' ) );
 	$clips  = az_demo_clips();
+	$hint   = 'az-player-hint-' . wp_unique_id();
 	ob_start();
 	?>
 	<div class="az-player" data-az-player>
@@ -60,7 +78,8 @@ function az_player( $poster = '' ) {
 		<div class="az-player__screen">
 			<?php if ( $poster ) : ?><img class="az-player__poster" src="<?php echo esc_url( $poster ); ?>" alt="" loading="lazy" decoding="async"><?php endif; ?>
 			<div class="az-player__media" data-az-player-media></div>
-			<button class="az-player__play" type="button" data-az-play aria-label="Play the Audazzio demo">
+			<span class="az-player__wait" aria-hidden="true"></span>
+			<button class="az-player__play" type="button" data-az-play aria-label="Play the Audazzio demo" aria-describedby="<?php echo esc_attr( $hint ); ?>">
 				<span class="az-player__ring" aria-hidden="true"></span>
 				<span class="az-player__ico"><?php echo az_icon( 'play' ); // phpcs:ignore ?></span>
 			</button>
@@ -68,8 +87,8 @@ function az_player( $poster = '' ) {
 		</div>
 		<div class="az-player__bar">
 			<span class="az-player__meter" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
-			<span class="az-player__hint"><?php echo az_icon( 'speaker' ); // phpcs:ignore ?>Speakers on, volume up</span>
-			<button class="az-player__toggle" type="button" data-az-play hidden><?php echo az_icon( 'play' ); // phpcs:ignore ?><span>Play</span></button>
+			<span class="az-player__hint" id="<?php echo esc_attr( $hint ); ?>"><?php echo az_icon( 'speaker' ); // phpcs:ignore ?><span class="az-player__hint-d">Speakers on, volume up</span><span class="az-player__hint-m">Play this on a computer or TV</span></span>
+			<button class="az-player__toggle" type="button" data-az-toggle hidden><?php echo az_icon( 'pause' ); // phpcs:ignore ?><span>Pause</span></button>
 		</div>
 	</div>
 	<?php
@@ -84,7 +103,7 @@ function az_phone_sim() {
 	}
 	ob_start();
 	?>
-	<figure class="az-sim" data-az-sim aria-label="What your phone shows when the signal lands">
+	<div class="az-sim" data-az-sim role="figure" aria-label="What your phone shows when the signal lands">
 		<div class="az-sim__phone">
 			<div class="az-sim__screen">
 				<div class="az-sim__idle"><span class="az-sim__sym"><?php echo az_mark( 'symbol' ); // phpcs:ignore ?></span><span class="az-label">Listening</span><span class="az-sim__eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div>
@@ -94,15 +113,18 @@ function az_phone_sim() {
 				<div class="az-sim__toast"><span class="az-sim__toast-ico"><?php echo az_mark( 'symbol' ); // phpcs:ignore ?></span><span><b>Audazzio</b><span data-az-sim-label>Content received</span></span></div>
 			</div>
 		</div>
-		<figcaption class="az-sim__cap az-label">No phone handy? This is what it shows.</figcaption>
-	</figure>
+		<p class="az-sim__cap az-label">No phone handy? This is what it shows.</p>
+	</div>
 	<?php
 	return (string) ob_get_clean();
 }
 
-/** The four steps, as a checklist; the store buttons and the QR code sit under the first. */
+/** The four steps, as a checklist; the store buttons and the QR code sit under the first. No steps given: the shared ones. */
 function az_try_steps( $steps = null ) {
-	$steps = $steps ? $steps : az_try_default_steps();
+	$steps = array_values( array_filter( (array) $steps, function ( $s ) {
+		return is_array( $s ) && '' !== trim( (string) ( $s['title'] ?? '' ) . (string) ( $s['text'] ?? '' ) );
+	} ) );
+	$steps = $steps ? $steps : az_try_shared_steps();
 	ob_start();
 	?>
 	<ol class="az-trysteps" data-az-trysteps>
@@ -133,9 +155,9 @@ function az_schema_try() {
 	return array(
 		'title'  => 'Try Audazzio (player)',
 		'icon'   => 'eicon-play',
-		'note'   => 'The listener link, the demo clips, the poster and any App Store or Google Play links are set once under Audazzio > Settings, and every player on the site uses them.',
+		'note'   => 'The listener link, the demo clips, the poster and any App Store or Google Play links are set once under Audazzio > Settings, and every player on the site uses them. Leave Steps empty to show the steps set under Audazzio > Settings, which the Try Audazzio popup shows too; add steps here only for a list this section alone should show.',
 		'fields' => az_head_fields( 'Try Audazzio now', "Turn your speakers on.\n*Watch your phone.*", 'No app to download. Open the Audazzio listener on your phone, press play here, and see Live QR work from this page’s sound.', 'mist' ) + array(
-			'steps'  => az_f( 'repeater', 'Steps', az_try_default_steps(), array( 'fields' => array( 'title' => az_f( 'text', 'Step', '' ), 'text' => az_f( 'textarea', 'Text', '' ) ), 'title' => '{{{ title }}}' ) ),
+			'steps'  => az_f( 'repeater', 'Steps', array(), array( 'fields' => array( 'title' => az_f( 'text', 'Step', '' ), 'text' => az_f( 'textarea', 'Text', '' ) ), 'title' => '{{{ title }}}' ) ),
 			'mobile' => az_f( 'textarea', 'Note for phone visitors', 'On your phone right now? Open the listener here, then play the demo on a computer, TV or tablet: audazzio.com/try.' ),
 		),
 	);
@@ -164,17 +186,29 @@ function az_render_try( $a ) {
 	<?php
 }
 
-/** The sheet that opens from the notification, "Try it" in the header, or any link to /try/. */
+/**
+ * The sheet that opens from the notification, "Try it" in the header, or any link to /try/. Its headline,
+ * intro, steps and phone note are set under Audazzio > Settings. On a phone the note and the listener button
+ * come first, since the demo has to play on another screen.
+ */
 function az_try_sheet() {
+	$intro    = trim( (string) az_opt( 'try_intro' ) );
+	$note     = az_try_text( 'try_note', 'On your phone right now? Open the listener here, then play the demo on a computer, TV or tablet: audazzio.com/try.' );
+	$listener = (string) az_opt( 'listener_url' );
 	ob_start();
 	?>
 	<div class="az-sheet__head">
 		<p class="az-eyebrow">Try Audazzio now</p>
-		<h2 class="az-sheet__title" id="az-try-title"><?php echo az_hl( "Your second screen,\n*in four steps.*" ); // phpcs:ignore ?></h2>
+		<h2 class="az-sheet__title" id="az-try-title"><?php echo az_hl( az_try_text( 'try_title', "Your second screen,\n*in four steps.*" ) ); // phpcs:ignore ?></h2>
+		<?php if ( '' !== $intro ) : ?><div class="az-sheet__intro"><?php echo az_paras( $intro ); // phpcs:ignore ?></div><?php endif; ?>
+	</div>
+	<div class="az-sheet__phone">
+		<p class="az-try__mobile"><?php echo az_icon( 'info' ) . esc_html( $note ); // phpcs:ignore ?></p>
+		<?php if ( $listener ) : ?><a class="az-btn az-btn--ink az-sheet__open" href="<?php echo esc_url( $listener ); ?>" target="_blank" rel="noopener"><span>Open the Audazzio listener</span><?php echo az_icon( 'arrow-ur' ); // phpcs:ignore ?></a><?php endif; ?>
 	</div>
 	<div class="az-sheet__grid az-sheet__grid--try">
 		<div class="az-sheet__stage"><?php echo az_player() . az_phone_sim(); // phpcs:ignore ?></div>
-		<div class="az-sheet__steps"><?php echo az_try_steps(); // phpcs:ignore ?><p class="az-try__mobile"><?php echo az_icon( 'info' ); // phpcs:ignore ?>On your phone right now? Open the listener here, then play the demo on a computer, TV or tablet: audazzio.com/try.</p></div>
+		<div class="az-sheet__steps"><?php echo az_try_steps(); // phpcs:ignore ?><p class="az-try__mobile az-sheet__note"><?php echo az_icon( 'info' ) . esc_html( $note ); // phpcs:ignore ?></p></div>
 	</div>
 	<?php
 	return (string) ob_get_clean();

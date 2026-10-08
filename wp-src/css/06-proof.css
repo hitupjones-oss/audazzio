@@ -171,7 +171,7 @@
 .az-quotes__dot[aria-pressed="true"] i { width: 22px; background: var(--az-ink); }
 .az-quotes__pause { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; color: var(--az-ink-3); box-shadow: inset 0 0 0 1px var(--az-line-2); transition: color .2s, box-shadow .2s; }
 .az-quotes__pause:hover { color: var(--az-ink); box-shadow: inset 0 0 0 1px var(--az-ink-4); }
-.az-quotes__pause .az-ico { grid-area: 1 / 1; width: 12px; height: 12px; }
+.az-quotes__pause .az-ico { grid-area: 1 / 1; width: 14px; height: 14px; }
 .az-quotes__pause .az-ico:last-child, .az-quotes__pause.is-paused .az-ico:first-child { display: none; }
 .az-quotes__pause.is-paused .az-ico:last-child { display: block; }
 .az-films:has(> .az-film:only-child) { grid-template-columns: 1fr; max-width: 980px; }

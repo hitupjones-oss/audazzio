@@ -23,11 +23,11 @@ function az_seo_box( $post ) {
 	$desc  = (string) get_post_meta( $post->ID, '_az_description', true );
 	$def   = (int) get_option( 'page_on_front' ) === (int) $post->ID ? 'Audazzio | It comes in waves.' : ( $post->post_title ? $post->post_title . ' | Audazzio' : '' );
 	?>
-	<p><label for="az-seo-title"><strong>Title</strong></label><br>
-	<input type="text" class="widefat" id="az-seo-title" name="az_seo_title" value="<?php echo esc_attr( $title ); ?>" placeholder="<?php echo esc_attr( $def ); ?>" maxlength="120"></p>
+	<p><label for="az-seo-doc-title"><strong>Title</strong></label><br>
+	<input type="text" class="widefat" id="az-seo-doc-title" name="az_seo_title" value="<?php echo esc_attr( $title ); ?>" placeholder="<?php echo esc_attr( $def ); ?>" maxlength="120"></p>
 	<p class="description">The browser tab and the search result title. Empty: the page name, then "| Audazzio".</p>
-	<p><label for="az-seo-description"><strong>Description</strong></label><br>
-	<textarea class="widefat" id="az-seo-description" name="az_seo_description" rows="4" maxlength="320"><?php echo esc_textarea( $desc ); ?></textarea></p>
+	<p><label for="az-seo-doc-description"><strong>Description</strong></label><br>
+	<textarea class="widefat" id="az-seo-doc-description" name="az_seo_description" rows="4" maxlength="320"><?php echo esc_textarea( $desc ); ?></textarea></p>
 	<p class="description">One or two sentences, about 150 characters, for search results and link previews. Empty: none (the home page uses the site’s tagline).</p>
 	<?php
 }

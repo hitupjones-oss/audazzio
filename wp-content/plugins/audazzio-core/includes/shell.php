@@ -30,6 +30,30 @@ function az_dialog( $id, $label_id, $body, $class = '' ) {
 	);
 }
 
+/**
+ * The "Try Audazzio now" notification (home page only). It is printed first in the page, so a keyboard reaches
+ * it straight away, with a status line that tells screen readers when it slides in (player.js).
+ */
+add_action( 'wp_body_open', function () {
+	if ( is_admin() || ! is_front_page() || 'no' === strtolower( trim( (string) az_opt( 'notify' ) ) ) ) {
+		return;
+	}
+	?>
+	<div class="az-notify" data-az-notify hidden>
+		<button class="az-notify__card" type="button" data-az-try>
+			<span class="az-notify__app" aria-hidden="true"><?php echo az_mark( 'symbol' ); // phpcs:ignore ?></span>
+			<span class="az-notify__body">
+				<span class="az-notify__meta" aria-hidden="true"><b>Audazzio</b><i>now</i></span>
+				<strong class="az-notify__t"><?php echo esc_html( az_try_text( 'notify_title', 'Try Audazzio now' ) ); ?></strong>
+				<span class="az-notify__p"><?php echo esc_html( az_try_text( 'notify_text', 'Turn your speakers on and watch your phone light up.' ) ); ?></span>
+			</span>
+		</button>
+		<button class="az-notify__x" type="button" data-az-notify-x aria-label="Dismiss"><?php echo az_icon( 'close' ); // phpcs:ignore ?></button>
+	</div>
+	<p class="az-vh" role="status" data-az-notify-say></p>
+	<?php
+} );
+
 add_action( 'wp_footer', function () {
 	if ( is_admin() ) {
 		return;
@@ -42,20 +66,6 @@ add_action( 'wp_footer', function () {
 			<a class="az-btn az-btn--wave az-bar__cta" href="<?php echo esc_url( home_url( '/join/' ) ); ?>" data-az-join tabindex="-1"><span>Join the Wave</span><?php echo az_icon( 'arrow' ); // phpcs:ignore ?></a>
 		</div>
 	</div>
-
-	<?php if ( 'no' !== strtolower( trim( (string) az_opt( 'notify' ) ) ) ) : ?>
-	<div class="az-notify" data-az-notify hidden>
-		<button class="az-notify__card" type="button" data-az-try>
-			<span class="az-notify__app" aria-hidden="true"><?php echo az_mark( 'symbol' ); // phpcs:ignore ?></span>
-			<span class="az-notify__body">
-				<span class="az-notify__meta"><b>Audazzio</b><i>now</i></span>
-				<strong class="az-notify__t">Try Audazzio now</strong>
-				<span class="az-notify__p">Turn your speakers on and watch your phone light up.</span>
-			</span>
-		</button>
-		<button class="az-notify__x" type="button" data-az-notify-x aria-label="Dismiss"><?php echo az_icon( 'close' ); // phpcs:ignore ?></button>
-	</div>
-	<?php endif; ?>
 
 	<?php
 	echo az_dialog( 'az-try', 'az-try-title', az_try_sheet(), 'az-dialog--try' ); // phpcs:ignore

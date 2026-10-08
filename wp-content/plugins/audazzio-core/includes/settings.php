@@ -167,7 +167,7 @@ add_action( 'admin_init', function () {
 					$out[ $k ] = $old[ $k ] ?? ( az_settings_defaults()[ $k ] ?? '' );
 					continue;
 				}
-				$out[ $k ] = 'textarea' === ( $f[3] ?? '' ) ? sanitize_textarea_field( (string) $in[ $k ] ) : sanitize_text_field( (string) $in[ $k ] );
+				$out[ $k ] = 'textarea' === ( $f[3] ?? '' ) ? sanitize_textarea_field( str_replace( "\r\n", "\n", (string) $in[ $k ] ) ) : sanitize_text_field( (string) $in[ $k ] );
 			}
 			return $out;
 		},
@@ -212,6 +212,6 @@ function az_settings_page() {
 function az_admin_row( $id, $name, $label, $value, $placeholder = '', $help = '', $area = false, $extra = '' ) {
 	$field = $area
 		? sprintf( '<textarea class="large-text" rows="%5$d" id="%1$s" name="%2$s" placeholder="%4$s"%6$s>%3$s</textarea>', esc_attr( $id ), esc_attr( $name ), esc_textarea( $value ), esc_attr( $placeholder ), max( 3, min( 10, count( az_lines( $value ) ) + 1 ) ), $extra )
-		: sprintf( '<input class="regular-text" type="text" id="%1$s" name="%2$s" value="%3$s" placeholder="%4$s"%5$s>', esc_attr( $id ), esc_attr( $name ), esc_attr( $value ), esc_attr( $placeholder ), $extra );
+		: sprintf( '<input class="%6$s" type="text" id="%1$s" name="%2$s" value="%3$s" placeholder="%4$s"%5$s>', esc_attr( $id ), esc_attr( $name ), esc_attr( $value ), esc_attr( $placeholder ), $extra, max( mb_strlen( $value ), mb_strlen( $placeholder ) ) > 40 ? 'large-text' : 'regular-text' );
 	printf( '<tr><th scope="row"><label for="%1$s">%2$s</label></th><td>%3$s%4$s</td></tr>', esc_attr( $id ), esc_html( $label ), $field, $help ? '<p class="description">' . esc_html( $help ) . '</p>' : '' ); // phpcs:ignore
 }

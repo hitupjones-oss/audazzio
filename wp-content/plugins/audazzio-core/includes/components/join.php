@@ -227,13 +227,15 @@ function az_join_public_config() {
 	return array( 'questions' => $qs );
 }
 
+/** A question as a group of chips. Its error line is there from the start (empty), and every chip points to it. */
 function az_join_choice( $name, $q ) {
 	$type = 'checkbox' === $q['type'] ? 'checkbox' : 'radio';
-	$h    = '<fieldset class="az-q" data-az-q="' . esc_attr( $name ) . '"><legend class="az-q__l">' . esc_html( $q['label'] ) . '</legend><div class="az-chipset">';
+	$err  = 'az-j-' . sanitize_key( $name ) . '-err-' . wp_unique_id();
+	$h    = '<fieldset class="az-q" data-az-q="' . esc_attr( $name ) . '" aria-describedby="' . esc_attr( $err ) . '"><legend class="az-q__l">' . esc_html( $q['label'] ) . '</legend><div class="az-chipset">';
 	foreach ( $q['options'] as $k => $o ) {
-		$h .= sprintf( '<label class="az-chip"><input type="%1$s" name="%2$s" value="%3$s"%4$s><span>%5$s</span></label>', $type, esc_attr( 'checkbox' === $type ? $name . '[]' : $name ), esc_attr( $k ), 'radio' === $type ? ' required' : '', esc_html( $o[0] ) );
+		$h .= sprintf( '<label class="az-chip"><input type="%1$s" name="%2$s" value="%3$s"%4$s aria-describedby="%6$s"><span>%5$s</span></label>', $type, esc_attr( 'checkbox' === $type ? $name . '[]' : $name ), esc_attr( $k ), 'radio' === $type ? ' required' : '', esc_html( $o[0] ), esc_attr( $err ) );
 	}
-	return $h . '</div></fieldset>';
+	return $h . '</div><span class="az-field__err" id="' . esc_attr( $err ) . '" aria-live="polite"></span></fieldset>';
 }
 
 function az_join_field( $name, $label, $type = 'text', $auto = '', $extra = '' ) {
@@ -286,7 +288,8 @@ function az_join_form( $context = 'page' ) {
 			<section class="az-join__step" data-az-jstep="4" aria-label="Review and send" hidden>
 				<h3 class="az-join__q"><?php echo esc_html( az_join_text( 'step4' ) ); ?></h3>
 				<dl class="az-join__review" data-az-review></dl>
-				<label class="az-check"><input type="checkbox" name="consent" value="1" required><span>Audazzio may contact me about this inquiry. See the <a href="<?php echo esc_url( az_opt( 'privacy_url' ) ); ?>" target="_blank" rel="noopener">Privacy Policy</a>.</span></label>
+				<?php $consent = 'az-j-consent-' . wp_unique_id(); ?>
+				<div class="az-check"><input type="checkbox" name="consent" value="1" required id="<?php echo esc_attr( $consent ); ?>" aria-describedby="<?php echo esc_attr( $consent ); ?>-err"><label for="<?php echo esc_attr( $consent ); ?>">Audazzio may contact me about this inquiry. See the <a href="<?php echo esc_url( az_opt( 'privacy_url' ) ); ?>" target="_blank" rel="noopener">Privacy Policy</a>.</label><span class="az-field__err" id="<?php echo esc_attr( $consent ); ?>-err" aria-live="polite"></span></div>
 			</section>
 		</div>
 		<div class="az-join__hp" aria-hidden="true"><label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>

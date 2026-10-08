@@ -44,7 +44,7 @@
 .az-steps__item.is-on .az-steps__t { color: var(--az-ink); }
 .az-steps__item.is-on .az-steps__n { color: var(--az-ink); }
 .az-steps.is-auto .az-steps__item.is-on .az-steps__bar i { animation: az-fill var(--az-steps-t, 4.5s) linear forwards; }
-.az-steps.is-held .az-steps__bar i { animation-play-state: paused; }
+.az-steps.is-auto.is-held .az-steps__item.is-on .az-steps__bar i { animation-play-state: paused; }
 .az-steps__item.is-done .az-steps__t { color: var(--az-ink-3); }
 @keyframes az-fill { to { transform: scaleX(1); } }
 @media (max-width: 900px) { .az-steps__grid { grid-template-columns: 1fr; } }

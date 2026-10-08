@@ -218,6 +218,7 @@ export function steps(root = document) {
       clearTimeout(timer);
       if (due) { left = Math.max(0, due - performance.now()); due = 0; }
       const auto = visible && !chosen && !reduced();
+      sec.classList.toggle("is-live", visible && !reduced()); // the diagram's dashed lines march
       sec.classList.toggle("is-auto", auto);
       sec.classList.toggle("is-held", held);
       if (auto && !held) { due = performance.now() + left; timer = setTimeout(() => { due = 0; left = DUR; set(i + 1); play(); }, left); }
@@ -236,7 +237,7 @@ export function steps(root = document) {
     sec.classList.toggle("is-all", reduced());
     set(0);
     smil();
-    whileSeen(sec, (on) => { visible = on; sec.classList.toggle("is-live", on); restart(); smil(); });
+    whileSeen(sec, (on) => { visible = on; restart(); smil(); });
   });
 }
 

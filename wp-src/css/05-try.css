@@ -101,3 +101,28 @@
 .az-player__clip:hover { background: rgba(12, 18, 34, .04); }
 .az-player__clip[aria-pressed="true"] { background: var(--az-ink); color: #fff; box-shadow: none; }
 .az-trysteps__open { justify-self: start; }
+
+/* the player's own controls: a ring while the clip loads, play or pause under the screen, a note when a clip will not play */
+.az-player__wait { position: absolute; z-index: 3; left: 50%; top: 50%; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .25); border-top-color: #fff; opacity: 0; pointer-events: none; transition: opacity .3s; animation: az-spin .9s linear infinite; }
+.az-player.is-loading .az-player__wait { opacity: 1; }
+.az-player.is-loading .az-player__media { opacity: 0; }
+.az-player.is-loading .az-player__poster { opacity: .5; }
+.az-player__toggle { order: -1; flex: none; display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 16px 0 13px; border-radius: 999px; font-size: 14px; font-weight: 500; color: var(--az-ink); box-shadow: inset 0 0 0 1px var(--az-line-2); transition: background-color .2s, box-shadow .2s; }
+.az-player__toggle:hover { background: var(--az-mist); box-shadow: inset 0 0 0 1px var(--az-ink-4); }
+.az-player__toggle .az-ico { width: 16px; height: 16px; }
+.az-player__media > .az-player__err { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 16px; padding: 24px; text-align: center; background: #0b0f1a; color: rgba(255, 255, 255, .86); font-size: 15px; line-height: 1.45; }
+.az-player__out { background: #fff; color: var(--az-ink); }
+.az-player__out:hover { background: var(--az-mist); }
+.az-player__err :focus-visible { outline-color: #fff; }
+.az-player__hint-m { display: none; }
+@media (hover: none), (max-width: 700px) { .az-player__hint-d { display: none; } .az-player__hint-m { display: inline; } }
+
+/* the popup: an optional intro; on a phone it leads with the listener, since the demo plays on another screen */
+.az-sheet__intro { margin-top: 14px; max-width: 40em; font-size: 17px; line-height: 1.5; color: var(--az-ink-2); }
+.az-sheet__intro p + p { margin-top: .6em; }
+.az-sheet__phone { display: none; }
+@media (hover: none), (max-width: 700px) {
+  .az-sheet__phone { display: grid; gap: 16px; justify-items: start; margin: -8px 0 28px; padding: 18px 18px 20px; border-radius: var(--az-r); background: var(--az-mist); }
+  .az-sheet__phone .az-try__mobile { margin: 0; padding: 0; font-size: 15px; color: var(--az-ink-2); }
+  .az-sheet__note { display: none; }
+}
