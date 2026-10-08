@@ -16,6 +16,7 @@ function az_seed_find( $slug, $type = 'page' ) {
 function az_run_seed() {
 	$report = array();
 	az_seed_clear_samples();
+	az_settings_seed();
 	$pages           = az_seed_pages();
 	$report['pages'] = count( $pages );
 	az_seed_menus( $pages );
@@ -28,12 +29,22 @@ function az_run_seed() {
 	return $report;
 }
 
-/** WordPress ships a sample page, post and comment. */
+/**
+ * WordPress ships a sample page, a sample post and a draft privacy policy. They go to the Trash (not deleted
+ * for good), and only while nobody has edited them: on a site where someone wrote their own privacy policy
+ * under that address, it stays.
+ */
 function az_seed_clear_samples() {
 	foreach ( array( array( 'sample-page', 'page' ), array( 'hello-world', 'post' ), array( 'privacy-policy', 'page' ) ) as $s ) {
-		$id = az_seed_find( $s[0], $s[1] );
-		if ( $id && ! get_post_meta( $id, '_elementor_data', true ) ) {
-			wp_delete_post( $id, true );
+		$id   = az_seed_find( $s[0], $s[1] );
+		$post = $id ? get_post( $id ) : null;
+		if ( ! $post || 'trash' === $post->post_status || get_post_meta( $id, '_elementor_data', true ) ) {
+			continue;
+		}
+		$default   = array( 'sample-page' => 'This is an example page.', 'hello-world' => 'This is your first post. Edit or delete it, then start writing!' );
+		$untouched = $post->post_modified_gmt === $post->post_date_gmt || ( isset( $default[ $s[0] ] ) && false !== strpos( $post->post_content, $default[ $s[0] ] ) && strlen( wp_strip_all_tags( $post->post_content ) ) < 1200 );
+		if ( $untouched && wp_trash_post( $id ) ) {
+			error_log( sprintf( 'Audazzio Core: moved the WordPress sample "%s" (ID %d) to the Trash.', $post->post_title, $id ) ); // phpcs:ignore
 		}
 	}
 }
@@ -178,17 +189,19 @@ function az_seed_elementor_kit() {
 		return;
 	}
 	$settings = (array) get_post_meta( $kit, '_elementor_page_settings', true );
+	// The same values as the site's colour tokens (wp-src/css/01-base.css: --az-ink to --az-ink-4, --az-mist, --az-line, --az-wave).
 	$settings['system_colors'] = array(
 		array( '_id' => 'primary', 'title' => 'Ink', 'color' => '#0C1222' ),
-		array( '_id' => 'secondary', 'title' => 'Slate', 'color' => '#4A5061' ),
+		array( '_id' => 'secondary', 'title' => 'Slate', 'color' => '#3B4152' ),
 		array( '_id' => 'text', 'title' => 'Text', 'color' => '#0C1222' ),
 		array( '_id' => 'accent', 'title' => 'Wave (Join the Wave only)', 'color' => '#F26A2E' ),
 	);
 	$settings['custom_colors'] = array(
-		array( '_id' => 'az_white', 'title' => 'White', 'color' => '#FFFFFF' ),
+		array( '_id' => 'az_grey', 'title' => 'Grey', 'color' => '#6B7080' ),
+		array( '_id' => 'az_grey_light', 'title' => 'Light grey', 'color' => '#868A96' ),
 		array( '_id' => 'az_mist', 'title' => 'Mist', 'color' => '#F5F5F7' ),
-		array( '_id' => 'az_line', 'title' => 'Hairline', 'color' => '#E3E4E8' ),
-		array( '_id' => 'az_grey', 'title' => 'Grey', 'color' => '#6E7280' ),
+		array( '_id' => 'az_line', 'title' => 'Line', 'color' => '#E3E4E8' ),
+		array( '_id' => 'az_white', 'title' => 'White', 'color' => '#FFFFFF' ),
 		array( '_id' => 'az_peach', 'title' => 'Audazzio peach (logo)', 'color' => '#F89C68' ),
 	);
 	$settings['system_typography'] = array(

@@ -185,6 +185,7 @@ const PRESETS = {
 const scenes = new Set();
 let raf = 0, last = 0;
 
+const html = document.documentElement;
 class Scene {
   constructor(canvas) {
     this.c = canvas; this.ctx = canvas.getContext("2d");
@@ -194,8 +195,17 @@ class Scene {
     this.ro.observe(this.box);
     this.io = new IntersectionObserver((e) => { this.visible = !!(e[0] && e[0].isIntersecting); if (this.visible && !raf) this.draw(0); kick(); }, { rootMargin: "100px 0px" });
     this.io.observe(this.box);
+    // the Join the Wave bar's wave only moves while the bar is in
+    this.bar = canvas.closest("[data-az-bar]");
+    if (this.bar) new MutationObserver(kick).observe(this.bar, { attributes: true, attributeFilter: ["class"] });
     this.resize();
   }
+  /** On screen, and not under a dialog or the menu. */
+  live() {
+    if (!this.visible || (this.bar && !this.bar.classList.contains("is-on"))) return false;
+    return !(html.classList.contains("az-modal") || html.classList.contains("az-lock")) || !!this.c.closest("dialog[open]");
+  }
+  drop() { this.ro.disconnect(); this.io.disconnect(); scenes.delete(this); }
   resize() {
     const r = this.box.getBoundingClientRect();
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -222,16 +232,31 @@ function frame(now) {
   const dt = last ? Math.min((now - last) / 1000, 1 / 20) : 1 / 60;
   last = now;
   let any = false;
-  scenes.forEach((s) => { if (!s.visible || !s.c.isConnected) return; any = true; s.t += dt; s.draw(dt); });
+  scenes.forEach((s) => {
+    if (!s.c.isConnected) return s.drop(); // the Elementor editor replaced the widget
+    if (!s.live()) return;
+    any = true; s.t += dt; s.draw(dt);
+  });
   if (any && !document.hidden && !reduce.matches) raf = requestAnimationFrame(frame);
   else last = 0;
 }
 function kick() {
   if (raf || document.hidden || reduce.matches) return;
-  for (const s of scenes) if (s.visible) { last = 0; raf = requestAnimationFrame(frame); return; }
+  for (const s of scenes) if (s.live()) { last = 0; raf = requestAnimationFrame(frame); return; }
 }
+const redraw = () => scenes.forEach((s) => { s.resize(); s.draw(0); });
 document.addEventListener("visibilitychange", () => { if (document.hidden && raf) { cancelAnimationFrame(raf); raf = 0; last = 0; } else kick(); });
+document.addEventListener("az:modal", kick);
+document.addEventListener("az:menu", kick);
 if (reduce.addEventListener) reduce.addEventListener("change", () => { if (reduce.matches && raf) { cancelAnimationFrame(raf); raf = 0; } scenes.forEach((s) => s.draw(0)); kick(); });
+// a window moved to a screen with another pixel density: draw again at the new density
+function watchDensity() {
+  if (!window.matchMedia) return;
+  const q = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);
+  const on = () => { q.removeEventListener ? q.removeEventListener("change", on) : q.removeListener(on); redraw(); watchDensity(); };
+  q.addEventListener ? q.addEventListener("change", on) : q.addListener(on);
+}
+watchDensity();
 
 export function initWaves(root = document) {
   root.querySelectorAll("canvas[data-az-waves]").forEach((c) => {

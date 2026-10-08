@@ -38,7 +38,7 @@ add_action( 'wp_footer', function () {
 	?>
 	<div class="az-bar" data-az-bar aria-hidden="true">
 		<div class="az-bar__in">
-			<p class="az-bar__line"><span class="az-bar__wave" aria-hidden="true"><canvas data-az-waves="mini"></canvas></span><span>It comes in waves.</span></p>
+			<p class="az-bar__line"><span class="az-bar__wave" aria-hidden="true"><canvas data-az-waves="mini"></canvas></span><span><?php echo esc_html( az_opt( 'bar_line' ) ); ?></span></p>
 			<a class="az-btn az-btn--wave az-bar__cta" href="<?php echo esc_url( home_url( '/join/' ) ); ?>" data-az-join tabindex="-1"><span>Join the Wave</span><?php echo az_icon( 'arrow' ); // phpcs:ignore ?></a>
 		</div>
 	</div>

@@ -51,7 +51,8 @@ function az_front_config() {
 			'android' => esc_url_raw( (string) az_opt( 'play_store' ) ),
 		),
 		'demos'    => $clips,
-		'demo'     => array_merge( $clips ? $clips[0] : az_clip( '' ), array( 'poster' => esc_url_raw( az_media( az_opt( 'demo_poster' ) ) ) ) ),
+		// No poster set: a YouTube clip shows YouTube's own picture of it.
+		'demo'     => array_merge( $clips ? $clips[0] : az_clip( '' ), array( 'poster' => esc_url_raw( az_media( az_opt( 'demo_poster' ) ) ?: ( ! empty( $clips[0]['id'] ) ? 'https://i.ytimg.com/vi/' . rawurlencode( $clips[0]['id'] ) . '/hqdefault.jpg' : '' ) ) ) ),
 		'notify'   => array(
 			'on'    => 'no' !== strtolower( trim( (string) az_opt( 'notify' ) ) ),
 			'delay' => max( 0, (float) az_opt( 'notify_delay' ) ),

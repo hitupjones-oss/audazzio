@@ -16,10 +16,14 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 
+// x-az-static: the site gives the exporter (on this machine only) the Join the Wave grading table, which the
+// static copy needs to grade in the browser; the live site keeps it on the server.
+const HEADERS = { "x-az-static": "1" };
+
 async function get(url, as = "text") {
   for (let i = 0; i < 4; i++) {
     try {
-      const r = await fetch(url, { redirect: "follow" });
+      const r = await fetch(url, { redirect: "follow", headers: HEADERS });
       if (r.ok) return as === "text" ? await r.text() : Buffer.from(await r.arrayBuffer());
       if (r.status === 404) return null;
     } catch { /* the local server can be busy: wait and try again */ }
@@ -70,7 +74,7 @@ for (const p of pages) {
   collect(out);
   save(path.join(p, "index.html"), out);
 }
-const notFound = await fetch(ORIGIN + "/this-page-does-not-exist/").then((r) => (r.status === 404 ? r.text() : "")).catch(() => "");
+const notFound = await fetch(ORIGIN + "/this-page-does-not-exist/", { headers: HEADERS }).then((r) => (r.status === 404 ? r.text() : "")).catch(() => "");
 if (notFound.includes("az-main")) { const out = rewrite(notFound); collect(out); save("404.html", out); }
 console.log(`pages: ${pages.length - failed.length} saved${failed.length ? ", FAILED: " + failed.join(" ") : ""}${notFound ? ", plus the not-found page" : ""}`);
 

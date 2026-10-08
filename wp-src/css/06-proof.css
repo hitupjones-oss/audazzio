@@ -164,9 +164,15 @@
 .az-quote__q p::before { content: "“"; } .az-quote__q p::after { content: "”"; }
 .az-quote__by { margin-top: 30px; display: grid; gap: 4px; font-size: 15px; }
 .az-quote__by span { color: var(--az-ink-3); font-size: 14px; }
-.az-quotes__dots { margin-top: 36px; display: flex; justify-content: center; gap: 4px; }
+.az-quotes__nav { margin-top: 36px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+.az-quotes__dots { display: flex; gap: 4px; }
 .az-quotes__dot { width: 28px; height: 28px; display: grid; place-items: center; }
 .az-quotes__dot i { width: 7px; height: 7px; border-radius: 999px; background: var(--az-line-2); transition: width .4s var(--az-out), background-color .3s; }
-.az-quotes__dot[aria-selected="true"] i { width: 22px; background: var(--az-ink); }
+.az-quotes__dot[aria-pressed="true"] i { width: 22px; background: var(--az-ink); }
+.az-quotes__pause { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; color: var(--az-ink-3); box-shadow: inset 0 0 0 1px var(--az-line-2); transition: color .2s, box-shadow .2s; }
+.az-quotes__pause:hover { color: var(--az-ink); box-shadow: inset 0 0 0 1px var(--az-ink-4); }
+.az-quotes__pause .az-ico { grid-area: 1 / 1; width: 12px; height: 12px; }
+.az-quotes__pause .az-ico:last-child, .az-quotes__pause.is-paused .az-ico:first-child { display: none; }
+.az-quotes__pause.is-paused .az-ico:last-child { display: block; }
 .az-films:has(> .az-film:only-child) { grid-template-columns: 1fr; max-width: 980px; }
 .az-films:has(> .az-film:only-child) .az-film--lead { grid-column: auto; grid-row: auto; }

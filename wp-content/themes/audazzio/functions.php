@@ -60,8 +60,16 @@ function az_theme_links( $location, $class = '' ) {
 	}
 }
 
-/** The page's own sentence for search engines and link previews. */
+/** Yoast SEO and Rank Math print the title, description and sharing tags themselves. */
+function az_theme_seo_plugin() {
+	return defined( 'WPSEO_VERSION' ) || defined( 'RANK_MATH_VERSION' );
+}
+
+/** The page's own sentence for search engines and link previews (set in the page's Search and sharing box). */
 add_action( 'wp_head', function () {
+	if ( az_theme_seo_plugin() ) {
+		return;
+	}
 	$d = is_singular() ? get_post_meta( get_the_ID(), '_az_description', true ) : '';
 	if ( ! $d && is_front_page() ) {
 		$d = get_bloginfo( 'description' );
@@ -74,6 +82,9 @@ add_action( 'wp_head', function () {
 
 /** Titles: what the page is, then the company. */
 add_filter( 'pre_get_document_title', function ( $title ) {
+	if ( az_theme_seo_plugin() ) {
+		return $title;
+	}
 	if ( is_singular() ) {
 		$own = get_post_meta( get_the_ID(), '_az_title', true );
 		if ( $own ) {

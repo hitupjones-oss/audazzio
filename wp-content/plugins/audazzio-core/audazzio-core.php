@@ -23,6 +23,9 @@ require_once AZ_DIR . 'includes/components.php';
 require_once AZ_DIR . 'includes/shortcodes.php';
 require_once AZ_DIR . 'includes/shell.php';
 require_once AZ_DIR . 'includes/leads.php';
+require_once AZ_DIR . 'includes/join-settings.php';
+require_once AZ_DIR . 'includes/privacy.php';
+require_once AZ_DIR . 'includes/meta.php';
 require_once AZ_DIR . 'includes/redirects.php';
 require_once AZ_DIR . 'includes/seed.php';
 
@@ -35,6 +38,7 @@ add_action( 'plugins_loaded', function () {
 
 register_activation_hook( __FILE__, function () {
 	az_register_leads();
+	az_settings_seed();
 	flush_rewrite_rules();
 	if ( ! get_option( 'az_seeded' ) ) {
 		update_option( 'az_seed_pending', 1 );

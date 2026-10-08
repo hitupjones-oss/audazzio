@@ -32,16 +32,18 @@ function az_grade_lead( $d ) {
 	$max   = 0;
 	$parts = array();
 	foreach ( $qs as $key => $q ) {
-		$best = max( array_map( function ( $o ) {
+		$best = max( 0, ...array_map( function ( $o ) {
 			return (int) $o[1];
-		}, $q['options'] ) );
+		}, array_values( $q['options'] ) ) );
+		// An answer that is no longer offered (its label was changed under Join the Wave form) counts 0.
 		if ( 'checkbox' === $q['type'] ) {
 			$got = 0;
 			foreach ( (array) ( $d[ $key ] ?? array() ) as $v ) {
-				$got = max( $got, (int) ( $q['options'][ $v ][1] ?? 0 ) );
+				$got = max( $got, (int) ( $q['options'][ (string) $v ][1] ?? 0 ) );
 			}
 		} else {
-			$got = (int) ( $q['options'][ $d[ $key ] ?? '' ][1] ?? 0 );
+			$v   = $d[ $key ] ?? '';
+			$got = is_scalar( $v ) ? (int) ( $q['options'][ (string) $v ][1] ?? 0 ) : 0;
 		}
 		$sum            += $got;
 		$max            += $best;
@@ -102,20 +104,60 @@ add_action( 'rest_api_init', function () {
 	) );
 } );
 
+/** Inquiries accepted per hour: from one connection, and from everyone together (this caps the email too). */
+const AZ_JOIN_PER_IP   = 5;
+const AZ_JOIN_PER_HOUR = 40;
+
+/** Whether the request comes from a page of this site: its Origin, or its Referer when there is no Origin. */
+function az_join_same_site( WP_REST_Request $req ) {
+	$from = (string) $req->get_header( 'origin' );
+	if ( '' === $from || 'null' === $from ) {
+		$from = (string) $req->get_header( 'referer' );
+	}
+	$host = strtolower( (string) wp_parse_url( $from, PHP_URL_HOST ) );
+	return '' !== $host && strtolower( (string) wp_parse_url( home_url(), PHP_URL_HOST ) ) === $host;
+}
+
 function az_join_receive( WP_REST_Request $req ) {
-	$p    = $req->get_json_params() ? $req->get_json_params() : $req->get_body_params();
 	$fail = function ( $msg, $code = 400, $field = '' ) {
 		return new WP_REST_Response( array( 'ok' => false, 'message' => $msg, 'field' => $field ), $code );
 	};
-	// Bots fill the hidden box and send faster than a person can read the first question.
-	if ( ! empty( $p['website'] ) || ( isset( $p['t'] ) && (int) $p['t'] < 4000 ) ) {
+	// JSON only (a plain form on another site cannot send it), and only from this site's own pages.
+	if ( ! $req->is_json_content_type() || ! is_array( $req->get_json_params() ) ) {
+		return $fail( 'Please send the form from the Join the Wave page.', 415 );
+	}
+	if ( ! az_join_same_site( $req ) ) {
+		return $fail( 'Please send the form from the Join the Wave page.', 403 );
+	}
+	$p = $req->get_json_params();
+	// Every value is text or a number; only the "pick any" answers are lists.
+	$lists = array_keys( array_filter( az_join_questions(), function ( $q ) {
+		return 'checkbox' === $q['type'];
+	} ) );
+	foreach ( $p as $k => $v ) {
+		$ok = in_array( $k, $lists, true ) && is_array( $v ) ? count( $v ) <= 50 && count( array_filter( $v, 'is_scalar' ) ) === count( $v ) : null === $v || is_scalar( $v );
+		if ( ! $ok ) {
+			return $fail( 'Please check your answers and send again.', 400, sanitize_key( (string) $k ) );
+		}
+	}
+	// The form says how long it was open. Bots leave that out, fill the hidden box, or send faster than a person
+	// can read the first question; those last two are told "thanks" and nothing is kept.
+	if ( ! isset( $p['t'] ) || ! is_numeric( $p['t'] ) ) {
+		return $fail( 'Please reload the page and send the form again.', 400 );
+	}
+	if ( ! empty( $p['website'] ) || (float) $p['t'] < 4000 ) {
 		return new WP_REST_Response( array( 'ok' => true ), 200 );
 	}
 	$ip   = hash( 'sha256', wp_salt( 'nonce' ) . ( $_SERVER['REMOTE_ADDR'] ?? '' ) ); // phpcs:ignore
 	$key  = 'az_join_' . substr( $ip, 0, 20 );
 	$seen = (int) get_transient( $key );
-	if ( $seen >= 5 ) {
+	if ( $seen >= AZ_JOIN_PER_IP ) {
 		return $fail( 'Too many inquiries from this connection. Please try again in an hour, or email us.', 429 );
+	}
+	$all = get_transient( 'az_join_all' );
+	$all = is_array( $all ) && isset( $all['n'], $all['since'] ) ? $all : array( 'n' => 0, 'since' => time() );
+	if ( $all['n'] >= AZ_JOIN_PER_HOUR ) {
+		return $fail( 'We are receiving a lot of inquiries right now. Please try again in an hour, or email us.', 429 );
 	}
 
 	$d = array();
@@ -125,7 +167,12 @@ function az_join_receive( WP_REST_Request $req ) {
 			return $fail( 'Please fill in every field about you.', 400, $f );
 		}
 	}
-	$d['email'] = sanitize_email( (string) ( $p['email'] ?? '' ) );
+	// WordPress drops the characters it cannot use in an address (josé@ becomes jos@): ask again rather than keep one that bounces.
+	$raw        = trim( (string) ( $p['email'] ?? '' ) );
+	$d['email'] = sanitize_email( $raw );
+	if ( $d['email'] !== $raw ) {
+		return $fail( 'Please use an email address without accents or special characters.', 400, 'email' );
+	}
 	if ( ! is_email( $d['email'] ) ) {
 		return $fail( 'Please check the email address.', 400, 'email' );
 	}
@@ -174,6 +221,8 @@ function az_join_receive( WP_REST_Request $req ) {
 	update_post_meta( $id, '_az_parts', $g['parts'] );
 	update_post_meta( $id, '_az_status', 'new' );
 	set_transient( $key, $seen + 1, HOUR_IN_SECONDS );
+	$all['n']++;
+	set_transient( 'az_join_all', $all, max( 60, HOUR_IN_SECONDS - ( time() - (int) $all['since'] ) ) );
 
 	az_join_email( $id, $d, $g );
 	az_join_hubspot( $id, $d, $g );
@@ -221,7 +270,9 @@ function az_join_email( $id, $d, $g ) {
 	}
 	$subject = sprintf( '[Join the Wave] %s · %s · %s', $g['grade'], $g['nature'], $d['company'] );
 	$body    = az_join_summary( $d, $g ) . "\n\nOpen in the inbox: " . admin_url( 'admin.php?page=audazzio&lead=' . (int) $id );
-	$headers = array( 'Reply-To: ' . $d['name'] . ' <' . $d['email'] . '>' );
+	// wp_mail splits Reply-To at commas: the name keeps only characters that cannot start another address.
+	$name    = trim( preg_replace( '/\s*[,;:"<>()\[\]\\\\@\s]+\s*/', ' ', $d['name'] ) );
+	$headers = array( 'Reply-To: ' . ( '' !== $name ? $name . ' <' . $d['email'] . '>' : $d['email'] ) );
 	$sent    = wp_mail( array_unique( $to ), $subject, $body, $headers );
 	update_post_meta( $id, '_az_emailed', $sent ? 'yes' : 'no' );
 }
@@ -287,24 +338,31 @@ add_action( 'admin_post_az_leads_csv', function () {
 	header( 'Content-Type: text/csv; charset=utf-8' );
 	header( 'Content-Disposition: attachment; filename=join-the-wave-' . gmdate( 'Y-m-d' ) . '.csv' );
 	$out  = fopen( 'php://output', 'w' );
-	$cols = array_merge( array( 'date', 'grade', 'score', 'nature', 'status', 'name', 'position', 'company', 'email', 'phone' ), array_keys( az_join_questions() ), array( 'details', 'notes', 'source' ) );
-	fputcsv( $out, $cols );
+	$qs   = az_join_questions();
+	$cols = array_merge( array( 'date', 'grade', 'score', 'nature', 'status', 'name', 'position', 'company', 'email', 'phone' ), array_keys( $qs ), array( 'details', 'notes', 'source' ) );
+	fputcsv( $out, $cols, ',', '"', '' );
 	foreach ( $ids as $id ) {
 		$row = array();
 		foreach ( $cols as $c ) {
 			if ( 'date' === $c ) {
 				$row[] = get_the_date( 'Y-m-d H:i', $id );
-			} elseif ( isset( az_join_questions()[ $c ] ) ) {
-				$row[] = az_answer_label( $c, az_lead_meta( $id, $c ) );
+			} elseif ( isset( $qs[ $c ] ) ) {
+				$row[] = az_csv_cell( az_answer_label( $c, az_lead_meta( $id, $c ) ) );
 			} else {
-				$row[] = (string) az_lead_meta( $id, $c );
+				$row[] = az_csv_cell( (string) az_lead_meta( $id, $c ) );
 			}
 		}
-		fputcsv( $out, $row );
+		fputcsv( $out, $row, ',', '"', '' );
 	}
 	fclose( $out ); // phpcs:ignore
 	exit;
 } );
+
+/** A cell a spreadsheet will show as text: one that starts like a formula gets a leading apostrophe. */
+function az_csv_cell( $v ) {
+	$v = (string) $v;
+	return '' !== $v && false !== strpos( "=+-@\t\r", $v[0] ) ? "'" . $v : $v;
+}
 
 function az_leads_page() {
 	if ( ! current_user_can( 'edit_pages' ) ) {
@@ -320,27 +378,54 @@ function az_leads_page() {
 	echo '</div>';
 }
 
-function az_leads_list() {
-	$grade = sanitize_key( wp_unslash( $_GET['grade'] ?? '' ) ); // phpcs:ignore
-	$args  = array( 'post_type' => 'az_lead', 'post_status' => 'private', 'numberposts' => 200 );
+/** How many inquiries there are, all or of one grade. */
+function az_leads_count( $grade = '' ) {
+	$args = array( 'post_type' => 'az_lead', 'post_status' => 'private', 'posts_per_page' => 1, 'fields' => 'ids' );
 	if ( $grade ) {
-		$args['meta_query'] = array( array( 'key' => '_az_grade', 'value' => strtoupper( $grade ) ) ); // phpcs:ignore
+		$args['meta_query'] = array( array( 'key' => '_az_grade', 'value' => $grade ) ); // phpcs:ignore
 	}
-	$leads  = get_posts( $args );
-	$counts = array();
+	return (int) ( new WP_Query( $args ) )->found_posts;
+}
+
+function az_leads_list() {
+	$grade = strtoupper( sanitize_key( wp_unslash( $_GET['grade'] ?? '' ) ) ); // phpcs:ignore
+	$grade = in_array( $grade, array( 'A', 'B', 'C', 'D' ), true ) ? $grade : '';
+	$paged = max( 1, (int) ( $_GET['paged'] ?? 1 ) ); // phpcs:ignore
+	$args  = array( 'post_type' => 'az_lead', 'post_status' => 'private', 'posts_per_page' => 50, 'paged' => $paged, 'orderby' => 'date', 'order' => 'DESC' );
+	if ( $grade ) {
+		$args['meta_query'] = array( array( 'key' => '_az_grade', 'value' => $grade ) ); // phpcs:ignore
+	}
+	$q      = new WP_Query( $args );
+	$leads  = $q->posts;
+	$counts = array( '' => az_leads_count() );
 	foreach ( array( 'A', 'B', 'C', 'D' ) as $g ) {
-		$counts[ $g ] = count( get_posts( array( 'post_type' => 'az_lead', 'post_status' => 'private', 'numberposts' => -1, 'fields' => 'ids', 'meta_query' => array( array( 'key' => '_az_grade', 'value' => $g ) ) ) ) ); // phpcs:ignore
+		$counts[ $g ] = az_leads_count( $g );
 	}
 	$csv = wp_nonce_url( admin_url( 'admin-post.php?action=az_leads_csv' ), 'az_leads_csv' );
 	echo '<h1 class="wp-heading-inline">Join the Wave inbox</h1> <a class="page-title-action" href="' . esc_url( $csv ) . '">Export CSV</a>';
 	echo '<p>Every inquiry is graded from its answers: <b>A</b> priority, <b>B</b> qualified, <b>C</b> nurture, <b>D</b> early. The grade is for your team only; the person who wrote never sees it.</p>';
-	echo '<ul class="subsubsub"><li><a href="' . esc_url( admin_url( 'admin.php?page=audazzio' ) ) . '"' . ( $grade ? '' : ' class="current"' ) . '>All</a> | </li>';
+	echo '<ul class="subsubsub">';
 	foreach ( $counts as $g => $n ) {
-		echo '<li><a href="' . esc_url( admin_url( 'admin.php?page=audazzio&grade=' . strtolower( $g ) ) ) . '"' . ( strtoupper( $grade ) === $g ? ' class="current"' : '' ) . '>' . esc_html( $g ) . ' <span class="count">(' . (int) $n . ')</span></a>' . ( 'D' !== $g ? ' | ' : '' ) . '</li>';
+		$url = admin_url( 'admin.php?page=audazzio' . ( $g ? '&grade=' . strtolower( $g ) : '' ) );
+		echo '<li><a href="' . esc_url( $url ) . '"' . ( $grade === $g ? ' class="current" aria-current="page"' : '' ) . '>' . esc_html( $g ? $g : 'All' ) . ' <span class="count">(' . (int) $n . ')</span></a>' . ( 'D' !== $g ? ' | ' : '' ) . '</li>';
 	}
-	echo '</ul><table class="widefat striped" style="margin-top:12px"><thead><tr><th>Grade</th><th>Received</th><th>Who</th><th>Company</th><th>Nature</th><th>Audience</th><th>Budget</th><th>Timeline</th><th>Status</th></tr></thead><tbody>';
+	echo '</ul>';
+	$pages = (int) $q->max_num_pages;
+	$nav   = '';
+	if ( $pages > 1 ) {
+		$nav = '<div class="tablenav"><div class="tablenav-pages"><span class="displaying-num">' . esc_html( sprintf( '%d inquiries', $q->found_posts ) ) . '</span> <span class="pagination-links">' . paginate_links( array(
+			'base'      => add_query_arg( 'paged', '%#%', admin_url( 'admin.php?page=audazzio' . ( $grade ? '&grade=' . strtolower( $grade ) : '' ) ) ),
+			'format'    => '',
+			'current'   => min( $paged, $pages ),
+			'total'     => $pages,
+			'prev_text' => '&lsaquo; Newer',
+			'next_text' => 'Older &rsaquo;',
+		) ) . '</span></div><br class="clear"></div>';
+	}
+	echo $nav; // phpcs:ignore
+	echo '<table class="widefat striped" style="margin-top:12px"><thead><tr><th>Grade</th><th>Received</th><th>Who</th><th>Company</th><th>Nature</th><th>Audience</th><th>Budget</th><th>Timeline</th><th>Status</th></tr></thead><tbody>';
 	if ( ! $leads ) {
-		echo '<tr><td colspan="9">No inquiries yet. They arrive here from every Join the Wave form on the site.</td></tr>';
+		echo '<tr><td colspan="9">' . ( $counts[''] ? 'No inquiries here.' : 'No inquiries yet. They arrive here from every Join the Wave form on the site.' ) . '</td></tr>';
 	}
 	foreach ( $leads as $l ) {
 		$id = $l->ID;
@@ -361,6 +446,7 @@ function az_leads_list() {
 		);
 	}
 	echo '</tbody></table>';
+	echo $nav; // phpcs:ignore
 }
 
 function az_lead_view( $id ) {

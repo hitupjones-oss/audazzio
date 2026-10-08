@@ -151,8 +151,11 @@ function az_render_quotes( $a ) {
 			<?php endforeach; ?>
 		</div>
 		<?php if ( count( $items ) > 1 ) : ?>
-			<div class="az-quotes__dots" role="tablist" aria-label="Quotes">
-				<?php foreach ( $items as $i => $q ) : ?><button type="button" role="tab" class="az-quotes__dot" aria-selected="<?php echo 0 === $i ? 'true' : 'false'; ?>" aria-label="<?php echo esc_attr( $q['name'] ); ?>" data-az-quote-go="<?php echo (int) $i; ?>"><i></i></button><?php endforeach; ?>
+			<div class="az-quotes__nav">
+				<div class="az-quotes__dots" role="group" aria-label="Quotes">
+					<?php foreach ( $items as $i => $q ) : ?><button type="button" class="az-quotes__dot" aria-pressed="<?php echo 0 === $i ? 'true' : 'false'; ?>" aria-label="<?php echo esc_attr( $q['name'] ); ?>" data-az-quote-go="<?php echo (int) $i; ?>"><i></i></button><?php endforeach; ?>
+				</div>
+				<button type="button" class="az-quotes__pause" aria-label="Pause the quotes" data-az-quotes-pause hidden><?php echo az_icon( 'pause' ) . az_icon( 'play' ); // phpcs:ignore ?></button>
 			</div>
 		<?php endif; ?>
 	</div>

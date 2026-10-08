@@ -35,13 +35,16 @@
 .az-steps__item:last-child { border-bottom: 1px solid var(--az-line); }
 .az-steps__n { grid-row: span 2; padding-top: 8px; transition: color .4s; }
 .az-steps__t { font: 600 clamp(24px, 2.4vw, 32px)/1.1 var(--az-display); letter-spacing: -.03em; color: var(--az-ink-4); transition: color .4s; }
-.az-steps__p { margin-top: 10px; font-size: 17px; color: var(--az-ink-3); max-height: 0; opacity: 0; overflow: hidden; transition: max-height .6s var(--az-out), opacity .5s; }
+.az-steps__b { letter-spacing: inherit; text-align: left; }
+/* one step's text open at a time while script runs, every step's text with reduced motion (.is-all) */
+.az-steps__p { margin-top: 10px; font-size: 17px; color: var(--az-ink-3); max-height: 8em; overflow: hidden; transition: max-height .6s var(--az-out), opacity .5s, visibility 0s; }
+.az-js .az-steps:not(.is-all) .az-steps__item:not(.is-on) .az-steps__p { max-height: 0; opacity: 0; visibility: hidden; transition-delay: 0s, 0s, .6s; }
 .az-steps__bar { position: absolute; left: 0; right: 0; top: -1px; height: 1px; overflow: hidden; }
 .az-steps__bar i { position: absolute; inset: 0; background: var(--az-ink); transform: scaleX(0); transform-origin: left; }
 .az-steps__item.is-on .az-steps__t { color: var(--az-ink); }
 .az-steps__item.is-on .az-steps__n { color: var(--az-ink); }
-.az-steps__item.is-on .az-steps__p { max-height: 8em; opacity: 1; }
-.az-steps.is-live .az-steps__item.is-on .az-steps__bar i { animation: az-fill 2.8s linear forwards; }
+.az-steps.is-auto .az-steps__item.is-on .az-steps__bar i { animation: az-fill var(--az-steps-t, 4.5s) linear forwards; }
+.az-steps.is-held .az-steps__bar i { animation-play-state: paused; }
 .az-steps__item.is-done .az-steps__t { color: var(--az-ink-3); }
 @keyframes az-fill { to { transform: scaleX(1); } }
 @media (max-width: 900px) { .az-steps__grid { grid-template-columns: 1fr; } }

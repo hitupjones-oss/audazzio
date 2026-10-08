@@ -84,11 +84,12 @@ function az_render_steps( $a ) {
 		<div class="az-steps__grid">
 			<figure class="az-steps__fig" data-az-rise><?php echo az_link_diagram(); // phpcs:ignore ?></figure>
 			<ol class="az-steps__list">
+				<?php $uid = 'az-steps-' . wp_unique_id(); ?>
 				<?php foreach ( (array) $a['steps'] as $i => $s ) : ?>
 					<li class="az-steps__item<?php echo 0 === $i ? ' is-on' : ''; ?>" data-az-step="<?php echo (int) $i; ?>" data-az-rise>
 						<span class="az-steps__n az-label"><?php echo esc_html( sprintf( '%02d', $i + 1 ) ); ?></span>
-						<h3 class="az-steps__t"><?php echo esc_html( $s['title'] ?? '' ); ?></h3>
-						<p class="az-steps__p"><?php echo esc_html( $s['text'] ?? '' ); ?></p>
+						<h3 class="az-steps__t"><button class="az-steps__b" type="button" aria-controls="<?php echo esc_attr( $uid . '-' . $i ); ?>"><?php echo esc_html( $s['title'] ?? '' ); ?></button></h3>
+						<p class="az-steps__p" id="<?php echo esc_attr( $uid . '-' . $i ); ?>"><?php echo esc_html( $s['text'] ?? '' ); ?></p>
 						<span class="az-steps__bar" aria-hidden="true"><i></i></span>
 					</li>
 				<?php endforeach; ?>
@@ -119,18 +120,19 @@ function az_render_flow( $a ) {
 	}
 	$tabs = array( array( $a['tab_a'], az_pairs( $a['steps_a'] ) ), array( $a['tab_b'], az_pairs( $a['steps_b'] ) ) );
 	$uid  = 'az-flow-' . wp_unique_id();
+	$on   = $tabs[0][1] ? 0 : 1;
 	az_open( $a, 'az-flow', 'data-az-flow' );
 	?>
 	<div class="az-wrap">
 		<?php echo az_head( $a, 'az-head--center' ); // phpcs:ignore ?>
 		<div class="az-seg" role="tablist" aria-label="Where it plays" data-az-rise>
 			<?php foreach ( $tabs as $i => $t ) : if ( ! $t[1] ) { continue; } ?>
-				<button class="az-seg__b" type="button" role="tab" id="<?php echo esc_attr( $uid . '-t' . $i ); ?>" aria-controls="<?php echo esc_attr( $uid . '-p' . $i ); ?>" aria-selected="<?php echo 0 === $i ? 'true' : 'false'; ?>"><?php echo az_icon( 0 === $i ? 'tv' : 'stadium' ) . esc_html( $t[0] ); // phpcs:ignore ?></button>
+				<button class="az-seg__b" type="button" role="tab" id="<?php echo esc_attr( $uid . '-t' . $i ); ?>" aria-controls="<?php echo esc_attr( $uid . '-p' . $i ); ?>" aria-selected="<?php echo $on === $i ? 'true' : 'false'; ?>"<?php echo $on === $i ? '' : ' tabindex="-1"'; ?>><?php echo az_icon( 0 === $i ? 'tv' : 'stadium' ) . esc_html( $t[0] ); // phpcs:ignore ?></button>
 			<?php endforeach; ?>
 			<span class="az-seg__thumb" aria-hidden="true"></span>
 		</div>
 		<?php foreach ( $tabs as $i => $t ) : if ( ! $t[1] ) { continue; } ?>
-			<div class="az-flow__panel" role="tabpanel" id="<?php echo esc_attr( $uid . '-p' . $i ); ?>" aria-labelledby="<?php echo esc_attr( $uid . '-t' . $i ); ?>"<?php echo 0 === $i ? '' : ' hidden'; ?>>
+			<div class="az-flow__panel" role="tabpanel" tabindex="0" id="<?php echo esc_attr( $uid . '-p' . $i ); ?>" aria-labelledby="<?php echo esc_attr( $uid . '-t' . $i ); ?>"<?php echo $on === $i ? '' : ' hidden'; ?>>
 				<ol class="az-flow__steps">
 					<?php foreach ( $t[1] as $j => $s ) : $icon = isset( $s[1] ) && '' !== $s[1] ? $s[0] : 'wave'; $txt = isset( $s[1] ) && '' !== $s[1] ? $s[1] : $s[0]; ?>
 						<li class="az-flow__step<?php echo 0 === $j ? ' is-on' : ''; ?>">

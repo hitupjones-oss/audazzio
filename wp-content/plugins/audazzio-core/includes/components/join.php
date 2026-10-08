@@ -2,15 +2,46 @@
 /**
  * Join the Wave: the closing band, and the four-step form that qualifies and grades each inquiry
  * (who, what for, how big, send). The questions, their answers and the points each answer is worth live
- * in az_join_questions(); the server grades every inquiry from that table (includes/leads.php) and the
- * static preview grades with the same table in the browser.
+ * in az_join_questions(): the starter table below, with the edits saved under Audazzio > Join the Wave form
+ * (option az_join_form, see includes/join-settings.php). The server grades every inquiry from that table
+ * (includes/leads.php); the static preview grades with the same table in the browser.
  */
 
 defined( 'ABSPATH' ) || exit;
 
+/** The edits saved under Audazzio > Join the Wave form. */
+function az_join_saved() {
+	$s = get_option( 'az_join_form', array() );
+	return is_array( $s ) ? $s : array();
+}
+
 /** Every question after "who": label, kind, the step it sits on, and options as key => [label, points]. */
 function az_join_questions() {
-	$q = array(
+	$q     = az_join_default_questions();
+	$saved = az_join_saved()['questions'] ?? array();
+	foreach ( $q as $k => $def ) {
+		$s = $saved[ $k ] ?? array();
+		if ( ! empty( $s['label'] ) && is_string( $s['label'] ) ) {
+			$q[ $k ]['label'] = $s['label'];
+		}
+		if ( ! empty( $s['options'] ) && is_array( $s['options'] ) ) {
+			$opts = array();
+			foreach ( $s['options'] as $ok => $o ) {
+				if ( is_array( $o ) && isset( $o[0] ) && '' !== (string) $o[0] ) {
+					$opts[ (string) $ok ] = array( (string) $o[0], (int) ( $o[1] ?? 0 ) );
+				}
+			}
+			if ( $opts ) {
+				$q[ $k ]['options'] = $opts;
+			}
+		}
+	}
+	return apply_filters( 'az_join_questions', $q );
+}
+
+/** The starter questions, answers and points. */
+function az_join_default_questions() {
+	return array(
 		'org'       => array(
 			'label'   => 'Which best describes your organization?',
 			'type'    => 'radio',
@@ -98,22 +129,28 @@ function az_join_questions() {
 			),
 		),
 	);
-	return apply_filters( 'az_join_questions', $q );
 }
 
-/** Grade thresholds (score out of 100) and what each grade means to the team. */
+/** Grade thresholds (score out of 100) and what each grade means to the team. A, B and C minimums can be edited. */
 function az_join_grades() {
-	return apply_filters( 'az_join_grades', array(
+	$g     = array(
 		'A' => array( 75, 'Priority', 'Strong fit, real scale and a near date. Call within one business day.' ),
 		'B' => array( 55, 'Qualified', 'Good fit. Book a discovery call.' ),
 		'C' => array( 35, 'Nurture', 'Early or small. Send the case studies and stay in touch.' ),
 		'D' => array( 0, 'Early', 'Exploring. Answer the question and add to updates.' ),
-	) );
+	);
+	$saved = az_join_saved()['grades'] ?? array();
+	foreach ( array( 'A', 'B', 'C' ) as $k ) {
+		if ( isset( $saved[ $k ] ) && is_numeric( $saved[ $k ] ) ) {
+			$g[ $k ][0] = max( 0, min( 100, (int) $saved[ $k ] ) );
+		}
+	}
+	return apply_filters( 'az_join_grades', $g );
 }
 
 /** The engagement each organization type usually means, used to name the inquiry for the team. */
 function az_join_natures() {
-	return array(
+	$n     = array(
 		'broadcaster' => 'Broadcast partnership',
 		'team'        => 'Rights holder program',
 		'brand'       => 'Sponsor campaign',
@@ -121,15 +158,73 @@ function az_join_natures() {
 		'tech'        => 'Technology partnership',
 		'other'       => 'General inquiry',
 	);
+	$saved = az_join_saved()['questions']['org']['options'] ?? array();
+	foreach ( (array) $saved as $k => $o ) {
+		if ( is_array( $o ) && ! empty( $o[2] ) ) {
+			$n[ (string) $k ] = (string) $o[2];
+		}
+	}
+	return $n;
+}
+
+/** The step names in the progress bar, the step headings and the success headline. */
+function az_join_default_texts() {
+	return array(
+		'name1' => 'You',
+		'name2' => 'Your idea',
+		'name3' => 'Scale',
+		'name4' => 'Send',
+		'step1' => 'First, who’s making waves?',
+		'step2' => 'What do you want to use Audazzio for?',
+		'step3' => 'How big is the wave?',
+		'step4' => 'Ready to send?',
+		'done'  => 'You’re on the wave.',
+	);
+}
+
+/** One of those texts: the saved one, else the default. */
+function az_join_text( $key ) {
+	$saved = az_join_saved()['texts'][ $key ] ?? '';
+	return is_string( $saved ) && '' !== trim( $saved ) ? $saved : ( az_join_default_texts()[ $key ] ?? '' );
+}
+
+/** The progress bar: step number => name. */
+function az_join_step_names() {
+	$out = array();
+	for ( $n = 1; $n <= 4; $n++ ) {
+		$out[ $n ] = az_join_text( 'name' . $n );
+	}
+	return $out;
 }
 
 function az_join_free_domains() {
 	return array( 'gmail.com', 'googlemail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'live.com', 'aol.com', 'icloud.com', 'me.com', 'mac.com', 'msn.com', 'proton.me', 'protonmail.com', 'gmx.com', 'ymail.com' );
 }
 
-/** The table the browser grades with in the static preview (the live site grades on the server). */
+/** True only for the static exporter (scripts/deploy/export.mjs), which asks from this machine with x-az-static: 1. */
+function az_is_static_export() {
+	$ip = (string) ( $_SERVER['REMOTE_ADDR'] ?? '' ); // phpcs:ignore
+	return '1' === (string) ( $_SERVER['HTTP_X_AZ_STATIC'] ?? '' ) && in_array( $ip, array( '127.0.0.1', '::1' ), true ); // phpcs:ignore
+}
+
+/**
+ * What the page tells the form script. The live site grades on the server, so the page carries only the
+ * question and answer labels (for the review step). The static preview has no server: the exporter gets the
+ * full table (points, grades, natures) so the browser can grade.
+ */
 function az_join_public_config() {
-	return array( 'questions' => az_join_questions(), 'grades' => az_join_grades(), 'natures' => az_join_natures(), 'free' => az_join_free_domains() );
+	if ( az_is_static_export() ) {
+		return array( 'questions' => az_join_questions(), 'grades' => az_join_grades(), 'natures' => az_join_natures(), 'free' => az_join_free_domains() );
+	}
+	$qs = array();
+	foreach ( az_join_questions() as $k => $q ) {
+		$opts = array();
+		foreach ( $q['options'] as $ok => $o ) {
+			$opts[ $ok ] = array( $o[0] );
+		}
+		$qs[ $k ] = array( 'label' => $q['label'], 'type' => $q['type'], 'options' => $opts );
+	}
+	return array( 'questions' => $qs );
 }
 
 function az_join_choice( $name, $q ) {
@@ -156,7 +251,7 @@ function az_join_field( $name, $label, $type = 'text', $auto = '', $extra = '' )
 /** The form. $context: "page" or "sheet" (the dialog opened from any Join the Wave button). */
 function az_join_form( $context = 'page' ) {
 	$qs    = az_join_questions();
-	$steps = array( 1 => 'You', 2 => 'Your idea', 3 => 'Scale', 4 => 'Send' );
+	$steps = az_join_step_names();
 	ob_start();
 	?>
 	<form class="az-join az-join--<?php echo esc_attr( $context ); ?>" data-az-form action="<?php echo esc_url( rest_url( 'audazzio/v1/join' ) ); ?>" method="post" novalidate>
@@ -168,7 +263,7 @@ function az_join_form( $context = 'page' ) {
 		</div>
 		<div class="az-join__steps">
 			<section class="az-join__step is-on" data-az-jstep="1" aria-label="About you">
-				<h3 class="az-join__q">First, who’s making waves?</h3>
+				<h3 class="az-join__q"><?php echo esc_html( az_join_text( 'step1' ) ); ?></h3>
 				<div class="az-join__fields">
 					<?php
 					echo az_join_field( 'name', 'Full name', 'text', 'name' ); // phpcs:ignore
@@ -180,16 +275,16 @@ function az_join_form( $context = 'page' ) {
 				</div>
 			</section>
 			<section class="az-join__step" data-az-jstep="2" aria-label="Your idea" hidden>
-				<h3 class="az-join__q">What do you want to use Audazzio for?</h3>
+				<h3 class="az-join__q"><?php echo esc_html( az_join_text( 'step2' ) ); ?></h3>
 				<?php echo az_join_choice( 'org', $qs['org'] ) . az_join_choice( 'uses', $qs['uses'] ); // phpcs:ignore ?>
 				<label class="az-field az-field--area"><textarea class="az-field__in" name="details" rows="4" placeholder=" " required minlength="20"></textarea><span class="az-field__l">Tell us about it: the event or show, the moment, what fans should see</span><span class="az-field__err" aria-live="polite"></span></label>
 			</section>
 			<section class="az-join__step" data-az-jstep="3" aria-label="Scale and budget" hidden>
-				<h3 class="az-join__q">How big is the wave?</h3>
+				<h3 class="az-join__q"><?php echo esc_html( az_join_text( 'step3' ) ); ?></h3>
 				<?php foreach ( array( 'audience', 'frequency', 'budget', 'timeline', 'role' ) as $k ) { echo az_join_choice( $k, $qs[ $k ] ); } // phpcs:ignore ?>
 			</section>
 			<section class="az-join__step" data-az-jstep="4" aria-label="Review and send" hidden>
-				<h3 class="az-join__q">Ready to send?</h3>
+				<h3 class="az-join__q"><?php echo esc_html( az_join_text( 'step4' ) ); ?></h3>
 				<dl class="az-join__review" data-az-review></dl>
 				<label class="az-check"><input type="checkbox" name="consent" value="1" required><span>Audazzio may contact me about this inquiry. See the <a href="<?php echo esc_url( az_opt( 'privacy_url' ) ); ?>" target="_blank" rel="noopener">Privacy Policy</a>.</span></label>
 			</section>
@@ -205,7 +300,7 @@ function az_join_form( $context = 'page' ) {
 		</div>
 		<div class="az-join__done" data-az-done hidden tabindex="-1">
 			<span class="az-join__done-ico"><?php echo az_icon( 'check' ); // phpcs:ignore ?></span>
-			<h3 class="az-join__q">You’re on the wave.</h3>
+			<h3 class="az-join__q"><?php echo esc_html( az_join_text( 'done' ) ); ?></h3>
 			<p class="az-join__thanks" data-az-thanks><?php echo esc_html( az_opt( 'thanks_line' ) ); ?></p>
 			<div class="az-join__grade" data-az-grade hidden></div>
 			<div class="az-join__next-steps">
