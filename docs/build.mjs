@@ -31,8 +31,8 @@ P.push(page("The site", "Six pages,\n*one minute.*", `<p class="lead">The previe
 
 P.push(page("Signing in", "Start at the\n*Audazzio menu.*", `${pic("inbox", "wide")}${steps([
   "Go to the site’s address followed by <b>/wp-admin</b> and sign in.",
-  "In the left menu, <b>Audazzio</b> has two parts: <b>Inbox</b> (every Join the Wave inquiry) and <b>Settings</b>.",
-  "<b>Pages</b> lists the eight pages. Hover one and choose <b>Edit with Elementor</b> to change it.",
+  "In the left menu, <b>Audazzio</b> holds the <b>Inbox</b> (every Join the Wave inquiry), the three shared lists (<b>News</b>, <b>Case studies</b>, <b>Logos</b>), <b>Settings</b> and the <b>Join the Wave form</b>.",
+  "<b>Pages</b> lists the eight pages. Hover one and choose <b>Edit with Elementor</b> to change it. The <b>Search and sharing</b> box beside a page sets the title and description Google and link previews show.",
   "<b>Media</b> holds every picture, film and PDF you upload.",
 ])}`));
 
@@ -42,16 +42,17 @@ P.push(page("Inquiries", "Every lead,\n*already graded.*", `${pic("lead", "wide"
   ["C · Nurture", "Early or small. Send the case studies and stay in touch."],
   ["D · Early", "Exploring. Answer the question and add to updates."],
 ])}${list([
-  "The grade comes from the answers: organization, what they want to do, audience, events a year, budget, timing, their part in the decision, plus a work email and a detailed description. Visitors never see it.",
+  "The grade comes from the answers: organization, what they want to do, audience, events a year, budget, timing, their part in the decision, plus a work email and a detailed description. Visitors never see it. <b>Audazzio &gt; Join the Wave form</b> changes the questions, the answers and their points, the A, B and C lines, the step names and the thank-you lines.",
   "Each inquiry is also named: <b>Broadcast partnership · Enterprise scale</b>, <b>Sponsor campaign</b>, <b>Live event activation · Single event</b>.",
   "Open one to read every answer and its points, set a status (new, contacted, meeting booked, proposal sent, won, closed) and keep notes. <b>Export CSV</b> downloads the list.",
 ])}`));
 
 P.push(page("Settings", "Change these\n*without us.*", `${pic("settings", "wide")}${rows([
-  ["Join the Wave", "Where inquiries are emailed, a second address for grade A, the HubSpot portal and form IDs (optional: every inquiry is also sent there), the thank-you line."],
-  ["Try Audazzio", "The phone listener link, App Store and Google Play links if an app is published, the demo clips (YouTube or MP4) and their names, the poster, and the notification on the home page."],
+  ["Join the Wave", "Where inquiries are emailed, a second address for grade A, and the HubSpot portal and form IDs (optional: every inquiry is also sent there)."],
+  ["Try Audazzio", "The phone listener link, App Store and Google Play links if an app is published, the demo clips (YouTube or MP4) and their names, the poster, the popup’s headline, steps and phone note, and the notification on the home page."],
   ["Company", "LinkedIn, the privacy policy link, and the email, phone and location shown on the Join the Wave page."],
-])}<p class="note">An empty box uses the value shown in grey. For email to arrive reliably, the host needs an email delivery plugin (for example WP Mail SMTP with your Microsoft 365 account). We set it up at launch.</p>`));
+  ["Footer and bar", "The lines under the logo, the trademark sentence, and the line in the Join the Wave bar."],
+])}<p class="note">Each box says what an empty box does: an optional one shows nothing, a few go back to their default. For email to arrive reliably, the host needs an email delivery plugin (for example WP Mail SMTP with your Microsoft 365 account). We set it up at launch.</p>`));
 
 P.push(page("Editing a page", "Every section\n*is a widget.*", `${pic("editor", "wide")}${steps([
   "Open a page with <b>Edit with Elementor</b>.",
@@ -62,16 +63,16 @@ P.push(page("Editing a page", "Every section\n*is a widget.*", `${pic("editor", 
 ])}`));
 
 P.push(page("Keeping it fresh", "News, logos,\n*people and films.*", `${rows([
-  ["A press release", "Newsroom page, <b>News and press</b> widget: add a row with the date, the kind, the headline, one line and the link or PDF. The home page shows the latest four from its own copy of the list."],
-  ["A case study", "<b>Case studies</b> widget: partner, headline, year, where it played, a picture, up to two results (number | what it counts) and the PDF."],
-  ["A logo", "<b>Logo carousel</b> widget: the company name and the logo. Transparent PNG or SVG; the site turns it grey and sizes it to match the others."],
+  ["A press release", "<b>Audazzio &gt; News &gt; Add new</b>: the headline, the kind, the date (or just the month), the source, one line and the link or PDF. The Newsroom lists it and the home page shows the latest four, at once."],
+  ["A case study", "<b>Audazzio &gt; Case studies &gt; Add new</b>: partner, headline, year, where it played, a picture, up to two results (number | what it counts) and the PDF. It shows wherever case studies do."],
+  ["A logo", "<b>Audazzio &gt; Logos &gt; Add new</b>: the company and the logo (transparent PNG or SVG; the site turns it grey and sizes it to match). <b>Order</b> sets its place in the carousel."],
   ["A person", "<b>People</b> widget (Leadership or Board): name, title, portrait (4:5, about 1200 × 1500, person centred), one-line summary, full biography, highlights, LinkedIn."],
   ["A new film", "<b>Films</b> widget: a YouTube link or an MP4 from Media, a title, a label and a poster. Today’s films are placeholders for the new ones."],
 ])}`));
 
 P.push(page("Try Audazzio", "Speakers on.\n*Phone out.*", `${pic("try-playing", "wide")}${list([
   "There is no Audazzio app in the stores today, so phones listen in the browser through Audazzio’s web listener (the page today’s /demo sends people to). In a live deployment the same listening runs inside a partner’s app, like the USA Swimming app. The listener link is in Settings; the QR code and the button follow it.",
-  "If an Audazzio app is published, paste its App Store and Google Play links in Settings and the buttons appear beside the listener.",
+  "If an Audazzio app is published, paste its App Store and Google Play links in Settings and the buttons appear beside the listener. The popup’s headline and steps, and the notification’s text, are in Settings too; the Try sections on the home page and /try show the same steps.",
   "The demo clips must carry the signal in their soundtrack. YouTube re-encodes sound and can strip high frequencies: an MP4 uploaded to Media is the safer home for the real demo.",
   "Test after any change: a phone with the listener open, a laptop playing the demo, volume up. The phone should ding and show new content.",
 ])}`));
