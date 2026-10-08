@@ -38,7 +38,7 @@ function az_settings_schema() {
 				'app_store'    => array( 'App Store link', '', 'Optional, empty for none. When there is an Audazzio app on the App Store, paste its link and an App Store button appears beside the listener.' ),
 				'play_store'   => array( 'Google Play link', '', 'Optional, empty for none. The same for Google Play.' ),
 				'demo_video'   => array( 'Demo clip', '', 'The clip the Try Audazzio player plays first: a YouTube link, or the address of an MP4 uploaded to the Media Library. Its soundtrack must carry the signal. An MP4 is safest: video sites re-encode sound and can strip the high frequencies the signal rides on. Empty: the default.', 'text', true ),
-				'demo_label'   => array( 'Demo clip name', '', 'Optional. A short name for the first clip, shown on its button when there is more than one clip (for example "Formula 1").' ),
+				'demo_label'   => array( 'Demo clip name', '', 'Optional. A short name for the first clip, shown on its button when there is more than one clip (for example "Rugby sevens").' ),
 				'demo_more'    => array( 'More demo clips', '', 'Optional, empty for none. One per line: Name | link. Each becomes a button above the player.', 'textarea' ),
 				'demo_poster'  => array( 'Demo poster', '', 'Optional. The picture shown before the demo plays (address of an image in the Media Library). Empty: YouTube’s own picture for a YouTube clip, none for an MP4.' ),
 				'try_title'    => array( 'Popup headline', 'Your second screen,|*in four steps.*', 'The headline of the Try Audazzio popup, which the notification, "Try it" and every link to /try/ open. A | starts a new line; *asterisks* set words in the lighter tone. Empty: the default.', 'text', true ),

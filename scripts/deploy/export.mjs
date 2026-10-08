@@ -20,10 +20,13 @@ fs.mkdirSync(OUT, { recursive: true });
 // static copy needs to grade in the browser; the live site keeps it on the server.
 const HEADERS = { "x-az-static": "1" };
 
+// Pages may redirect (to their trailing slash); a file may not: WordPress answers a missing file by sending it
+// to the home page, which would be saved under the file's name. So a file must come back as itself, not HTML.
 async function get(url, as = "text") {
   for (let i = 0; i < 4; i++) {
     try {
-      const r = await fetch(url, { redirect: "follow", headers: HEADERS });
+      const r = await fetch(url, { redirect: as === "text" ? "follow" : "manual", headers: HEADERS });
+      if (as !== "text" && (r.status >= 300 && r.status < 400 || /text\/html/.test(r.headers.get("content-type") || ""))) return null;
       if (r.ok) return as === "text" ? await r.text() : Buffer.from(await r.arrayBuffer());
       if (r.status === 404) return null;
     } catch { /* the local server can be busy: wait and try again */ }

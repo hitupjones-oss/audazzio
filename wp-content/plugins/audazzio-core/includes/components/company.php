@@ -12,7 +12,7 @@ function az_schema_story() {
 		'icon'   => 'eicon-time-line',
 		'fields' => az_head_fields( 'Comcast NBCUniversal SportsTech', "Built in the room\n*where sport meets tech.*", 'Audazzio is a product of the 2021 inaugural Comcast NBCUniversal SportsTech Accelerator, one of ten companies selected from over 1,000 applicants.', 'white' ) + array(
 			'points' => az_f( 'textarea', 'Since then (one per line)', "A defined, deliberate company focus\nNew investors, including Comcast and Boomtown\nExtensive scientific research in acoustics and ultrasonic signaling, leading to the first of multiple patent applications\nA retooled marketing strategy and the rebrand to Audazzio\nA successful Audazzio trial during the Tour de France", array( 'rows' => 6 ) ),
-			'stats'  => az_f( 'textarea', 'Numbers (one per line: number | what it counts)', "1 of 10 | companies selected for the inaugural accelerator\n8,000+ | live events delivered by the team\n160+ | years of technical experience in house" ),
+			'stats'  => az_f( 'textarea', 'Numbers (one per line: number | what it counts)', "1 of 10 | companies selected for the inaugural accelerator\n1,000+ | applicants, from 70 countries" ),
 			'badge'  => az_f( 'media', 'Badge picture', '' ),
 		),
 	);

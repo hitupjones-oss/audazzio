@@ -29,6 +29,27 @@
 .az-film__t { font: 600 17px/1.3 var(--az-display); letter-spacing: -.01em; }
 .az-film--lead .az-film__t { font-size: 22px; }
 @media (max-width: 980px) { .az-films { grid-template-columns: 1fr 1fr; } .az-videos--feature .az-film--lead { grid-row: auto; } }
+/* The grid fits the number of films: five fill the four columns above (the lead takes two by two), three sit
+   lead plus two down the side, four put the lead beside a list of the other three, or over a row of them. */
+@media (min-width: 981px) {
+  .az-videos--feature .az-films:has(> .az-film:nth-child(3):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1101px) {
+  .az-videos--feature .az-films:has(> .az-film:nth-child(4):last-child) { grid-template-columns: minmax(0, 1.85fr) minmax(0, 1.15fr); }
+  .az-videos--feature .az-films:has(> .az-film:nth-child(4):last-child) .az-film--lead { grid-column: 1; grid-row: span 3; }
+  .az-videos--feature .az-films:has(> .az-film:nth-child(4):last-child) > .az-film:not(.az-film--lead) { align-self: center; }
+  .az-videos--feature .az-films:has(> .az-film:nth-child(4):last-child) > .az-film:not(.az-film--lead) .az-film__b { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: center; gap: 18px; }
+  .az-videos--feature .az-films:has(> .az-film:nth-child(4):last-child) > .az-film:not(.az-film--lead) .az-film__play { left: 12px; bottom: 12px; width: 40px; height: 40px; }
+  .az-videos--feature .az-films:has(> .az-film:nth-child(4):last-child) > .az-film:not(.az-film--lead) .az-film__play .az-ico { width: 18px; height: 18px; }
+}
+@media (min-width: 561px) and (max-width: 1100px) {
+  .az-videos--feature .az-films:has(> .az-film:nth-child(4):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .az-videos--feature .az-films:has(> .az-film:nth-child(4):last-child) .az-film--lead { grid-column: 1 / -1; grid-row: auto; }
+}
+@media (min-width: 561px) {
+  .az-films:has(> .az-film:nth-child(2):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .az-films:has(> .az-film:nth-child(2):last-child) .az-film--lead { grid-column: auto; grid-row: auto; }
+}
 @media (max-width: 560px) { .az-films { grid-template-columns: 1fr; } .az-videos--feature .az-film--lead { grid-column: auto; } }
 
 /* -------------------------------------------------- who it's for (cards) */
@@ -54,7 +75,12 @@
 /* ---------------------------------------------------- audience detail */
 .az-solution { scroll-margin-top: calc(var(--az-nav-h) + 72px); }
 .az-shots { margin: 0 calc(var(--az-gut) * -1) clamp(48px, 6vw, 80px); }
-.az-shots .az-rail__track { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px var(--az-gut) 18px; scrollbar-width: none; }
+.az-shots .az-rail__track { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px var(--az-gut) 18px; scroll-padding-inline: var(--az-gut); scrollbar-width: none; }
+/* on a wide screen the rail runs to the window's edges, its first picture still in line with the heading */
+@media (min-width: 1400px) {
+  .az-shots { margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); }
+  .az-shots .az-rail__track { padding-left: calc((100vw - var(--az-max)) / 2); padding-right: calc((100vw - var(--az-max)) / 2); scroll-padding-inline: calc((100vw - var(--az-max)) / 2); }
+}
 .az-shots .az-rail__track::-webkit-scrollbar { display: none; }
 .az-shot { position: relative; flex: none; scroll-snap-align: start; }
 .az-shots--phone .az-shot img { height: clamp(380px, 46vw, 540px); width: auto; border-radius: 30px; box-shadow: 0 0 0 1px rgba(12, 18, 34, .06), 0 24px 50px -24px rgba(12, 18, 34, .35); background: #fff; }

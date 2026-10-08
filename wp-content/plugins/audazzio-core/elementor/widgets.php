@@ -65,7 +65,17 @@ abstract class AZ_Widget extends Widget_Base {
 		if ( ! empty( $f['description'] ) ) {
 			$c['description'] = $f['description'];
 		}
+		// Shown only for some values of another field, e.g. array( 'source' => 'own' ).
+		if ( ! empty( $f['condition'] ) ) {
+			$c['condition'] = $f['condition'];
+		}
+		if ( ! empty( $f['label_block'] ) ) {
+			$c['label_block'] = true;
+		}
 		switch ( $f['type'] ) {
+			case 'note':
+				$c += array( 'type' => Controls_Manager::RAW_HTML, 'raw' => wp_kses_post( $f['default'] ?? '' ), 'content_classes' => 'elementor-panel-alert elementor-panel-alert-info' );
+				break;
 			case 'textarea':
 				$c += array( 'type' => Controls_Manager::TEXTAREA, 'rows' => $f['rows'] ?? 4, 'default' => $f['default'] ?? '', 'dynamic' => array( 'active' => true ) );
 				break;
@@ -110,7 +120,7 @@ abstract class AZ_Widget extends Widget_Base {
 			if ( 'repeater' !== $f['type'] ) {
 				continue;
 			}
-			$this->start_controls_section( 'az_' . $key, array( 'label' => $f['label'] ) );
+			$this->start_controls_section( 'az_' . $key, array_filter( array( 'label' => $f['label'], 'condition' => $f['condition'] ?? null ) ) );
 			$rep = new Repeater();
 			foreach ( $f['fields'] as $sub_key => $sub ) {
 				$rep->add_control( $sub_key, $this->az_control( $sub ) );

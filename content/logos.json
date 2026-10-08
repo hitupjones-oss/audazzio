@@ -136,22 +136,6 @@
   "source": "https://nbcsports.brightspotcdn.com/49/34/b853486843089ac9d25c4e9fecd2/usnaab-logo-color-positive.png"
  },
  {
-  "name": "Tour de France",
-  "file": "tour-de-france.svg",
-  "relationship": "event",
-  "evidence": [
-   {
-    "text": "Audazzio case study 0723",
-    "url": "https://www.audazzio.com/hubfs/Audazzio%20-%20NBC%20Sports%20Tour%20de%20France%20Case%20Study%200723.pdf"
-   },
-   {
-    "text": "audazzio.com about page: \"Successfully completed an Audazzio trial during the Tour de France\"",
-    "url": "https://www.audazzio.com/about-0-0"
-   }
-  ],
-  "source": "https://upload.wikimedia.org/wikipedia/commons/e/eb/Tour_de_France_logo.svg"
- },
- {
   "name": "TYR Pro Swim Series",
   "file": "tyr-pro-swim-series.png",
   "relationship": "event",
@@ -173,8 +157,8 @@
   "relationship": "event",
   "evidence": [
    {
-    "text": "SVG 2022-02-16 \"New SVG Sponsor Spotlight: Audazzio's Danny Abelson...\"",
-    "url": "https://www.sportsvideo.org/2022/02/16/new-svg-sponsor-spotlight-audazzios-danny-abelson-on-connecting-to-mobile-devices-for-second-screen-experiences/"
+    "text": "SVG 2024-07-16 article on Audazzio at the USA Swimming Olympic Trials",
+    "url": "https://www.sportsvideo.org/2024/07/16/audazzio-engages-audience-of-usa-swimming-olympic-trials-with-real-time-interactive-content/"
    },
    {
     "text": "Audazzio press release (01/19/2023) on SVG Summit lead sponsorship",

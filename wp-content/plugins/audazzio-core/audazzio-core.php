@@ -20,6 +20,7 @@ require_once AZ_DIR . 'includes/helpers.php';
 require_once AZ_DIR . 'includes/settings.php';
 require_once AZ_DIR . 'includes/assets.php';
 require_once AZ_DIR . 'includes/components.php';
+require_once AZ_DIR . 'includes/lists.php';
 require_once AZ_DIR . 'includes/shortcodes.php';
 require_once AZ_DIR . 'includes/shell.php';
 require_once AZ_DIR . 'includes/leads.php';

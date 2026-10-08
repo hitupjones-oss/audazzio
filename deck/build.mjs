@@ -48,7 +48,7 @@ S.push(slide("Live QR, explained", "It’s like a QR code.\n*No one has to scan 
 S.push(slide("Try Audazzio now", "Speakers on.\n*Phone out.*", `<div class="cols cols--wide">${pic("try-playing", "wide")}<div>${pic("notify", "strip notify")}${bullets([
   "<b>A push-style notification</b> slides in on the home page: Try Audazzio now.",
   "<b>Four steps:</b> open the listener on your phone (a QR code from a computer, nothing to download), allow the microphone, speakers on, press play.",
-  "<b>Pick a demo:</b> Formula 1, rugby sevens or USA Swimming, the clips from today’s hidden demo page.",
+  "<b>Pick a demo:</b> rugby sevens or USA Swimming, from today’s hidden demo page. Its Formula 1 clip is left out: the rights holder blocks it on other sites.",
   "<b>No phone handy?</b> The phone beside the player shows what would land.",
 ])}</div></div>`));
 
@@ -71,7 +71,7 @@ S.push(slide("On a phone", "Built for\n*the thumb.*", `<div class="cols cols--ph
   "Every section reflows, nothing scrolls sideways.",
 ])}</div></div>`));
 
-S.push(slide("What is real", "What is ready,\n*and what we need from you.*", `<div class="cols cols--3"><div><p class="tag">Ready</p>${bullets(["All copy from today’s site and the case studies", "Four case studies with their PDFs", "Eight press releases as clean PDFs", "Leadership, board and LinkedIn", "The listener and the demo clips", "Redirects from every old address"])}</div><div><p class="tag">Placeholders</p>${bullets(["Films: today’s YouTube videos, until the new ones arrive", "Demo clips on YouTube (an MP4 keeps the signal safest)", "Portraits from today’s site, low resolution for four people", "Press logos from public sources"])}</div><div><p class="tag">From you</p>${bullets(["The new films and the demo files", "Higher-resolution portraits", "Hosting and domain access (DNS on Route 53)", "HubSpot access, if leads should land there", "A yes on ® for Live QR and It Comes in Waves", "A privacy policy line about the microphone"])}</div></div>`));
+S.push(slide("What is real", "What is ready,\n*and what we need from you.*", `<div class="cols cols--3"><div><p class="tag">Ready</p>${bullets(["All copy from today’s site and the case studies", "Four case studies with their PDFs", "Eight press releases as clean PDFs", "Leadership, board and LinkedIn", "The listener and the demo clips", "Redirects from every old address"])}</div><div><p class="tag">Placeholders</p>${bullets(["Films: today’s YouTube videos, until the new ones arrive", "Demo clips on YouTube (an MP4 keeps the signal safest)", "Portraits from today’s site, low resolution for four people", "Press logos from public sources"])}</div><div><p class="tag">From you</p>${bullets(["The new films and the demo files", "Higher-resolution portraits", "Hosting and domain access (DNS on Route 53)", "HubSpot access, if leads should land there", "Your counsel’s yes before Live QR™ becomes ®","A privacy policy line about the microphone"])}</div></div>`));
 
 S.push(slide("Investment", "One price.\n*Everything here.*", `<div class="cols cols--price"><div class="price"><p class="eb"><span>The new audazzio.com</span><i></i></p><p class="price__n d">${PRICE}</p><p class="price__sub">Design, build and launch, fixed.</p><p class="price__more"><b>Additional support is available if needed:</b> updates, new pages, films and campaigns after launch, on request.</p></div><div>${bullets([
   "Design and build in WordPress and Elementor: the theme, the Audazzio plugin and 21 editable sections",

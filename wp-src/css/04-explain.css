@@ -59,7 +59,7 @@
 .az-seg[data-on="1"] .az-seg__thumb { transform: translateX(100%); }
 .az-flow__panel { position: relative; }
 .az-flow__steps { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; }
-.az-flow__step { display: grid; justify-items: center; text-align: center; gap: 12px; cursor: pointer; }
+.az-flow__step { display: grid; align-content: start; justify-items: center; text-align: center; gap: 12px; cursor: pointer; }
 .az-flow__ico { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; background: #fff; box-shadow: inset 0 0 0 1px var(--az-line-2); color: var(--az-ink-3); transition: background-color .45s, color .45s, box-shadow .45s, transform .45s var(--az-spring); }
 .az-flow__ico .az-ico { width: 26px; height: 26px; }
 .az-flow__n { transition: color .4s; }

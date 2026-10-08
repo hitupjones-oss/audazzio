@@ -4,6 +4,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { launch, settle, ORIGIN } from "./browser.mjs";
+import { stubYouTube } from "./ytstub.mjs";
 
 const OUT = path.join(import.meta.dirname, "out");
 const STATIC = process.env.AZ_STATIC || "http://localhost:3051";
@@ -11,6 +12,7 @@ fs.mkdirSync(OUT, { recursive: true });
 const b = await launch();
 const desk = await b.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 });
 const phone = await b.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true });
+await stubYouTube(desk); await stubYouTube(phone);
 const HIDE = ".az-nav,.az-bar,.az-notify,.az-skip{visibility:hidden!important}";
 const save = async (page, name, opts = {}) => { await page.screenshot({ path: path.join(OUT, `d-${name}.jpg`), type: "jpeg", quality: 88, ...opts }); console.log("d-" + name); };
 async function go(ctx, url, { hide = false, wait = 0 } = {}) {

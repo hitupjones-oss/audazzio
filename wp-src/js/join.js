@@ -119,7 +119,7 @@ export function join(root = document) {
     // The server names the answer it could not take: back to its step, with the message on it.
     const problem = (text, name) => {
       text = text || "Something went wrong. Please try again.";
-      const el = name && /^[a-z_]+$/.test(name) && $(`[name="${name}"], [name="${name}[]"]`, f);
+      const el = name && /^[a-z0-9_-]+$/.test(name) && $(`[name="${name}"], [name="${name}[]"]`, f);
       const at = el && el.closest("[data-az-jstep]");
       if (at) {
         const host = el.closest(".az-q") || el;
@@ -161,7 +161,7 @@ export function join(root = document) {
       } else {
         try {
           const r = await fetch(cfg.rest, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(d) });
-          j = await r.json().catch(() => ({}));
+          j = (await r.json().catch(() => null)) || {};
           ok = r.ok && j.ok !== false;
           text = j.message || text;
         } catch {}

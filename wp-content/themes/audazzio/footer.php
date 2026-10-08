@@ -1,7 +1,7 @@
 <?php
 /**
- * The footer: the line, the links, the legal row with "Designed by RSPKT". The Join the Wave bar, the
- * Try Audazzio notification and the two dialogs are printed by the core plugin (wp_footer).
+ * The footer: the line, the links, the legal row with "Designed by RSPKT". The Join the Wave bar and the
+ * dialogs are printed by the core plugin (wp_footer), the Try Audazzio notification at the top of the body.
  */
 
 defined( 'ABSPATH' ) || exit;

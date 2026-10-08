@@ -17,12 +17,13 @@ function az_run_seed() {
 	$report = array();
 	az_seed_clear_samples();
 	az_settings_seed();
+	$report['lists'] = az_seed_lists();
 	$pages           = az_seed_pages();
 	$report['pages'] = count( $pages );
 	az_seed_menus( $pages );
 	az_seed_elementor_kit();
 	update_option( 'blogname', 'Audazzio' );
-	update_option( 'blogdescription', 'It comes in waves. Audazzio’s Live QR® technology hides inaudible signals in the sound of a broadcast or live event, so phones show the right content at the exact moment. No scanning.' );
+	update_option( 'blogdescription', 'It comes in waves. Audazzio’s Live QR™ technology hides inaudible signals in the sound of a broadcast or live event, so phones show the right content at the exact moment. No scanning.' );
 	update_option( 'az_seeded', time() );
 	delete_option( 'az_seed_pending' );
 	flush_rewrite_rules();
@@ -212,4 +213,67 @@ function az_seed_elementor_kit() {
 	);
 	$settings['container_width'] = array( 'unit' => 'px', 'size' => 1200, 'sizes' => array() );
 	update_post_meta( $kit, '_elementor_page_settings', $settings );
+}
+
+/**
+ * The shared lists (Audazzio > News, Case studies, Logos), made once from the starter data as it is at that
+ * moment (seed/site.json, built from scripts/content/site.mjs and content/logos.json), in its order. Files that
+ * ship with the plugin are written as asset:folder/file. A list that already has entries is left as it is.
+ * $rebuild = true first deletes every entry of the three lists (for a development site, after the data changed).
+ * Returns how many entries were made.
+ */
+function az_seed_lists( $rebuild = false ) {
+	if ( $rebuild ) {
+		foreach ( get_posts( array( 'post_type' => array( 'az_news', 'az_case', 'az_logo' ), 'post_status' => array_keys( get_post_stati() ), 'numberposts' => -1, 'fields' => 'ids' ) ) as $id ) {
+			wp_delete_post( $id, true );
+		}
+		delete_option( 'az_lists_seeded' );
+	}
+	if ( get_option( 'az_lists_seeded' ) ) {
+		return 0;
+	}
+	$ship = function ( $dir, $file ) {
+		return $file ? 'asset:' . $dir . '/' . $file : '';
+	};
+	$rows = array( 'az_news' => array(), 'az_case' => array(), 'az_logo' => array() );
+	foreach ( (array) az_data( 'press' ) as $p ) {
+		$rows['az_news'][] = array( $p['title'] ?? '', array(
+			'kind'    => $p['kind'] ?? '',
+			'date'    => $p['date'] ?? '',
+			'outlet'  => $p['outlet'] ?? '',
+			'url'     => ! empty( $p['pdf'] ) ? $ship( 'docs', $p['pdf'] ) : ( $p['url'] ?? '' ),
+			'summary' => $p['summary'] ?? '',
+			'image'   => $ship( 'img', $p['image'] ?? '' ),
+		) );
+	}
+	foreach ( (array) az_data( 'cases' ) as $c ) {
+		$rows['az_case'][] = array( $c['title'] ?? '', array(
+			'org'     => $c['org'] ?? '',
+			'year'    => $c['year'] ?? '',
+			'where'   => $c['where'] ?? '',
+			'image'   => $ship( 'img', $c['image'] ?? '' ),
+			'metrics' => implode( "\n", (array) ( $c['metrics'] ?? array() ) ),
+			'summary' => $c['summary'] ?? '',
+			'pdf'     => $ship( 'docs', $c['pdf'] ?? '' ),
+		) );
+	}
+	foreach ( (array) az_data( 'logos' ) as $l ) {
+		$rows['az_logo'][] = array( $l['name'] ?? '', array( 'logo' => $ship( 'logos', $l['file'] ?? '' ), 'url' => $l['url'] ?? '' ) );
+	}
+	$made = 0;
+	foreach ( $rows as $type => $items ) {
+		if ( get_posts( array( 'post_type' => $type, 'post_status' => 'any', 'numberposts' => 1, 'fields' => 'ids' ) ) ) {
+			continue;
+		}
+		foreach ( $items as $i => $it ) {
+			$meta = array();
+			foreach ( $it[1] as $k => $v ) {
+				$meta[ '_az_' . $k ] = (string) $v;
+			}
+			$id    = wp_insert_post( wp_slash( array( 'post_type' => $type, 'post_status' => 'publish', 'post_title' => $it[0], 'menu_order' => ( $i + 1 ) * 10, 'meta_input' => $meta ) ) );
+			$made += $id && ! is_wp_error( $id ) ? 1 : 0;
+		}
+	}
+	update_option( 'az_lists_seeded', time() );
+	return $made;
 }

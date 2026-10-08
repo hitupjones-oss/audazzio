@@ -5,9 +5,21 @@
 .az-try::before { content: ""; position: absolute; z-index: -1; width: 1100px; height: 1100px; left: 50%; top: 56%; margin: -550px 0 0 -550px; border-radius: 50%; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='49.6' fill='none' stroke='%23868A96' stroke-width='.12' stroke-dasharray='.6 .9'/%3E%3Ccircle cx='50' cy='50' r='34' fill='none' stroke='%23868A96' stroke-width='.12' stroke-dasharray='.4 1.1'/%3E%3C/svg%3E") center / contain no-repeat; opacity: .7; animation: az-spin 32s linear infinite; pointer-events: none; }
 @keyframes az-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .az-try::before { animation: none; } }
+/* the rings pass behind the copy, which keeps a soft margin of the section's own colour round it */
+.az-try { --az-try-bg: var(--az-white); }
+.az-try.az-sec--mist { --az-try-bg: var(--az-mist); }
+.az-try.az-sec--ink { --az-try-bg: var(--az-night); }
+.az-try .az-head, .az-try__steps { position: relative; }
+.az-try .az-head::before, .az-try__steps::before { content: ""; position: absolute; z-index: -1; inset: -8px -16px; border-radius: 40px; background: var(--az-try-bg); box-shadow: 0 0 32px 24px var(--az-try-bg); pointer-events: none; }
+.az-try .az-player__pick, .az-try .az-player__bar { position: relative; }
+.az-try .az-player__pick::before, .az-try .az-player__bar::before { content: ""; position: absolute; z-index: -1; inset: -4px -8px; border-radius: 24px; background: var(--az-try-bg); box-shadow: 0 0 18px 12px var(--az-try-bg); pointer-events: none; }
 .az-try__grid { position: relative; display: grid; grid-template-columns: 1.2fr .8fr; gap: clamp(32px, 5vw, 80px); align-items: start; }
 @media (max-width: 960px) { .az-try__grid { grid-template-columns: 1fr; } }
-.az-try__stage, .az-sheet__stage { position: relative; padding-bottom: 64px; padding-right: clamp(40px, 9%, 110px); }
+.az-try__stage, .az-sheet__stage { position: relative; container-type: inline-size; padding-bottom: 64px; }
+.az-try__stage > .az-player, .az-sheet__stage > .az-player { margin-right: clamp(40px, 9cqw, 110px); }
+/* once a clip is on, the screen makes room: the phone stands beside it, off the video and its controls */
+.az-player__screen, .az-player__bar { transition: margin-right .7s var(--az-out); }
+:is(.az-try__stage, .az-sheet__stage) > .az-player.is-started :is(.az-player__screen, .az-player__bar) { margin-right: calc(clamp(150px, 26cqw, 210px) + 20px - clamp(40px, 9cqw, 110px)); }
 
 .az-player { position: relative; }
 .az-player__screen { position: relative; aspect-ratio: 16 / 9; border-radius: var(--az-r); overflow: hidden; background: #0b0f1a; box-shadow: 0 0 0 1px rgba(12, 18, 34, .06), 0 30px 70px -30px rgba(12, 18, 34, .45); }
@@ -38,7 +50,7 @@
 @keyframes az-eq { from { height: 20%; } to { height: 100%; } }
 
 /* the phone */
-.az-sim { position: absolute; right: 0; bottom: 0; width: clamp(150px, 26%, 210px); z-index: 4; }
+.az-sim { position: absolute; right: 0; bottom: 0; width: clamp(150px, 26cqw, 210px); z-index: 4; }
 .az-sim__phone { position: relative; aspect-ratio: 9 / 19.2; border-radius: 34px; padding: 7px; background: var(--az-ink); box-shadow: 0 0 0 1px rgba(255, 255, 255, .06) inset, 0 30px 60px -20px rgba(12, 18, 34, .55); transition: transform .8s var(--az-out); }
 .az-sim__phone::before { content: ""; position: absolute; top: 14px; left: 50%; width: 34%; height: 16px; margin-left: -17%; border-radius: 999px; background: #000; z-index: 3; }
 .az-sim__screen { position: relative; width: 100%; height: 100%; border-radius: 28px; overflow: hidden; background: #fff; }
@@ -59,7 +71,12 @@
 .az-sim__cap { margin-top: 14px; text-align: center; font-size: 10.5px; line-height: 1.4; }
 .is-playing .az-sim__phone { animation: az-buzz .5s var(--az-ease) 1.6s 1; }
 @keyframes az-buzz { 0%, 100% { transform: none; } 25% { transform: rotate(-1.4deg); } 75% { transform: rotate(1.4deg); } }
-@media (max-width: 560px) { .az-try__stage, .az-sheet__stage { padding-right: 0; padding-bottom: 0; } .az-sim { position: relative; width: 42%; margin: -28px 8px 0 auto; } .az-player__bar { padding-right: 46%; } .az-sim__cap { font-size: 9.5px; } }
+@media (max-width: 560px) {
+  .az-try__stage, .az-sheet__stage { padding-bottom: 0; }
+  .az-try__stage > .az-player, .az-sheet__stage > .az-player, :is(.az-try__stage, .az-sheet__stage) > .az-player.is-started :is(.az-player__screen, .az-player__bar) { margin-right: 0; }
+  .az-sim, body.az .elementor .az-try__stage > .az-sim { position: relative; width: 42%; margin: -28px 8px 0 auto; }
+  .az-player__bar { padding-right: 46%; } .az-sim__cap { font-size: 9.5px; }
+}
 
 /* the checklist */
 .az-trysteps { display: grid; gap: 8px; counter-reset: s; }
@@ -103,8 +120,8 @@
 .az-trysteps__open { justify-self: start; }
 
 /* the player's own controls: a ring while the clip loads, play or pause under the screen, a note when a clip will not play */
-.az-player__wait { position: absolute; z-index: 3; left: 50%; top: 50%; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .25); border-top-color: #fff; opacity: 0; pointer-events: none; transition: opacity .3s; animation: az-spin .9s linear infinite; }
-.az-player.is-loading .az-player__wait { opacity: 1; }
+.az-player__wait { position: absolute; z-index: 3; left: 50%; top: 50%; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .25); border-top-color: #fff; opacity: 0; pointer-events: none; transition: opacity .3s; }
+.az-player.is-loading .az-player__wait { opacity: 1; animation: az-spin .9s linear infinite; }
 .az-player.is-loading .az-player__media { opacity: 0; }
 .az-player.is-loading .az-player__poster { opacity: .5; }
 .az-player__toggle { order: -1; flex: none; display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 16px 0 13px; border-radius: 999px; font-size: 14px; font-weight: 500; color: var(--az-ink); box-shadow: inset 0 0 0 1px var(--az-line-2); transition: background-color .2s, box-shadow .2s; }
@@ -116,6 +133,7 @@
 .az-player__err :focus-visible { outline-color: #fff; }
 .az-player__hint-m { display: none; }
 @media (hover: none), (max-width: 700px) { .az-player__hint-d { display: none; } .az-player__hint-m { display: inline; } }
+@media (max-width: 560px) { .az-player.is-started .az-player__hint { display: none; } }
 
 /* the popup: an optional intro; on a phone it leads with the listener, since the demo plays on another screen */
 .az-sheet__intro { margin-top: 14px; max-width: 40em; font-size: 17px; line-height: 1.5; color: var(--az-ink-2); }

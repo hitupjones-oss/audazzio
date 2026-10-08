@@ -118,33 +118,66 @@
 @media (max-width: 600px) { .az-notify { right: 12px; left: 12px; width: auto; transform-origin: bottom center; } }
 
 /* -------------------------------------------------------------- dialogs */
-.az-dialog { width: min(1120px, calc(100vw - 32px)); max-width: none; max-height: calc(100dvh - 32px); padding: 0; border: 0; background: transparent; color: var(--az-ink); overflow: visible; }
+.az-dialog { --az-pad: clamp(28px, 4.4vw, 56px); width: min(1120px, calc(100vw - 32px)); max-width: none; max-height: calc(100dvh - 32px); padding: 0; border: 0; background: transparent; color: var(--az-ink); overflow: visible; }
+/* the sheet takes the focus when a dialog opens; the dialog itself is the sign of that, so no frame round it */
+.az-dialog:focus-visible, .az-dialog__sheet:focus-visible { outline: none; }
 .az-dialog::backdrop { background: rgba(12, 18, 34, .32); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); opacity: 0; transition: opacity .3s; }
 .az-dialog.is-open::backdrop { opacity: 1; }
 .az-dialog__sheet { position: relative; max-height: calc(100dvh - 32px); overflow: auto; overscroll-behavior: contain; background: var(--az-white); border-radius: var(--az-r-l); box-shadow: var(--az-shadow-l); opacity: 0; transform: translate3d(0, 24px, 0) scale(.985); transition: opacity .3s var(--az-out), transform .5s var(--az-out); }
 .az-dialog.is-open .az-dialog__sheet { opacity: 1; transform: none; }
-.az-dialog__body { padding: clamp(28px, 4.4vw, 56px); }
+.az-dialog__body { padding: var(--az-pad); }
 .az-dialog__x { position: sticky; float: right; top: 14px; margin: 14px 14px 0 0; z-index: 3; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--az-mist); transition: background-color .2s, transform .2s; }
 .az-dialog__x:hover { background: var(--az-cloud); transform: rotate(90deg); }
 .az-dialog__x .az-ico { width: 18px; height: 18px; }
 .az-dialog--join { width: min(760px, calc(100vw - 32px)); }
 .az-dialog--bio { width: min(980px, calc(100vw - 32px)); }
-.az-dialog--film { width: min(1180px, calc(100vw - 32px)); }
-.az-dialog--film .az-dialog__sheet { background: #000; }
+/* a film: the close button sits above the frame, clear of the player's own controls, and the frame fits the screen's height */
+.az-dialog--film { width: min(1180px, calc(100vw - 32px), calc((100dvh - 136px) * 16 / 9)); }
+.az-dialog--film .az-dialog__sheet { overflow: visible; background: none; box-shadow: none; border-radius: 0; }
 .az-dialog--film .az-dialog__body { padding: 0; }
-.az-dialog--film .az-dialog__x { position: absolute; float: none; right: 0; background: rgba(255, 255, 255, .9); }
-.az-filmbox { aspect-ratio: 16 / 9; }
+.az-dialog--film .az-dialog__x { position: absolute; float: none; top: -54px; right: 0; margin: 0; background: rgba(255, 255, 255, .92); }
+.az-filmbox { aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--az-r-l); background: #000; box-shadow: var(--az-shadow-l); }
 .az-filmbox iframe, .az-filmbox video { width: 100%; height: 100%; border: 0; }
 .az-sheet__head { margin-bottom: 32px; padding-right: 40px; }
 .az-sheet__head .az-eyebrow { margin-bottom: 14px; }
-.az-sheet__title { font: 600 clamp(30px, 3.6vw, 46px)/1.04 var(--az-display); letter-spacing: -.035em; }
+.az-sheet__title { font: 600 clamp(30px, 3.6vw, 46px)/1.04 var(--az-display); letter-spacing: -.035em; transition: font-size .45s var(--az-out); }
+/* Join the Wave: after the first step the headline steps back to one small line, so the questions and the buttons fit */
+.az-dialog--join:has([data-az-dot="1"]:not(.is-on)) .az-sheet__head { margin-bottom: 22px; }
+.az-dialog--join:has([data-az-dot="1"]:not(.is-on)) .az-sheet__head .az-eyebrow { margin-bottom: 8px; }
+.az-dialog--join:has([data-az-dot="1"]:not(.is-on)) .az-sheet__title { font-size: clamp(22px, 2.2vw, 28px); }
+.az-dialog--join:has([data-az-dot="1"]:not(.is-on)) .az-sheet__title .az-ln { display: inline; }
 .az-sheet__grid--try { display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(28px, 4vw, 56px); align-items: start; }
 @media (max-width: 860px) { .az-sheet__grid--try { grid-template-columns: 1fr; } }
+/* Try Audazzio on a laptop: one screen, no scrolling. The headline sits over the player and the four steps,
+   tighter than on the page, run down the right from the top. */
+@media (min-width: 861px) {
+  .az-dialog--try .az-dialog__x { float: none; margin: 14px 14px -54px auto; }
+  .az-dialog--try .az-dialog__body { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); grid-template-rows: auto auto 1fr; column-gap: clamp(28px, 3.4vw, 48px); padding: clamp(32px, 3.2vw, 44px); }
+  .az-dialog--try .az-sheet__grid--try { display: contents; }
+  .az-dialog--try .az-sheet__head { grid-area: 1 / 1; margin-bottom: 24px; }
+  .az-dialog--try .az-sheet__phone { grid-area: 2 / 1; }
+  .az-dialog--try .az-sheet__stage { grid-area: 3 / 1; }
+  .az-dialog--try .az-sheet__steps { grid-area: 1 / 2 / 4 / 3; align-self: start; padding-top: 30px; }
+  .az-dialog--try .az-trysteps { gap: 4px; }
+  .az-dialog--try .az-trysteps__i { grid-template-columns: 34px 1fr; gap: 14px; padding: 14px 16px 16px; }
+  .az-dialog--try .az-trysteps__t { font-size: 17px; padding-top: 6px; }
+  .az-dialog--try .az-trysteps__p { margin-top: 4px; font-size: 14.5px; line-height: 1.45; }
+  .az-dialog--try .az-trysteps__get { margin-top: 12px; gap: 12px; }
+  .az-dialog--try .az-qr { grid-template-columns: 80px 1fr; gap: 14px; }
+  .az-dialog--try .az-qr__code { width: 80px; height: 80px; padding: 6px; }
+}
+@media (min-width: 861px) and (max-height: 820px) {
+  .az-dialog--try .az-trysteps__i { padding-top: 10px; padding-bottom: 11px; }
+  .az-dialog--try .az-trysteps__get { margin-top: 10px; gap: 10px; }
+  .az-dialog--try .az-qr { grid-template-columns: 70px 1fr; }
+  .az-dialog--try .az-qr__code { width: 70px; height: 70px; padding: 5px; }
+}
 @media (max-width: 640px) {
   .az-dialog { width: 100vw; max-height: 100dvh; margin: auto 0 0; }
   .az-dialog__sheet { border-radius: 24px 24px 0 0; max-height: calc(100dvh - 24px); transform: translate3d(0, 40px, 0); }
-  .az-dialog--film { margin: auto; }
-  .az-dialog--film .az-dialog__sheet { border-radius: 16px; }
+  .az-dialog--film { width: min(calc(100vw - 24px), calc((100dvh - 136px) * 16 / 9)); margin: auto; }
+  .az-dialog--film .az-dialog__sheet { border-radius: 0; }
+  .az-filmbox { border-radius: 16px; }
 }
 /* in Elementor's editor the floating pieces stay out of the way */
 .elementor-editor-active .az-notify, .elementor-editor-active .az-bar { display: none !important; }

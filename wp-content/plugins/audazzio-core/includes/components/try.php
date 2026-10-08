@@ -1,7 +1,8 @@
 <?php
 /**
- * Try Audazzio: the demo player, the four steps (get the app, allow the microphone, speakers on, press play),
- * the phone that shows what arrives, and the store buttons with a QR code for desktop visitors.
+ * Try Audazzio: the demo player, the four steps (open the listener, allow the microphone, speakers on, press play),
+ * the phone that shows what arrives, and the listener link with a QR code for desktop visitors (store buttons
+ * only once an app is published).
  * The same pieces build the inline section and the sheet that opens from the "Try Audazzio now" notification.
  */
 

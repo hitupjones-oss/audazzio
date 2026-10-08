@@ -70,7 +70,7 @@ P.push(page("Keeping it fresh", "News, logos,\n*people and films.*", `${rows([
 ])}`));
 
 P.push(page("Try Audazzio", "Speakers on.\n*Phone out.*", `${pic("try-playing", "wide")}${list([
-  "There is no Audazzio app in the stores today, so phones listen in the browser through Audazzio’s web listener (the page today’s /demo sends people to). Its link is in Settings; the QR code and the button follow it.",
+  "There is no Audazzio app in the stores today, so phones listen in the browser through Audazzio’s web listener (the page today’s /demo sends people to). In a live deployment the same listening runs inside a partner’s app, like the USA Swimming app. The listener link is in Settings; the QR code and the button follow it.",
   "If an Audazzio app is published, paste its App Store and Google Play links in Settings and the buttons appear beside the listener.",
   "The demo clips must carry the signal in their soundtrack. YouTube re-encodes sound and can strip high frequencies: an MP4 uploaded to Media is the safer home for the real demo.",
   "Test after any change: a phone with the listener open, a laptop playing the demo, volume up. The phone should ding and show new content.",
@@ -82,7 +82,7 @@ P.push(page("Launch", "Five to seven\n*business days.*", `<p class="lead">Counte
   ["Day 4", "Every page on phones and desktops, the form end to end, redirects, speed."],
   ["Day 5", "The DNS switch. Email (Microsoft 365) records are left untouched, and audazz.io keeps serving the listener."],
   ["Days 6 and 7", "Checks after launch, fixes, and the walkthrough with your team."],
-])}<p class="note"><b>Before launch, from you:</b> the new films and the demo files; higher-resolution portraits for Roy, Michele, Greg and Larry; HubSpot access if leads should go there; a yes on ® for Live QR and It Comes in Waves (both registered); and a line in the privacy policy about microphone use. Press logos come from public sources: confirm you may show each one.</p>`));
+])}<p class="note"><b>Before launch, from you:</b> the new films and the demo files; higher-resolution portraits for Roy, Michele, Greg and Larry; HubSpot access if leads should go there; your counsel’s yes before Live QR™ becomes ® (its registration is on the Supplemental Register); and a line in the privacy policy about microphone use. Press logos come from public sources: confirm you may show each one.</p>`));
 
 P.push(`<section class="pg end"><div class="end__in"><p class="eb"><span>Help</span><i></i></p><h2 class="d">${hl("Stuck?\n*Ask us.*")}</h2><p class="lead">Anything in this guide, anything not in it, and anything that looks wrong on the site: write to RSPKT at <u>rspkt.co</u> and say which page you were on.</p><p class="credit"><span>Designed by</span><img src="${M.rspkt}" alt="RSPKT">${joule(26)}</p></div><div class="end__wave">${wave(1240, 160, { lines: 7, amp: 30 })}</div></section>`);
 

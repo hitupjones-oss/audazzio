@@ -38,14 +38,15 @@ function az_schema_logos() {
 			'tone'    => az_f( 'select', 'Background', 'white', array( 'options' => az_tones() ) ),
 			'anchor'  => az_f( 'text', 'Anchor', 'press' ),
 			'eyebrow' => az_f( 'text', 'Line above the logos', 'Selected by, on air with and featured in' ),
-			'items'   => az_f( 'repeater', 'Logos', az_logos_default(), array( 'fields' => array( 'name' => az_f( 'text', 'Company', '' ), 'logo' => az_f( 'media', 'Logo', '' ), 'url' => az_f( 'url', 'Link (optional)', '' ) ), 'title' => '{{{ name }}}' ) ),
+		) + az_list_fields( 'az_logo', 'The carousel shows the published logos, by their Order.' ) + array(
+			'items'   => az_f( 'repeater', 'Logos', array(), array( 'fields' => array( 'name' => az_f( 'text', 'Company', '' ), 'logo' => az_f( 'media', 'Logo', '' ), 'url' => az_f( 'url', 'Link (optional)', '' ) ), 'title' => '{{{ name }}}', 'condition' => array( 'source' => 'own' ) ) ),
 			'speed'   => az_f( 'number', 'Seconds for one full loop', 48 ),
 		),
 	);
 }
 
 function az_render_logos( $a ) {
-	$items = array_values( array_filter( (array) $a['items'], function ( $l ) {
+	$items = array_values( array_filter( az_list_for( $a, 'az_logo' ), function ( $l ) {
 		return '' !== az_media( $l['logo'] ?? '' );
 	} ) );
 	if ( ! $items ) {
@@ -102,8 +103,8 @@ function az_schema_press() {
 	return array(
 		'title'  => 'News and press',
 		'icon'   => 'eicon-post-list',
-		'fields' => az_head_fields( 'Newsroom', "In the news.", '', 'white' ) + array(
-			'items'   => az_f( 'repeater', 'Stories', az_press_default(), array( 'fields' => array(
+		'fields' => az_head_fields( 'Newsroom', "In the news.", '', 'white' ) + az_list_fields( 'az_news', 'The list shows the published news, newest first.' ) + array(
+			'items'   => az_f( 'repeater', 'Stories', array(), array( 'condition' => array( 'source' => 'own' ), 'fields' => array(
 				'date'    => az_f( 'text', 'Date (YYYY-MM-DD, or YYYY-MM for a month)', '' ),
 				'kind'    => az_f( 'select', 'Kind', 'Press release', array( 'options' => array( 'Case study' => 'Case study', 'Press release' => 'Press release', 'Coverage' => 'Coverage', 'Award' => 'Award' ) ) ),
 				'outlet'  => az_f( 'text', 'Outlet or source', '' ),
@@ -122,7 +123,10 @@ function az_schema_press() {
 }
 
 function az_render_press( $a ) {
-	$items = (array) $a['items'];
+	$items = az_list_for( $a, 'az_news' );
+	if ( ! $items ) {
+		return;
+	}
 	usort( $items, function ( $x, $y ) {
 		return strcmp( (string) ( $y['date'] ?? '' ), (string) ( $x['date'] ?? '' ) );
 	} );
@@ -144,11 +148,11 @@ function az_render_press( $a ) {
 			</div>
 		<?php endif; ?>
 		<ul class="az-news">
-			<?php foreach ( $items as $p ) : $url = az_url( $p['url'] ?? '' ); $img = az_media( $p['image'] ?? '' ); $raw = (string) ( $p['date'] ?? '' ); $month = (bool) preg_match( '/^\d{4}-\d{2}$/', $raw ); $ts = strtotime( $month ? $raw . '-01' : $raw ); $pdf = (bool) preg_match( '/\.pdf($|\?)/i', $url ); ?>
+			<?php foreach ( $items as $p ) : $url = az_url( $p['url'] ?? '' ); $img = az_media( $p['image'] ?? '' ); $date = az_news_date( $p['date'] ?? '' ); $pdf = (bool) preg_match( '/\.pdf($|\?)/i', $url ); ?>
 				<li class="az-new" data-kind="<?php echo esc_attr( $p['kind'] ?? '' ); ?>" data-az-rise>
 					<a class="az-new__a" href="<?php echo esc_url( $url ?: '#' ); ?>"<?php echo $url && ( $pdf || 0 !== strpos( $url, home_url() ) ) ? ' target="_blank" rel="noopener"' : ''; ?>>
 						<?php if ( 'cards' === $layout ) : ?><span class="az-new__pic"><?php if ( $img ) : ?><img src="<?php echo esc_url( $img ); ?>" alt="" loading="lazy" decoding="async"><?php endif; ?></span><?php endif; ?>
-						<span class="az-new__meta az-label"><span><?php echo esc_html( $p['kind'] ?? '' ); ?></span><?php if ( $ts ) : ?><time datetime="<?php echo esc_attr( gmdate( $month ? 'Y-m' : 'Y-m-d', $ts ) ); ?>"><?php echo esc_html( gmdate( $month ? 'M Y' : 'M j, Y', $ts ) ); ?></time><?php endif; ?><?php if ( ! empty( $p['outlet'] ) ) : ?><span><?php echo esc_html( $p['outlet'] ); ?></span><?php endif; ?></span>
+						<span class="az-new__meta az-label"><span><?php echo esc_html( $p['kind'] ?? '' ); ?></span><?php if ( $date ) : ?><time datetime="<?php echo esc_attr( $date[0] ); ?>"><?php echo esc_html( $date[1] ); ?></time><?php endif; ?><?php if ( ! empty( $p['outlet'] ) ) : ?><span><?php echo esc_html( $p['outlet'] ); ?></span><?php endif; ?></span>
 						<span class="az-new__t"><?php echo esc_html( $p['title'] ?? '' ); ?></span>
 						<?php if ( ! empty( $p['summary'] ) ) : ?><span class="az-new__p"><?php echo esc_html( $p['summary'] ); ?></span><?php endif; ?>
 						<span class="az-new__go" aria-hidden="true"><?php echo az_icon( $pdf ? 'download' : 'arrow-ur' ); // phpcs:ignore ?></span>

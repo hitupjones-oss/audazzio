@@ -65,7 +65,7 @@ function az_schema_steps() {
 			'steps'   => az_f( 'repeater', 'Steps', array(
 				array( 'title' => 'Embed', 'text' => 'We embed an inaudible micro-signal in the audio of your broadcast, stream or venue sound.' ),
 				array( 'title' => 'Play', 'text' => 'TV speakers or the seating bowl’s sound system carry the signal to every phone in range.' ),
-				array( 'title' => 'Deliver', 'text' => 'Phones listening with the app hear it and load the content you chose, in under a second.' ),
+				array( 'title' => 'Deliver', 'text' => 'Phones listening through Audazzio, in a partner’s app or the browser, hear it and load the content you chose, in under a second.' ),
 			), array( 'fields' => array( 'title' => az_f( 'text', 'Step', '' ), 'text' => az_f( 'textarea', 'Text', '' ) ), 'title' => '{{{ title }}}' ) ),
 			'cta'     => az_f( 'text', 'Link', 'How Live QR works' ),
 			'cta_url' => az_f( 'url', 'Link address', '/live-qr/' ),
@@ -163,7 +163,7 @@ function az_schema_canvas() {
 				array( 'icon' => 'dice', 'label' => 'Betting and gaming', 'text' => 'Frictionless wagering, voting and polling.' ),
 				array( 'icon' => 'gift', 'label' => 'Rewards', 'text' => 'Rewards and incentives for the people watching.' ),
 			), array( 'fields' => array( 'icon' => az_f( 'select', 'Icon', 'image', array( 'options' => az_icon_options() ) ), 'label' => az_f( 'text', 'Label', '' ), 'text' => az_f( 'textarea', 'Text', '' ) ), 'title' => '{{{ label }}}' ) ),
-			'kicker' => az_f( 'textarea', 'Closing line', "*Creating new inventory.* The Audazzio Live QR® technology creates a new marketing channel, with an all-new advertising inventory for broadcasters and event producers to sell." ),
+			'kicker' => az_f( 'textarea', 'Closing line', "*Creating new inventory.* The Audazzio Live QR™ technology creates a new marketing channel, with an all-new advertising inventory for broadcasters and event producers to sell." ),
 		),
 	);
 }

@@ -41,7 +41,7 @@
 
 /* ---------------------------------------------------------------- reset */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: calc(var(--az-nav-h) + 24px); }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: calc(var(--az-nav-h) + 24px); scroll-padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 html.az-lock, html.az-modal { overflow: hidden; }
 body.az { margin: 0; background: var(--az-white); color: var(--az-ink); font: 400 17px/1.5 var(--az-font); font-feature-settings: "ss01", "cv11"; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; overflow-x: clip; }
@@ -51,7 +51,9 @@ body.az { margin: 0; background: var(--az-white); color: var(--az-ink); font: 40
 :where(.az) :where(button) { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 :where(.az) :where(h1, h2, h3, h4, p, ul, ol, dl, dd, figure, blockquote) { margin: 0; }
 :where(.az) :where(ul, ol) { padding: 0; list-style: none; }
-.az :focus-visible { outline: 2px solid var(--az-ink); outline-offset: 3px; border-radius: 6px; }
+/* the ring follows each control's own corners: pills stay pills, round buttons stay round */
+.az :focus-visible { outline: 2px solid var(--az-ink); outline-offset: 3px; }
+.az-sec--ink :focus-visible, .az-player__screen :focus-visible { outline-color: #fff; }
 .az [hidden] { display: none !important; }
 .az-vh { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .az-skip { position: fixed; left: 16px; top: -60px; z-index: 200; background: var(--az-ink); color: #fff; padding: 10px 16px; border-radius: 999px; transition: top .2s; }

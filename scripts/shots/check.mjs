@@ -2,6 +2,7 @@
 //   node scripts/shots/check.mjs                      (http://localhost:3031, the real form)
 //   AZ_ORIGIN=http://localhost:3051 node scripts/shots/check.mjs   (site/, the preview form)
 import { launch, ORIGIN } from "./browser.mjs";
+import { stubYouTube } from "./ytstub.mjs";
 
 const PAGES = ["/", "/live-qr/", "/solutions/", "/newsroom/", "/about/", "/try/", "/join/", "/privacy/"];
 const results = [];
@@ -10,6 +11,7 @@ const b = await launch();
 
 async function open(path, opts = {}) {
   const ctx = await b.newContext(opts.mobile ? { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true } : { viewport: { width: 1440, height: 900 } });
+  await stubYouTube(ctx);
   const page = await ctx.newPage();
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));

@@ -1,0 +1,20 @@
+/* ==========================================================================
+   Reduced motion: nothing loops. The pulses, blinks, marching dashes, rings, equalizers and spinners
+   hold still; what still changes (a step, a toast, the sheet) fades instead of moving.
+   (The canvases, the diagram's travelling dot and the self-turning steps are stopped in the scripts.)
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .az-pulse::before, .az-pulse::after { animation: none; opacity: 0; }
+  .az-hero__readout i { animation: none; }
+  .az-hero__scroll span::after { animation: none; top: 0; }
+  .az-steps .az-link__audio, .az-steps .az-link__path, .az-steps.is-live .az-link__audio, .az-steps.is-live .az-link__path { animation: none; }
+  .az-steps__fig[data-phase="2"] .az-link__rings path, .az-steps__fig[data-phase="3"] .az-link__rings path { animation: none; }
+  .az-try::before, .az-player__ring, .az-player.is-loading .az-player__wait, .az-sim__eq i, .az-bracket path, .az-marquee__track, .az-credit__turn, .az-btn.is-busy .az-ico { animation: none; }
+  .az-player.is-playing .az-player__meter i { animation: none; height: 70%; }
+  .is-playing .az-sim__phone { animation: none; }
+  .az-sim__shot { transform: none; }
+  .az-sim.is-toast .az-sim__toast { animation-name: az-toast-fade; transform: none; }
+  .az-join__step, .az-join__done { animation-name: az-fade; }
+  .az-notify, .az-dialog__sheet { transform: none; }
+}
+@keyframes az-toast-fade { 0%, 100% { opacity: 0; } 14%, 78% { opacity: 1; } }

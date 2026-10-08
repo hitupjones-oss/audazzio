@@ -13,8 +13,10 @@ export const COMPANY = {
   linkedin: "https://www.linkedin.com/company/audazzio",
 };
 
-// The films on the site today, kept as placeholders for the new ones (youtube.com/@audazzio).
+// The five films on today's home page, kept as placeholders for the new ones (youtube.com/@audazzio).
+// The one-minute overview leads.
 export const VIDEOS = [
+  { id: "UhPIcspc2-k", title: "Audazzio in action", label: "Overview", length: "About 1 min" },
   { id: "oxwBbfqcnGY", title: "Tour de France live demonstration", label: "Example · Broadcast", length: "About 2 min" },
   { id: "_ZWP1nY4rws", title: "Audazzio in action: US football", label: "Example · Broadcast", length: "About 2 min" },
   { id: "FDXRxD3zHm4", title: "Rugby sevens demonstration", label: "Example · Broadcast", length: "About 2 min" },
@@ -24,8 +26,8 @@ export const VIDEOS = [
 // Audazzio's web listener, the page today's audazzio.com/demo sends people to with its QR code.
 export const LISTENER = "https://cdn.audazz.io/tools/browser-decoder/viewer.html?clientId=demo&clientKey=EB";
 // The demo clips from audazzio.com/demo (their soundtracks carry the signal), placeholders for new ones.
+// Its Formula 1 clip (C8tkbLRltjA) is left out: Formula One Management blocks it from playing on other sites.
 export const DEMOS = [
-  { id: "C8tkbLRltjA", label: "Formula 1", title: "Audazzio Formula 1 live demonstration" },
   { id: "FDXRxD3zHm4", label: "Rugby sevens", title: "Audazzio rugby demonstration" },
   { id: "JBQM5iC7CpQ", label: "USA Swimming", title: "Audazzio at USA Swimming" },
 ];
@@ -82,17 +84,19 @@ export const PRESS = [
   { date: "2023-07", kind: "Case study", outlet: "Audazzio", title: "NBC Sports trials Audazzio second-screen technology on its Tour de France broadcast", summary: "Bridged the primary screen with the home audience across MVPD, vMVPD and DTC.", pdf: "case-study-nbc-sports-tour-de-france.pdf", image: "news-tdf.jpg" },
   { date: "2023-02-06", kind: "Press release", outlet: "Audazzio", title: "Audazzio appoints Bryan Elliot as VP of Engineering", summary: "The Ping Identity co-founder leads all technology development.", pdf: "press-2023-02-06-elliot.pdf", image: "news-elliot.jpg" },
   { date: "2023-01-19", kind: "Press release", outlet: "Audazzio", title: "Audazzio has a strong presence at the 16th annual Sports Video Group Summit", summary: "Lead sponsor of the OTT, Streaming and Digital Workshop in New York City.", pdf: "press-2023-01-19-svg-summit.pdf", image: "news-svg.jpg" },
-  { date: "2022-11-04", kind: "Award", outlet: "The Tech Tribune", title: "Audazzio named to The Tech Tribune's ten best tech startups in San Antonio", summary: "Recognized on the annual list of the city's best tech startups.", pdf: "press-2022-11-04-tech-tribune.pdf", image: "news-tribune.jpg" },
+  { date: "2022-11-04", kind: "Award", outlet: "The Tech Tribune", title: "Audazzio named to The Tech Tribune’s ten best tech startups in San Antonio", summary: "Recognized on the annual list of the city’s best tech startups.", pdf: "press-2022-11-04-tech-tribune.pdf", image: "news-tribune.jpg" },
   { date: "2022-04-25", kind: "Press release", outlet: "Audazzio", title: "Audazzio announces a $1.4 million capital raise for accelerated growth", summary: "A second round of funding, largely from existing shareholders.", pdf: "press-2022-04-25-raise.pdf", image: "news-raise.jpg" },
   { date: "2022-04-05", kind: "Press release", outlet: "Audazzio", title: "Audazzio seeks to disrupt sports broadcasting and beyond with game-changing technology", summary: "The first wave of the Live QR rollout.", pdf: "press-2022-04-05-disrupt.pdf", image: "news-disrupt.jpg" },
-  { date: "2022-02-16", kind: "Coverage", outlet: "Sports Video Group", title: "SVG Sponsor Spotlight: connecting to mobile devices for second-screen experiences", summary: "An interview on how Audazzio connects broadcasts to the phones in viewers’ hands.", url: "https://www.sportsvideo.org/2022/02/16/new-svg-sponsor-spotlight-audazzios-danny-abelson-on-connecting-to-mobile-devices-for-second-screen-experiences/", image: "news-svg.jpg" },
   { date: "2021-02-22", kind: "Award", outlet: "Comcast NBCUniversal SportsTech", title: "One of ten companies selected for the inaugural Comcast NBCUniversal SportsTech Accelerator", summary: "Chosen from over 1,000 applicants.", url: "https://www.comcastsportstech.com/portfolio-2024/", image: "news-sportstech.jpg" },
 ];
 
 // The four quotes on today's About page, word for word (shortened to their key sentences; a cut inside a quote is marked …).
+// Each role line says how the speaker is tied to Audazzio: Aldous, Charlesworth and Abbott are its advisory team
+// (04.05.22 release, SVG 2022-07-14), Charlesworth also its Chief Technical Liaison (01.19.23 release), and
+// Boomtown, Faulkenberg's company, an investor (today's About page: "New investors including Comcast and Boomtown").
 export const QUOTES = [
-  { quote: "I am blown away by Audazzio's ability to tightly coordinate second-screen experiences with linear broadcasting. The seamless and undetectable embedding and acoustic detection of micro-signaling that underlies this technology is nothing short of magic.", name: "Roger Charlesworth", role: "Executive Director, DTV Audio Group" },
-  { quote: "Audazzio’s unique technology is like no other signaling technology. The technical development gives the broadcaster endless possibilities to enhance the second screen viewer’s experience with ease.", name: "Fred Aldous", role: "Sports broadcast audio consultant" },
-  { quote: "The Audazzio team is a dedicated group with great passion for their business. … Boomtown is proud to support Audazzio, beyond the accelerator program, as they form new strategic partnerships.", name: "Mark A. Faulkenberg", role: "Managing Director, Comcast NBCUniversal SportsTech powered by Boomtown" },
-  { quote: "As Producers begin to leverage this solution, they will quickly appreciate there are no limits for creating innovative, engaging content with Audazzio’s technology.", name: "Michael Abbott", role: "Audio Engineering and Consulting, All Ears Inc." },
+  { quote: "I am blown away by Audazzio's ability to tightly coordinate second-screen experiences with linear broadcasting. The seamless and undetectable embedding and acoustic detection of micro-signaling that underlies this technology is nothing short of magic.", name: "Roger Charlesworth", role: "Audazzio adviser and Chief Technical Liaison · Executive Director, DTV Audio Group" },
+  { quote: "Audazzio’s unique technology is like no other signaling technology. The technical development gives the broadcaster endless possibilities to enhance the second screen viewer’s experience with ease.", name: "Fred Aldous", role: "Audazzio adviser · Sports broadcast audio consultant" },
+  { quote: "The Audazzio team is a dedicated group with great passion for their business. … Boomtown is proud to support Audazzio, beyond the accelerator program, as they form new strategic partnerships.", name: "Mark A. Faulkenberg", role: "Managing Director, Comcast NBCUniversal SportsTech powered by Boomtown, an Audazzio investor" },
+  { quote: "As Producers begin to leverage this solution, they will quickly appreciate there are no limits for creating innovative, engaging content with Audazzio’s technology.", name: "Michael Abbott", role: "Audazzio adviser · Audio Engineering and Consulting, All Ears Inc." },
 ];

@@ -2,6 +2,10 @@
 // turns each section into an Elementor widget (fields not listed here use the widget's own defaults, in
 // wp-content/plugins/audazzio-core/includes/components/).
 //
+// News, case studies and logos are not copied into the pages: those widgets show the shared lists
+// (source: "shared", edited under Audazzio > News, Case studies and Logos), which the importer fills once
+// from scripts/content/site.mjs and content/logos.json (az_seed_lists in includes/seed.php).
+//
 // The order of the home page is the one-minute story: what it is (hero), how it works (three steps),
 // try it (the player), why it matters (numbers), see it (films), who it is for, proof (case studies,
 // press), then Join the Wave.
@@ -16,7 +20,7 @@ export const PAGES = [
   {
     slug: "home", title: "Home", order: 0,
     doc_title: "Audazzio | It comes in waves.",
-    description: "Audazzio’s Live QR® technology hides inaudible signals in the sound of a broadcast or live event, so every phone that hears one shows the right content at the exact moment. No scanning.",
+    description: "Audazzio’s Live QR™ technology hides inaudible signals in the sound of a broadcast or live event, so every phone that hears one shows the right content at the exact moment. No scanning.",
     widgets: [
       ["hero", {}],
       ["steps", { tone: "white" }],
@@ -24,18 +28,18 @@ export const PAGES = [
       ["numbers", { tone: "white" }],
       ["videos", { tone: "white" }],
       ["solutions", { tone: "mist" }],
-      ["cases", { tone: "white" }],
-      ["logos", { tone: "white" }],
-      ["press", { tone: "white", limit: 4, eyebrow: "Newsroom", title: "The latest\n*from Audazzio.*", cta: "All news", cta_url: "/newsroom/" }],
+      ["cases", { tone: "white", source: "shared" }],
+      ["logos", { tone: "white", source: "shared" }],
+      ["press", { tone: "white", source: "shared", limit: 4, eyebrow: "Newsroom", title: "The latest\n*from Audazzio.*", cta: "All news", cta_url: "/newsroom/" }],
       cta,
     ],
   },
   {
     slug: "live-qr", title: "Live QR", order: 1,
-    doc_title: "How Live QR® works | Audazzio",
-    description: "Live QR® embeds inaudible micro-signals in the audio of a broadcast or live event. Phones that hear them load the content you chose, in less than a second. It’s like a QR code, but no one has to scan it.",
+    doc_title: "How Live QR™ works | Audazzio",
+    description: "Live QR™ embeds inaudible micro-signals in the audio of a broadcast or live event. Phones that hear them load the content you chose, in less than a second. It’s like a QR code, but no one has to scan it.",
     widgets: [
-      ["page-hero", { eyebrow: "Live QR® technology", title: "It’s like a QR code.\n*No one has to scan it.*", intro: "Our Live QR technology embeds inaudible micro-signals in the audio of a broadcast or live event. Every phone that hears one loads the content you chose, in less than a second.", cta: "Try it now", cta_url: "/try/", alt: "Talk to us", alt_url: "/join/", waves: "spectrum" }],
+      ["page-hero", { eyebrow: "Live QR™ technology", title: "It’s like a QR code.\n*No one has to scan it.*", intro: "Our Live QR technology embeds inaudible micro-signals in the audio of a broadcast or live event. Every phone that hears one loads the content you chose, in less than a second.", cta: "Try it now", cta_url: "/try/", alt: "Talk to us", alt_url: "/join/", waves: "spectrum" }],
       ["flow", { tone: "mist" }],
       ["canvas", { tone: "white" }],
       ["videos", { tone: "white", anchor: "explainer", eyebrow: "The explainer", title: "Two minutes.\n*The whole idea.*", layout: "feature", items: [{ title: "The Audazzio explainer", label: "How it works", video: "https://www.youtube.com/watch?v=PL6hqRwk830", poster: "asset:img/poster-PL6hqRwk830.jpg", length: "2 min" }] }],
@@ -55,6 +59,7 @@ export const PAGES = [
           { q: "How fast does content arrive?", a: "In less than a second, fully synchronized with the broadcast or the event, regardless of when or where it is watched." },
           { q: "Does it survive broadcast and streaming?", a: "Yes. On NBC Sports’ Tour de France broadcast, Audazzio survived the rigors of signal transcoding and transmission, and worked across traditional MVPD, vMVPD and DTC." },
           { q: "What can it put on the phone?", a: "Any web page, at any time, on any device within range of the signal: player profiles, stats, replays, polls and votes, contests, offers, shopping and sponsored content." },
+          { q: "Can we measure what works?", a: "Yes. Audazzio tracks engagement and preferences, so you see who engaged and which content resonated. At the 2024 Olympic Trials, USA Swimming used that feedback to change its content while the event was still on." },
           { q: "Where does it work?", a: "Anywhere there’s a sound system: TV and streams at home, stadiums and arenas, concerts, studio shows, corporate meetings, casinos and theme parks." },
         ],
       }],
@@ -123,6 +128,7 @@ export const PAGES = [
           { group: "Increased exposure", icon: "users", title: "In the moment, in-game", text: "A player making their debut enters the game. Via Audazzio, a pre-loaded profile featuring sponsor content is instantly on the audience’s second screens." },
           { group: "Enhanced engagement", icon: "app", title: "Contextual branded content", text: "A sponsor message appears on screen. Via Audazzio, rich sponsor content is pushed to the media partner’s app or the brand’s own." },
           { group: "Better performance", icon: "trophy", title: "Frictionless direct response", text: "A sponsor competition is broadcast. Via Audazzio, the branded entry is on the audience’s phones in under a second." },
+          { group: "Measurable results", icon: "chart", title: "Insights, live", text: "The campaign is on air. Via Audazzio, you see who engaged and which content resonated, and can adjust it while the event is still on." },
         ],
       }],
       ["solution", {
@@ -130,7 +136,7 @@ export const PAGES = [
         intro: "Audazzio works anywhere there is a sound system. A few of the places it benefits advertisers, event promoters, broadcasters, concert promoters and gaming organizations:",
         uses: "Broadcast | A second creative canvas; Storytelling; Sponsored content; Voting and polling; Replays and player tracking\nLive events | Schedules and info; Sponsored content; Safety announcements; Contests; Voting and polling\nStudio shows | Additional advertising channel; Educate viewers; Sponsored content; Voting and polling\nConcerts | Encore selection; Scenic extension; Merch promotions; Concession updates; Safety announcements\nCorporate meetings | Coordinate every participant; Speaker bios, announcements and documents; Team promotions and incentives; Ideal for plenary sessions\nCasino resorts | Frictionless wagering; Promotions and incentives; Rewards\nAudience polling | Contest participation; TV alternate endings; Concert encore selections; Merchandise\nTheme parks | Additional advertising channel; Educate and guide guests; Sponsored content; Voting and polling; Merch promotions; Rewards and incentives; Safety announcements; Scavenger hunts",
       }],
-      ["cases", { tone: "white" }],
+      ["cases", { tone: "white", source: "shared" }],
       cta,
     ],
   },
@@ -140,9 +146,9 @@ export const PAGES = [
     description: "Audazzio case studies with NBC Sports, USA Swimming and the Navy All-American Bowl, press releases, awards and coverage.",
     widgets: [
       ["page-hero", { eyebrow: "Newsroom", title: "Case studies,\n*news and coverage.*", intro: "From the Tour de France on NBC Sports to the Navy All-American Bowl: what Audazzio has done, and what people are saying.", waves: "rings" }],
-      ["cases", { tone: "mist", eyebrow: "Case studies", title: "Proven on air\n*and in the stands.*", intro: "", cta: "", cta_url: "" }],
-      ["press", { tone: "white", eyebrow: "All news", title: "Press releases,\n*awards and coverage.*", filters: "yes", layout: "list", limit: 0 }],
-      ["logos", { tone: "white" }],
+      ["cases", { tone: "mist", source: "shared", eyebrow: "Case studies", title: "Proven on air\n*and in the stands.*", intro: "", cta: "", cta_url: "" }],
+      ["press", { tone: "white", source: "shared", eyebrow: "All news", title: "Press releases,\n*awards and coverage.*", filters: "yes", layout: "list", limit: 0 }],
+      ["logos", { tone: "white", source: "shared" }],
       cta,
     ],
   },
@@ -163,7 +169,7 @@ export const PAGES = [
   {
     slug: "try", title: "Try Audazzio", order: 5,
     doc_title: "Try Audazzio now: turn your speakers on",
-    description: "Get the Audazzio app, turn your speakers on and press play. Your phone shows the content in sync with the video: Live QR®, working right here.",
+    description: "Open the Audazzio listener in your phone’s browser, turn your speakers on and press play. Your phone shows the content in sync: Live QR™, working right here.",
     widgets: [
       ["page-hero", { eyebrow: "Try Audazzio now", title: "Turn your speakers on.\n*Watch your phone.*", intro: "Four steps, about a minute, nothing to download. Your phone listens in the browser, hears the signal in this page’s sound and shows the content in sync.", waves: "spectrum" }],
       ["try", { tone: "mist", eyebrow: "", title: "", intro: "" }],
@@ -174,10 +180,10 @@ export const PAGES = [
   {
     slug: "join", title: "Join the Wave", order: 6,
     doc_title: "Join the Wave: talk to Audazzio",
-    description: "Tell Audazzio about your broadcast, venue or brand, and see what Live QR® can do for your audience. Four short steps.",
+    description: "Tell Audazzio about your broadcast, venue or brand, and see what Live QR™ can do for your audience. Four short steps.",
     widgets: [
       ["join", {}],
-      ["logos", { tone: "white" }],
+      ["logos", { tone: "white", source: "shared" }],
     ],
   },
   {

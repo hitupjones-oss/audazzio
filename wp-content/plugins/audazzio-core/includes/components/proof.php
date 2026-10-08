@@ -61,8 +61,8 @@ function az_schema_cases() {
 	return array(
 		'title'  => 'Case studies',
 		'icon'   => 'eicon-posts-grid',
-		'fields' => az_head_fields( 'Proven live', "On air with NBC Sports\n*and USA Swimming.*", 'Real broadcasts, real venues, real fans.', 'mist' ) + array(
-			'items'   => az_f( 'repeater', 'Case studies', az_cases_default(), array( 'fields' => array(
+		'fields' => az_head_fields( 'Proven live', "On air with NBC Sports\n*and USA Swimming.*", 'Real broadcasts, real venues, real fans.', 'mist' ) + az_list_fields( 'az_case', 'The rail shows the published case studies, by their Order.' ) + array(
+			'items'   => az_f( 'repeater', 'Case studies', array(), array( 'condition' => array( 'source' => 'own' ), 'fields' => array(
 				'org'     => az_f( 'text', 'Partner', '' ),
 				'title'   => az_f( 'textarea', 'Headline', '' ),
 				'year'    => az_f( 'text', 'Year', '' ),
@@ -79,6 +79,10 @@ function az_schema_cases() {
 }
 
 function az_render_cases( $a ) {
+	$items = az_list_for( $a, 'az_case' );
+	if ( ! $items ) {
+		return;
+	}
 	if ( empty( $a['anchor'] ) ) {
 		$a['anchor'] = 'cases';
 	}
@@ -88,7 +92,7 @@ function az_render_cases( $a ) {
 		<div class="az-head-row"><?php echo az_head( $a ); // phpcs:ignore ?><?php if ( $a['cta'] ) { echo '<p class="az-head-row__cta">' . az_btn( $a['cta'], $a['cta_url'], 'link' ) . '</p>'; } // phpcs:ignore ?></div>
 		<div class="az-rail" data-az-rail>
 			<ul class="az-rail__track">
-				<?php foreach ( (array) $a['items'] as $c ) : $img = az_media( $c['image'] ?? '' ); $pdf = az_media( $c['pdf'] ?? '' ); ?>
+				<?php foreach ( $items as $c ) : $img = az_media( $c['image'] ?? '' ); $pdf = az_media( $c['pdf'] ?? '' ); ?>
 					<li class="az-case" data-az-rise>
 						<div class="az-case__pic"><?php if ( $img ) : ?><img src="<?php echo esc_url( $img ); ?>" alt="" loading="lazy" decoding="async"><?php endif; ?><span class="az-case__tag az-label"><?php echo esc_html( trim( ( $c['where'] ?? '' ) . ( ! empty( $c['year'] ) ? ' · ' . $c['year'] : '' ), ' ·' ) ); ?></span></div>
 						<div class="az-case__body">
@@ -125,7 +129,7 @@ function az_schema_quotes() {
 	return array(
 		'title'  => 'Quotes',
 		'icon'   => 'eicon-testimonial',
-		'fields' => az_head_fields( 'What the industry says', '', '', 'white' ) + array(
+		'fields' => az_head_fields( 'From our advisers and investors', '', '', 'white' ) + array(
 			'items' => az_f( 'repeater', 'Quotes', az_quotes_default(), array( 'fields' => array( 'quote' => az_f( 'textarea', 'Quote', '' ), 'name' => az_f( 'text', 'Name', '' ), 'role' => az_f( 'text', 'Title, company', '' ) ), 'title' => '{{{ name }}}' ) ),
 		),
 	);

@@ -6,7 +6,9 @@
  * includes/components/. The same schema builds the Elementor widget controls (elementor/widgets.php)
  * and the shortcode fallback, so editors always start from the real copy.
  *
- * Field types: text, textarea, url, switch, select, number, media, repeater.
+ * Field types: text, textarea, url, switch, select, number, media, repeater, and note (a panel note, its HTML
+ * as the default). 'condition' => array( 'field' => 'value' ) shows a field, or a repeater's section, only then.
+ * News, case studies and logos come from the shared lists by default (includes/lists.php, az_list_for()).
  * In headlines a line break (or |) starts a new line and *asterisks* set words in the quiet second tone.
  */
 
