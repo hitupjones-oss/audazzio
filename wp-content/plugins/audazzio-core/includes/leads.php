@@ -156,9 +156,8 @@ function az_join_receive( WP_REST_Request $req ) {
 	}
 	$all = get_transient( 'az_join_all' );
 	$all = is_array( $all ) && isset( $all['n'], $all['since'] ) ? $all : array( 'n' => 0, 'since' => time() );
-	if ( $all['n'] >= AZ_JOIN_PER_HOUR ) {
-		return $fail( 'We are receiving a lot of inquiries right now. Please try again in an hour, or email us.', 429 );
-	}
+	// Past the site-wide hourly cap an inquiry is still kept, but no email or HubSpot copy goes out for it.
+	$capped = $all['n'] >= AZ_JOIN_PER_HOUR;
 
 	$d = array();
 	foreach ( array( 'name' => 120, 'position' => 120, 'company' => 160, 'phone' => 40 ) as $f => $max ) {
@@ -224,8 +223,12 @@ function az_join_receive( WP_REST_Request $req ) {
 	$all['n']++;
 	set_transient( 'az_join_all', $all, max( 60, HOUR_IN_SECONDS - ( time() - (int) $all['since'] ) ) );
 
-	az_join_email( $id, $d, $g );
-	az_join_hubspot( $id, $d, $g );
+	if ( $capped ) {
+		update_post_meta( $id, '_az_held', 'Sent while more than ' . AZ_JOIN_PER_HOUR . ' inquiries arrived in an hour: no email or HubSpot copy.' );
+	} else {
+		az_join_email( $id, $d, $g );
+		az_join_hubspot( $id, $d, $g );
+	}
 
 	return new WP_REST_Response( array( 'ok' => true, 'message' => (string) az_opt( 'thanks_line' ) ), 200 );
 }

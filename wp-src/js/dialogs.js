@@ -74,12 +74,12 @@ export function dialogs(root = document) {
 
   document.addEventListener("click", (e) => {
     const t = e.target.closest("[data-az-try], [data-az-join], [data-az-video], [data-az-bio]");
-    if (!t || !plainClick(e)) return;
+    if (!t || !plainClick(e) || document.body.classList.contains("elementor-editor-active")) return;
     if (t.hasAttribute("data-az-try")) {
-      if (here("/try/")) { const s = $("[data-az-try-section]"); if (s) { e.preventDefault(); s.scrollIntoView({ behavior: "smooth" }); } return; }
+      if (here("/try/")) { const s = $("[data-az-try-section]"); if (s) { e.preventDefault(); s.scrollIntoView({ behavior: reduced() ? "auto" : "smooth" }); } return; }
       if (openDialog("az-try", t)) e.preventDefault();
     } else if (t.hasAttribute("data-az-join")) {
-      if (here("/join/") || !document.getElementById("az-join")) { const f = $(".az-joinsec"); if (f) { e.preventDefault(); f.scrollIntoView({ behavior: "smooth" }); } return; }
+      if (here("/join/") || !document.getElementById("az-join")) { const f = $(".az-joinsec"); if (f) { e.preventDefault(); f.scrollIntoView({ behavior: reduced() ? "auto" : "smooth" }); } return; }
       if (openDialog("az-join", t)) { e.preventDefault(); setTimeout(() => { const i = $("#az-join input:not([type=hidden])"); i && i.focus({ preventScroll: true }); }, 260); }
     } else if (t.hasAttribute("data-az-video")) {
       e.preventDefault();

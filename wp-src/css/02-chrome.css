@@ -130,6 +130,7 @@
 .az-dialog__x:hover { background: var(--az-cloud); transform: rotate(90deg); }
 .az-dialog__x .az-ico { width: 18px; height: 18px; }
 .az-dialog--join { width: min(760px, calc(100vw - 32px)); }
+.az-dialog--join .az-dialog__sheet { scroll-padding: 64px 0 calc(110px + env(safe-area-inset-bottom)); }
 .az-dialog--bio { width: min(980px, calc(100vw - 32px)); }
 /* a film: the close button sits above the frame, clear of the player's own controls, and the frame fits the screen's height */
 .az-dialog--film { width: min(1180px, calc(100vw - 32px), calc((100dvh - 136px) * 16 / 9)); }

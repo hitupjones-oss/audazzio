@@ -39,7 +39,7 @@ const section = async (page, sel, name) => { const el = await page.$(sel); if (e
   for (const [sel, name] of [["[data-az-steps]", "steps"], ["[data-az-try-section]", "try"], [".az-numbers", "numbers"], [".az-videos", "films"], [".az-sols", "who"], [".az-cases", "cases"], [".az-logos", "logos"], [".az-press", "press"], [".az-cta", "cta"]]) await section(p, sel, name);
   // the whole page, small, for the one-minute story
   await p.evaluate(() => scrollTo(0, 0));
-  await p.screenshot({ path: path.join(OUT, "d-flow.jpg"), type: "jpeg", quality: 80, fullPage: true });
+  await p.screenshot({ path: path.join(OUT, "d-home-full.jpg"), type: "jpeg", quality: 80, fullPage: true });
   await p.close();
 }
 // the Try sheet, playing
@@ -66,13 +66,13 @@ const section = async (page, sel, name) => { const el = await page.$(sel); if (e
   await p.fill(`${f} [name=company]`, "Regional Sports Network"); await p.fill(`${f} [name=email]`, "dana@rsn-example.com"); await p.fill(`${f} [name=phone]`, "210 555 0142");
   await save(p, "join-1");
   await p.click(`${f} [data-az-next]`);
-  await p.click(`${f} [name=org][value=broadcaster] + span`); await p.click(`${f} [name="uses[]"][value=broadcast] + span`); await p.click(`${f} [name="uses[]"][value=sponsor] + span`);
+  await p.check(`${f} [name=org][value=broadcaster]`, { force: true }); await p.check(`${f} [name="uses[]"][value=broadcast]`, { force: true }); await p.check(`${f} [name="uses[]"][value=sponsor]`, { force: true });
   await p.fill(`${f} [name=details]`, "Every home game next season: player profiles when a substitute comes on, and a presenting sponsor’s competition at half time.");
   await save(p, "join-2");
   await p.click(`${f} [data-az-next]`);
-  for (const [q, v] of [["audience", "xl"], ["frequency", "many"], ["budget", "xl"], ["timeline", "soon"], ["role", "decide"]]) await p.click(`${f} [name=${q}][value=${v}] + span`);
+  for (const [q, v] of [["audience", "xl"], ["frequency", "many"], ["budget", "xl"], ["timeline", "soon"], ["role", "decide"]]) await p.check(`${f} [name=${q}][value=${v}]`, { force: true });
   await save(p, "join-3");
-  await p.click(`${f} [data-az-next]`); await p.check(`${f} [name=consent]`);
+  await p.click(`${f} [data-az-next]`); await p.check(`${f} [name=consent]`, { force: true });
   await p.click(`${f} [data-az-send]`);
   await p.waitForSelector(`${f} [data-az-done]:not([hidden])`); await p.waitForTimeout(600);
   await save(p, "join-done");

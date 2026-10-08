@@ -16,7 +16,7 @@ export const ROOT = path.join(import.meta.dirname, "..", "..");
 export const url = (...p) => pathToFileURL(path.join(ROOT, ...p)).href;
 export const C = { ink: "#0C1222", ink2: "#3B4152", ink3: "#6B7080", ink4: "#868A96", line: "#E3E4E8", mist: "#F5F5F7", cloud: "#ECECF0", wave: "#F26A2E", peach: "#F89C68", white: "#FFFFFF" };
 // The preview on Vercel (project "audazzio-rspkt", serving site/). Change it here if the project is named differently.
-export const LIVE = "audazzio-rspkt.vercel.app";
+export const LIVE = process.env.AZ_LIVE || "audazzio-rspkt.vercel.app";
 export const PRICE = "$23,500";
 export const shot = (n) => url("scripts", "shots", "out", n + ".jpg");
 export const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

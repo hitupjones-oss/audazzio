@@ -29,7 +29,7 @@ S.push(slide("The idea", "One minute\n*to get it.*", `<div class="cols cols--ide
 <tr><th class="d">0:15</th><td><b>How does it work?</b> Embed, play, deliver, with a diagram that plays the three steps.</td></tr>
 <tr><th class="d">0:30</th><td><b>Can I see it?</b> Try Audazzio now, right on the page.</td></tr>
 <tr><th class="d">0:45</th><td><b>Does it work?</b> NBC Sports, USA Swimming, 74% microphone opt-in, the press.</td></tr>
-<tr><th class="d">1:00</th><td><b>What next?</b> Join the Wave.</td></tr></table><p class="under">Six pages instead of nine: Home, Live QR, Solutions, Newsroom, About and Join the Wave, plus Try Audazzio and Privacy. Every old address is redirected.</p></div>${pic("flow", "flow")}</div>`));
+<tr><th class="d">1:00</th><td><b>What next?</b> Join the Wave.</td></tr></table><p class="under">Six pages instead of nine: Home, Live QR, Solutions, Newsroom, About and Join the Wave, plus Try Audazzio and Privacy. Every old address is redirected.</p></div>${pic("home-full", "flow")}</div>`));
 
 S.push(slide("The look", "White, quiet\n*and in waves.*", `<div class="cols cols--3"><div class="sws">
 <div class="sw"><i style="background:#0C1222"></i><span><b>Ink</b>#0C1222 · text</span></div>
@@ -104,13 +104,15 @@ footer span:last-child{margin-left:auto}
 .cols--wide{grid-template-columns:1.45fr 1fr}
 .cols--idea{grid-template-columns:1.25fr .75fr}
 .cols--2{grid-template-columns:1fr 1fr;gap:32px}
+.body>.cols--2,.body>.cols--wide{align-items:stretch;grid-template-rows:minmax(0,1fr)}
+.body>.cols--2>.shot,.body>.cols--wide>.shot{aspect-ratio:auto;height:100%;min-height:0}
 .cols--3{grid-template-columns:.85fr 1fr 1.15fr;gap:48px}
 .cols--3x{grid-template-columns:1fr 1fr 1fr;gap:24px}
 .cols--phones{grid-template-columns:auto auto auto 1fr;gap:32px;align-items:center}
 .cols--price{grid-template-columns:.9fr 1.1fr;gap:72px;align-items:center}
 .shot.wide{aspect-ratio:16/10}.shot.tall{aspect-ratio:16/10}.shot.third{aspect-ratio:16/10}.shot.strip{aspect-ratio:16/5.4;margin-bottom:28px}
 .shot.notify img{object-position:right top}
-.shot.flow{height:780px;aspect-ratio:auto}
+.shot.flow{height:640px;aspect-ratio:auto}
 .shot.flow img{object-position:top center}
 .flow--sec img{object-position:center}
 .shot.phone{width:290px;aspect-ratio:390/844;border-radius:34px;border:6px solid var(--ink)}

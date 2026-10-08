@@ -94,7 +94,7 @@ export function bar(root = document) {
   const cta = el.querySelector("a"), html = document.documentElement, head = $(".az-nav__join");
   let blockers = 0, past = false;
   const sync = () => {
-    const on = past && blockers === 0 && !html.classList.contains("az-modal") && !html.classList.contains("az-lock");
+    const on = past && blockers === 0 && !html.classList.contains("az-modal") && !html.classList.contains("az-lock") && !(html.classList.contains("az-notifying") && window.innerWidth <= 1000);
     el.classList.toggle("is-on", on);
     el.setAttribute("aria-hidden", on ? "false" : "true");
     if (cta) cta.tabIndex = on ? 0 : -1;
@@ -104,7 +104,9 @@ export function bar(root = document) {
   window.addEventListener("resize", check);
   check();
   document.addEventListener("az:menu", sync);
-  $$(".az-cta, .az-foot, .az-joinsec").forEach((b) => {
+  new MutationObserver(sync).observe(html, { attributes: true, attributeFilter: ["class"] });
+  // another Join the Wave on screen (the hero's, the closing band, the footer, the form itself): the bar steps aside
+  $$(".az-hero__ctas, .az-cta, .az-foot, .az-joinsec").forEach((b) => {
     let seen = false;
     new IntersectionObserver((es) => es.forEach((e) => {
       if (e.isIntersecting && !seen) { seen = true; blockers++; }

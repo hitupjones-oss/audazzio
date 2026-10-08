@@ -93,19 +93,19 @@ for (const p of PAGES) {
   await page.fill(`${f} [name=phone]`, "210 555 0100");
   await page.waitForTimeout(4200); // a person takes a few seconds; the server ignores anything faster
   await page.click(`${f} [data-az-next]`);
-  await page.click(`${f} [name=org][value=broadcaster] + span`);
-  await page.click(`${f} [name="uses[]"][value=broadcast] + span`);
-  await page.click(`${f} [name="uses[]"][value=sponsor] + span`);
+  await page.check(`${f} [name=org][value=broadcaster]`, { force: true });
+  await page.check(`${f} [name="uses[]"][value=broadcast]`, { force: true });
+  await page.check(`${f} [name="uses[]"][value=sponsor]`, { force: true });
   await page.fill(`${f} [name=details]`, "A national broadcast of a season of games: player profiles and sponsor competitions on viewers' phones at key moments.");
   await page.click(`${f} [data-az-next]`);
-  for (const [q, v] of [["audience", "xl"], ["frequency", "many"], ["budget", "l"], ["timeline", "soon"], ["role", "decide"]]) await page.click(`${f} [name=${q}][value=${v}] + span`);
+  for (const [q, v] of [["audience", "xl"], ["frequency", "many"], ["budget", "l"], ["timeline", "soon"], ["role", "decide"]]) await page.check(`${f} [name=${q}][value=${v}]`, { force: true });
   await page.click(`${f} [data-az-next]`);
   const review = await page.$$eval(`${f} [data-az-review] dd`, (a) => a.length);
   ok("step 4 shows the review", review >= 12, `${review} answers`);
   await page.click(`${f} [data-az-send]`);
   const consent = await page.$$eval(`${f} .az-check.is-bad`, (a) => a.length);
   ok("sending without consent is stopped", consent === 1);
-  await page.check(`${f} [name=consent]`);
+  await page.check(`${f} [name=consent]`, { force: true });
   const [resp] = await Promise.all([
     page.waitForResponse((r) => r.url().includes("/wp-json/audazzio/v1/join"), { timeout: 8000 }).catch(() => null),
     page.click(`${f} [data-az-send]`),

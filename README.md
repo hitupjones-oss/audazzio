@@ -20,11 +20,11 @@ A new [audazzio.com](https://www.audazzio.com/) on WordPress + Elementor: white,
 | Join the Wave | The four-step form |
 | Privacy | The policy, with the PDF |
 
-Always there: the floating header, **Join the Wave** at the foot of every screen, the **Try Audazzio now** notification on the home page, and the Join the Wave and Try Audazzio dialogs. Old addresses (`/liveqr`, `/broadcasters`, `/teams-leagues`, `/sponsors-brands`, `/applications`, `/resources-audazzio`, `/about-0-0`, `/contact`, `/demo`, `/explainer`) redirect in WordPress (`includes/redirects.php`) and on Vercel (`vercel.json`).
+Always there: the floating header, **Join the Wave** in the header and in a bar at the foot of the screen (from the first screen on phones; it steps aside while another Join the Wave button is in view), the **Try Audazzio now** notification on the home page, and the Join the Wave and Try Audazzio dialogs. Old addresses (`/liveqr`, `/broadcasters`, `/teams-leagues`, `/sponsors-brands`, `/applications`, `/resources-audazzio`, `/about-0-0`, `/contact`, `/demo`, `/explainer`) redirect in WordPress (`includes/redirects.php`) and on Vercel (`vercel.json`).
 
 ## Try Audazzio now
 
-There is no Audazzio app in the App Store or Google Play (checked October 2026). Phones listen in the browser through Audazzio's web listener (`cdn.audazz.io/tools/browser-decoder/viewer.html?clientId=demo&clientKey=EB`, the page today's hidden `/demo` page sends people to). So the flow is: open the listener on your phone (QR code from a computer, one tap on a phone), tap the logo and allow the microphone, speakers on, press play. The demo picker plays the three clips from `/demo` (Formula 1, rugby sevens, USA Swimming); a phone beside the player shows what would land. Store buttons appear by themselves when App Store / Google Play links are entered under Audazzio > Settings.
+There is no Audazzio app in the App Store or Google Play (checked October 2026). Phones listen in the browser through Audazzio's web listener (`cdn.audazz.io/tools/browser-decoder/viewer.html?clientId=demo&clientKey=EB`, the page today's hidden `/demo` page sends people to). So the flow is: open the listener on your phone (QR code from a computer, one tap on a phone), tap the logo and allow the microphone, speakers on, press play. The demo picker plays rugby sevens and USA Swimming from `/demo` (its Formula 1 clip is left out: Formula One Management blocks it from playing outside YouTube); a phone beside the player shows what would land. Store buttons appear by themselves when App Store / Google Play links are entered under Audazzio > Settings.
 
 ## Join the Wave
 
@@ -62,6 +62,7 @@ Edit `wp-src/css` and `wp-src/js`, never the built files in `wp-content/plugins/
 - `wp-content/themes/audazzio`: the shell (header, footer with "Designed by RSPKT", page templates).
 - `wp-content/plugins/audazzio-core`: the design system and every section, each one an Elementor widget built from one schema (`includes/components/*.php`, `elementor/widgets.php`); settings, the inbox and grading (`includes/leads.php`), the importer (`includes/seed.php`).
 - `wp-src/js/waves.js`: the wave motion (frequency curtain, dashed wave lines with a signal pulse, signal-emitter rings, spectrum), one animation loop, paused off screen, still for reduced motion.
+- `includes/lists.php`: News, Case studies and Logos, one shared list each under the Audazzio menu, read by every widget that shows them. `includes/join-settings.php`: Audazzio > Join the Wave form (questions, points, grade lines). `includes/meta.php`: the Search and sharing box on pages.
 - `scripts/wp/pages.mjs`: every page as a list of sections. `scripts/content/site.mjs`: films, demos, case studies, news, quotes, with sources. `content/people.json`, `content/logos.json`, `content/privacy.html`.
 
 ## Brand system
@@ -83,7 +84,9 @@ Type: Inter Tight 600 for headlines (tight, in two tones), Inter for text, Geist
 - The new films and the signal-carrying demo files (MP4 is safest: video sites can strip the high frequencies).
 - Higher-resolution portraits for Roy Terracina, Michele Klumb, Greg Flores and Larry Mills. Greg Flores's LinkedIn match is medium confidence; no LinkedIn profile was found for Larry Mills.
 - Permission to show each press and partner logo.
-- A yes on ® for Live QR and It Comes in Waves (USPTO registrations 7,464,239 and 7,930,855).
+- Counsel's yes before Live QR™ is shown as ® (registration 7,464,239 is on the Supplemental Register). Audazzio® and It Comes in Waves® (7,930,855) are already shown with ®.
+- Confirmation of the figures from the old Selected By graphic (8,000+ live events, 160+ years of experience), removed until sourced; the advisers' current roles; Boomtown and Comcast as investors.
+- A yes before the Danny Abelson SVG interview goes in the newsroom.
 - A privacy policy line about microphone use (the listener uses the microphone; the April 2023 policy does not mention it).
 - The street name (privacy policy: Callahan Road; USPTO: Callaghan Rd).
 - For email delivery on the host, an SMTP plugin with the Microsoft 365 account. DNS is on Route 53; the MX records and audazz.io stay untouched.

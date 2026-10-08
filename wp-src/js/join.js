@@ -1,7 +1,7 @@
 // Join the Wave: four steps (you, your idea, scale, send), checked as the visitor goes, then sent to
 // WordPress (POST /wp-json/audazzio/v1/join), which grades and files the inquiry. On the static preview
 // nothing is sent: the form grades the answers with the same table and shows the team's view.
-import { $, $$, fresh } from "./ui.js";
+import { $, $$, fresh, reduced } from "./ui.js";
 
 const TABLE = () => { try { return JSON.parse(($("#az-join-config") || {}).textContent || "{}"); } catch { return {}; } };
 const LABELS = { name: "Name", position: "Position", company: "Company", email: "Email", phone: "Phone", details: "In your words" };
@@ -106,8 +106,8 @@ export function join(root = document) {
       const head = $(`[data-az-jstep="${n}"] .az-join__q`, f);
       if (head) { head.tabIndex = -1; head.focus({ preventScroll: true }); }
       const box = f.closest(".az-dialog__sheet");
-      if (box) box.scrollTo({ top: 0, behavior: "smooth" });
-      else { const r = f.getBoundingClientRect(); if (r.top < 0) f.scrollIntoView({ behavior: "smooth", block: "start" }); }
+      if (box) box.scrollTo({ top: 0, behavior: reduced() ? "auto" : "smooth" });
+      else { const r = f.getBoundingClientRect(); if (r.top < 0) f.scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "start" }); }
     };
     next.addEventListener("click", () => { if (check(f, n)) go(n + 1); });
     back.addEventListener("click", () => go(Math.max(1, n - 1)));
@@ -173,6 +173,7 @@ export function join(root = document) {
       const done = $("[data-az-done]", f);
       done.hidden = false; done.focus({ preventScroll: true });
       f.classList.add("is-done");
+      if (!f.closest(".az-dialog__sheet")) { const r = f.getBoundingClientRect(); if (r.top < 0 || r.top > innerHeight / 2) f.scrollIntoView({ block: "start", behavior: reduced() ? "auto" : "smooth" }); }
     });
     go(1, true);
   });
