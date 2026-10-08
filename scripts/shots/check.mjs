@@ -27,6 +27,16 @@ for (const p of PAGES) {
     const over = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
     const main = await page.$(".az-main");
     ok(`${p} ${mobile ? "phone" : "desktop"} loads clean`, !!main && !errors.length && over <= 0, [errors.slice(0, 3).join(" | "), over > 0 ? `overflows by ${over}px` : ""].filter(Boolean).join("; "));
+    if (!mobile) {
+      // every picture really is a picture (a missing file can come back as a page of HTML)
+      const broken = await page.evaluate(async () => {
+        const imgs = [...document.images].filter((i) => !/youtube|ytimg/.test(i.currentSrc || i.src));
+        imgs.forEach((i) => { i.loading = "eager"; });
+        await Promise.all(imgs.map((i) => (i.complete ? 1 : new Promise((r) => { i.onload = i.onerror = r; setTimeout(r, 5000); }))));
+        return imgs.filter((i) => i.src && !i.naturalWidth).map((i) => (i.currentSrc || i.src).split("/").pop());
+      });
+      ok(`${p} pictures all load`, !broken.length, broken.slice(0, 4).join(", "));
+    }
     await ctx.close();
   }
 }
