@@ -90,6 +90,10 @@ YUNET = "https://media.githubusercontent.com/media/opencv/opencv_zoo/main/models
 #   chroma   guided-filter radius for chroma before upscaling (0 = off)
 #   erode    px (working copy) the matte is pulled in, to drop old halos
 #   extend   a second, wider crop of the same photo, registered and used where src stops
+#   unmix    also clear old background seen through the hair (needs a plain, light background)
+#   soften_hair  blur radius for compression blocks in the hair (very small sources only)
+#   red      scale for Lab a* above zero, to calm a red cast in the original photo (1 = off)
+#   spots    [(x, y, r)] in source px: small colour flecks in the photo to paint out first
 PEOPLE = [
     dict(slug="roy-terracina", name="Roy Terracina", src="roy_terracina.png", trim=(0, 0, 1, 0),
          scale=4, luma=0, chroma=2, erode=3),
@@ -98,11 +102,12 @@ PEOPLE = [
     dict(slug="bryan-elliot", name="Bryan Elliot", src="bryan_elliot.jpg",
          scale=0.6, luma=0, chroma=0, erode=1),
     dict(slug="greg-flores", name="Greg Flores", src="greg_flores_shrm.png", extend="greg_flores.png",
-         scale=4, luma=0, chroma=3, erode=1),
+         scale=4, luma=0, chroma=3, erode=1,
+         spots=[(76, 175, 6)]),  # orange fleck at his left temple, right on the new outline
     dict(slug="alan-c-gottlob", name="Alan C. Gottlob", src="alan_gottlob.jpg",
-         scale=2, luma=0, chroma=2, erode=1),
+         scale=2, luma=0, chroma=2, erode=1, unmix=True, red=0.9),
     dict(slug="larry-mills", name="Larry Mills", src="larry_mills.webp",
-         scale=4, luma=3, chroma=4, erode=1,
+         scale=4, luma=9, chroma=4, erode=1, soften_hair=12, red=0.9,
          # Probably the same man years later, but not certain, so it is opt-in only.
          alt=dict(src="larry_mills_holtcat.jpg", scale=2, luma=0, chroma=2, erode=1)),
 ]
@@ -180,7 +185,7 @@ def matte(in_png, out_png, models_dir):
 
 # ----------------------------------------------------------------------------- image steps
 
-def load_rgb(path, trim=(0, 0, 0, 0)):
+def load_rgb(path, trim=(0, 0, 0, 0), spots=None):
     im = Image.open(path)
     im.load()
     if im.mode in ("RGBA", "LA", "P"):
@@ -188,10 +193,27 @@ def load_rgb(path, trim=(0, 0, 0, 0)):
         bg = Image.new("RGBA", im.size, (255, 255, 255, 255))
         im = Image.alpha_composite(bg, im)
     im = im.convert("RGB")
-    l, t, r, b = trim
-    im = im.crop((l, t, im.width - r, im.height - b))
     import cv2
-    return cv2.cvtColor(np.asarray(im), cv2.COLOR_RGB2BGR)
+    img = retouch(cv2.cvtColor(np.asarray(im), cv2.COLOR_RGB2BGR), spots)
+    l, t, r, b = trim
+    return np.ascontiguousarray(img[t:img.shape[0] - b, l:img.shape[1] - r])
+
+
+def retouch(img, spots):
+    """Paint out small colour flecks: inside each disc, pixels far more saturated than the ring around it."""
+    if not spots:
+        return img
+    import cv2
+    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB).astype(np.float32)
+    chroma = np.hypot(lab[..., 1] - 128, lab[..., 2] - 128)
+    yy, xx = np.mgrid[:img.shape[0], :img.shape[1]]
+    mask = np.zeros(img.shape[:2], np.uint8)
+    for x, y, r in spots:
+        d2 = (xx - x) ** 2 + (yy - y) ** 2
+        ref = np.percentile(chroma[(d2 > r * r) & (d2 <= 4 * r * r)], 90)
+        mask |= ((d2 <= r * r) & (chroma > 1.15 * ref)).astype(np.uint8)
+    mask = cv2.dilate(mask, np.ones((3, 3), np.uint8))
+    return cv2.inpaint(np.ascontiguousarray(img), mask * 255, 3, cv2.INPAINT_TELEA)
 
 
 def deblock(img, luma, chroma):
@@ -200,8 +222,8 @@ def deblock(img, luma, chroma):
     if not luma and not chroma:
         return img
     y, cr, cb = cv2.split(cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb))
-    if luma:
-        y = cv2.fastNlMeansDenoising(y, None, luma, 5, 13)
+    if luma:  # stronger settings also look further, which is what clears big WebP blocks
+        y = cv2.fastNlMeansDenoising(y, None, luma, 7 if luma >= 6 else 5, 15 if luma >= 6 else 13)
     if chroma:
         cr = cv2.ximgproc.guidedFilter(y, cr, chroma, 60)
         cb = cv2.ximgproc.guidedFilter(y, cb, chroma, 60)
@@ -272,11 +294,48 @@ def extend_with(base, wide):
     return out, info
 
 
-def refine(img_bgr, alpha, erode):
+def unmix(rgb, a, y_max, depth=35):
+    """Clear old background still showing through the hair (gaps between strands, light rims).
+
+    The plain background colour is spread inward from where it is certain; edge pixels within
+    `depth` px of the outline that are nearly that colour lose their alpha. Alpha only goes
+    down, and only above y_max (so light shirts against a light backdrop are left alone).
+    """
+    import cv2
+    el = lambda r: cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * r + 1, 2 * r + 1))
+    bgm = cv2.erode((a < 0.02).astype(np.uint8), el(4)).astype(np.float32)
+    B = cv2.GaussianBlur(rgb * bgm[..., None], (0, 0), 40) / np.maximum(cv2.GaussianBlur(bgm, (0, 0), 40)[..., None], 1e-6)
+    sure = cv2.erode((a > 0.98).astype(np.uint8), el(depth), borderValue=1)
+    band = (a > 0.02) & (sure == 0)
+    band[int(y_max):] = False
+    dist = np.sqrt(((rgb - B) ** 2).sum(-1))
+    key = np.clip((dist - 0.035) / 0.10, 0, 1)
+    key = cv2.GaussianBlur(key, (0, 0), 1.0)
+    out = a.copy()
+    out[band] = np.minimum(a[band], key[band])
+    return out
+
+
+def soften_hair(img_bgr, info, sigma):
+    """Blur away compression blocks in the hair of a very small source (face left as is)."""
+    import cv2
+    h, w = img_bgr.shape[:2]
+    y = np.arange(h, dtype=np.float32)[:, None]
+    top = info["eyes_y"] - 0.95 * info["S"]
+    m = np.clip((top - y) / (0.25 * info["S"]) + 0.5, 0, 1) * np.ones((1, w), np.float32)
+    soft = cv2.bilateralFilter(img_bgr, -1, 18, sigma)
+    soft = cv2.GaussianBlur(soft, (0, 0), sigma / 3)
+    return (img_bgr * (1 - m[..., None]) + soft * m[..., None]).astype(np.uint8)
+
+
+def refine(img_bgr, alpha, erode, unmix_above=None):
     """Pull the matte in a little and recover clean edge colour (no halo, no old background)."""
     import cv2
     from pymatting import estimate_foreground_ml
     a = alpha.astype(np.float32)
+    rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
+    if unmix_above is not None:
+        a = unmix(rgb, a, unmix_above)
     if erode:
         k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * erode + 1, 2 * erode + 1))
         a = cv2.erode(a, k)  # borders count as foreground, so image edges stay solid
@@ -284,12 +343,11 @@ def refine(img_bgr, alpha, erode):
     a = cv2.GaussianBlur(a, (0, 0), 0.6)
     a[a < 0.02] = 0
     a[a > 0.985] = 1
-    rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB).astype(np.float64) / 255.0
-    fg = estimate_foreground_ml(rgb, a.astype(np.float64))
+    fg = estimate_foreground_ml(rgb.astype(np.float64), a.astype(np.float64))
     return np.clip(fg, 0, 1).astype(np.float32), a
 
 
-def face(img_bgr, alpha, models_dir):
+def face(img_bgr, models_dir):
     import cv2
     path = fetch(YUNET, os.path.join(models_dir, "face", "yunet_2023mar.onnx"))
     h, w = img_bgr.shape[:2]
@@ -306,13 +364,21 @@ def face(img_bgr, alpha, models_dir):
     mouth = (mouth_r + mouth_l) / 2
     # Face scale: average of three estimates so a big smile or a turned head does not skew it.
     S = (np.linalg.norm(eye_r - eye_l) + np.linalg.norm(mouth - eyes) + bh / 3.0) / 3.0
-    cx = bx + bw / 2
+    return dict(S=float(S), cx=float(bx + bw / 2), bw=float(bw), eyes_y=float(eyes[1]), mouth_y=float(mouth[1]))
+
+
+def crown_of(alpha, info):
+    cx, bw = info["cx"], info["bw"]
     band = alpha[:, max(0, int(cx - 0.45 * bw)):int(cx + 0.45 * bw)]
-    crown = int(np.argmax((band > 0.5).any(axis=1)))
-    return dict(S=float(S), cx=float(cx), eyes_y=float(eyes[1]), crown=crown)
+    return int(np.argmax((band > 0.5).any(axis=1)))
 
 
-def grade(rgb):
+def grade(rgb, red=1.0):
+    import cv2
+    if red != 1.0:  # pull back a red or magenta cast from the original photo
+        lab = cv2.cvtColor(rgb.astype(np.float32), cv2.COLOR_RGB2LAB)
+        lab[..., 1] = np.where(lab[..., 1] > 0, lab[..., 1] * red, lab[..., 1])
+        rgb = np.clip(cv2.cvtColor(lab, cv2.COLOR_LAB2RGB), 0, 1)
     lum = rgb @ np.array([0.2126, 0.7152, 0.0722], np.float32)
     out = lum[..., None] + (rgb - lum[..., None]) * GRADE["saturation"]
     out = 0.5 + (out - 0.5) * (1 + GRADE["contrast"])
@@ -324,13 +390,16 @@ def grade(rgb):
 def prepare(p, models_dir, cache):
     """Clean, upscale, matte and refine one person. Returns float RGB fg, alpha, face info."""
     import cv2
-    key = hashlib.sha1(json.dumps({k: p.get(k) for k in ("src", "trim", "scale", "luma", "chroma", "extend")},
-                                  sort_keys=True).encode()).hexdigest()[:10]
+    keyed = {k: p.get(k) for k in ("src", "trim", "scale", "luma", "chroma", "extend")}
+    if p.get("spots"):  # only when set, so other people's cached work stays valid
+        keyed["spots"] = p["spots"]
+    key = hashlib.sha1(json.dumps(keyed, sort_keys=True).encode()).hexdigest()[:10]
     base = os.path.join(cache, f"{p['slug']}-{key}")
     up_png, mask_png = base + "-up.png", base + "-matte.png"
     notes = []
     if not os.path.exists(up_png):
-        img = deblock(load_rgb(os.path.join(SRC, p["src"]), p.get("trim", (0, 0, 0, 0))), p["luma"], p["chroma"])
+        img = deblock(load_rgb(os.path.join(SRC, p["src"]), p.get("trim", (0, 0, 0, 0)), p.get("spots")),
+                      p["luma"], p["chroma"])
         img, how = upscale(img, p["scale"], models_dir)
         notes.append(how)
         if p.get("extend"):
@@ -343,8 +412,11 @@ def prepare(p, models_dir, cache):
     _, used = matte(up_png, mask_png, models_dir)
     notes.append(f"matte {used}")
     alpha = cv2.imread(mask_png, cv2.IMREAD_UNCHANGED).astype(np.float32) / 65535.0
-    fg, a = refine(img, alpha, p["erode"])
-    info = face(img, a, models_dir)
+    info = face(img, models_dir)
+    if p.get("soften_hair"):
+        img = soften_hair(img, info, p["soften_hair"])
+    fg, a = refine(img, alpha, p["erode"], info["mouth_y"] if p.get("unmix") else None)
+    info["crown"] = crown_of(a, info)
     # How far below the head the source runs, and whether the body is cut by each source edge.
     h, w = a.shape
     info["below"] = h - info["crown"]
@@ -353,7 +425,7 @@ def prepare(p, models_dir, cache):
     return fg, a, info, notes
 
 
-def place(fg, a, info, S_t, y_crown):
+def place(fg, a, info, S_t, y_crown, red=1.0):
     """Scale to the shared face size and drop onto the 1000x1250 canvas (premultiplied)."""
     import cv2
     k = S_t / info["S"]
@@ -371,7 +443,7 @@ def place(fg, a, info, S_t, y_crown):
     al = canvas[..., 3]
     rgb = np.where(al[..., None] > 1e-4, canvas[..., :3] / np.maximum(al[..., None], 1e-4), 0)
     edges = dict(left=ox, right=ox + nw, top=oy, bottom=oy + nh)
-    return grade(np.clip(rgb, 0, 1)), np.clip(al, 0, 1), edges
+    return grade(np.clip(rgb, 0, 1).astype(np.float32), red), np.clip(al, 0, 1), edges
 
 
 def save_webp(rgb, a, path):
@@ -455,7 +527,7 @@ def main():
     paths, names = [], []
     for (p, fg, a, info), ri in zip(prepared, r):
         y_crown = max(MIN_CROWN_Y, CROWN_Y + EYE_WEIGHT * (r_med - ri) * S_t)
-        rgb, al, e = place(fg, a, info, S_t, y_crown)
+        rgb, al, e = place(fg, a, info, S_t, y_crown, p.get("red", 1.0))
         out = os.path.join(OUT, p["slug"] + ".webp")
         cuts = [s for s in ("left", "right") if info["touch"][s] and 0 < (e[s] if s == "left" else W - e[s])]
         if e["bottom"] < H and info["touch"]["bottom"]:
