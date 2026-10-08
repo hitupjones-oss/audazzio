@@ -1,0 +1,16 @@
+node_modules/
+# local WordPress (scripts/wp/dev.sh downloads it here) and working files
+.wp/
+research/
+media/src/
+media/work/
+scripts/shots/out/
+dist/
+*.log
+.vercel
+.env*
+
+# built on the way to the two PDFs
+docs/.gen/
+deck/deck.html
+docs/guide.html

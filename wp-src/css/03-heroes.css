@@ -1,0 +1,51 @@
+/* ==========================================================================
+   Heroes: the home hero over the frequency curtain and wave lines, the inner-page hero,
+   and the jump links that stick under the header.
+   ========================================================================== */
+.az-hero { position: relative; min-height: max(720px, 100svh); display: grid; place-items: center; padding: calc(var(--az-nav-h) + 64px) var(--az-gut) 220px; overflow: hidden; background: var(--az-white); isolation: isolate; }
+.az-hero__waves { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.az-hero__waves::after { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 52% 40% at 50% 44%, rgba(255, 255, 255, .95) 30%, rgba(255, 255, 255, 0) 100%); }
+.az-hero__in { position: relative; max-width: 1080px; text-align: center; display: grid; justify-items: center; }
+.az-hero__eyebrow { margin-bottom: 28px; }
+.az-hero__title { font: 600 clamp(64px, 11.2vw, 172px)/.9 var(--az-display); letter-spacing: -.052em; text-wrap: balance; }
+.az-hero__title .az-hl { color: var(--az-ink-4); }
+.az-hero__intro { margin-top: 32px; max-width: 34em; font-size: clamp(18px, 1.6vw, 22px); line-height: 1.5; color: var(--az-ink-2); text-wrap: pretty; }
+.az-hero__ctas { margin-top: 40px; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.az-hero__proof { margin-top: 30px; display: inline-flex; align-items: center; gap: 10px; font-size: 14px; color: var(--az-ink-3); padding: 8px 14px 8px 12px; border-radius: 999px; transition: background-color .25s, color .25s; }
+.az-hero__proof:hover { background: rgba(12, 18, 34, .04); color: var(--az-ink); }
+.az-hero__proof .az-ico { width: 15px; height: 15px; transition: transform .3s var(--az-out); }
+.az-hero__proof:hover .az-ico { transform: translateX(3px); }
+.az-hero__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--az-ink-4); }
+.az-hero__readout { position: absolute; left: var(--az-gut); bottom: 36px; display: flex; align-items: center; gap: 10px; color: var(--az-ink-3); }
+.az-hero__readout i { width: 7px; height: 7px; border-radius: 50%; background: var(--az-wave); animation: az-blink 1.6s steps(2, jump-none) infinite; }
+@keyframes az-blink { 50% { opacity: .25; } }
+.az-hero__scroll { position: absolute; left: 50%; bottom: 30px; width: 22px; height: 54px; margin-left: -11px; display: grid; justify-items: center; }
+.az-hero__scroll span { position: relative; width: 1px; height: 100%; background: linear-gradient(var(--az-line-2), var(--az-line-2)) 0 0 / 1px 100% no-repeat; overflow: hidden; }
+.az-hero__scroll span::after { content: ""; position: absolute; left: -1px; top: -12px; width: 3px; height: 12px; border-radius: 2px; background: var(--az-ink); animation: az-drop 2.2s var(--az-ease) infinite; }
+@keyframes az-drop { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(66px); opacity: 0; } }
+@media (max-width: 700px) {
+  .az-hero { padding-bottom: 140px; min-height: max(620px, 100svh); }
+  .az-hero__readout { left: 50%; transform: translateX(-50%); bottom: 96px; white-space: nowrap; }
+  .az-hero__ctas .az-btn { flex: 1 1 100%; }
+}
+
+/* ----------------------------------------------------------- page hero */
+.az-phero { position: relative; padding: calc(var(--az-nav-h) + clamp(88px, 11vw, 150px)) 0 clamp(72px, 9vw, 120px); overflow: hidden; isolation: isolate; background: var(--az-white); }
+.az-phero__waves { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.az-phero--lines .az-phero__waves { -webkit-mask: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent); mask: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent); }
+.az-phero--rings .az-phero__waves { -webkit-mask: radial-gradient(ellipse 60% 70% at 78% 50%, #000 30%, transparent 100%); mask: radial-gradient(ellipse 60% 70% at 78% 50%, #000 30%, transparent 100%); }
+.az-phero__in { position: relative; }
+.az-phero__title { font: 600 clamp(52px, 8vw, 116px)/.94 var(--az-display); letter-spacing: -.048em; max-width: 12em; text-wrap: balance; }
+.az-phero__intro { margin-top: 30px; max-width: 36em; font-size: clamp(19px, 1.6vw, 23px); line-height: 1.45; color: var(--az-ink-2); }
+.az-phero__ctas { margin-top: 38px; display: flex; flex-wrap: wrap; align-items: center; gap: 28px; }
+.az-phero--spectrum { padding-bottom: clamp(120px, 14vw, 190px); }
+.az-phero--spectrum .az-phero__waves { -webkit-mask: linear-gradient(90deg, rgba(0, 0, 0, .18) 0, rgba(0, 0, 0, .28) 40%, #000 72%); mask: linear-gradient(90deg, rgba(0, 0, 0, .18) 0, rgba(0, 0, 0, .28) 40%, #000 72%); }
+
+/* jump links under the header */
+.az-subnav { position: sticky; z-index: 60; top: calc(var(--az-nav-h) + 12px); margin-top: clamp(48px, 6vw, 80px); display: flex; justify-content: center; padding: 0 12px; pointer-events: none; }
+.az-subnav__in { pointer-events: auto; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(245, 245, 247, .82); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 0 0 1px rgba(12, 18, 34, .05); overflow-x: auto; scrollbar-width: none; max-width: 100%; }
+.az-subnav__in::-webkit-scrollbar { display: none; }
+.az-subnav__a { flex: none; font-size: 14px; font-weight: 500; color: var(--az-ink-2); padding: 9px 16px; border-radius: 999px; transition: background-color .25s, color .25s, box-shadow .25s; }
+.az-subnav__a:hover { color: var(--az-ink); }
+.az-subnav__a.is-on { background: #fff; color: var(--az-ink); box-shadow: 0 1px 3px rgba(12, 18, 34, .12); }
+.az-phero:has(.az-subnav) { overflow: visible; }

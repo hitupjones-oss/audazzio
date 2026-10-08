@@ -1,0 +1,86 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "",
+  "buildCommand": "",
+  "outputDirectory": "site",
+  "cleanUrls": false,
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/liveqr",
+      "destination": "/live-qr/",
+      "permanent": true
+    },
+    {
+      "source": "/applications",
+      "destination": "/solutions/#beyond",
+      "permanent": true
+    },
+    {
+      "source": "/broadcasters",
+      "destination": "/solutions/#broadcasters",
+      "permanent": true
+    },
+    {
+      "source": "/teams-leagues",
+      "destination": "/solutions/#teams",
+      "permanent": true
+    },
+    {
+      "source": "/sponsors-brands",
+      "destination": "/solutions/#sponsors",
+      "permanent": true
+    },
+    {
+      "source": "/resources-audazzio",
+      "destination": "/newsroom/",
+      "permanent": true
+    },
+    {
+      "source": "/resources",
+      "destination": "/newsroom/",
+      "permanent": true
+    },
+    {
+      "source": "/about-0-0",
+      "destination": "/about/",
+      "permanent": true
+    },
+    {
+      "source": "/contact",
+      "destination": "/join/",
+      "permanent": true
+    },
+    {
+      "source": "/contact-typ",
+      "destination": "/join/",
+      "permanent": true
+    },
+    {
+      "source": "/demo",
+      "destination": "/try/",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/wp-content/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800"
+        }
+      ]
+    }
+  ]
+}

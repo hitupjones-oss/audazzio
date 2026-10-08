@@ -1,0 +1,91 @@
+/* ==========================================================================
+   Try Audazzio: the player, the phone that shows what lands, the checklist, the stores, the QR.
+   ========================================================================== */
+.az-try__grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: clamp(32px, 5vw, 80px); align-items: start; }
+@media (max-width: 960px) { .az-try__grid { grid-template-columns: 1fr; } }
+.az-try__stage, .az-sheet__stage { position: relative; padding-bottom: 64px; padding-right: clamp(40px, 9%, 110px); }
+
+.az-player { position: relative; }
+.az-player__screen { position: relative; aspect-ratio: 16 / 9; border-radius: var(--az-r); overflow: hidden; background: #0b0f1a; box-shadow: 0 0 0 1px rgba(12, 18, 34, .06), 0 30px 70px -30px rgba(12, 18, 34, .45); }
+.az-player__poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .82; transition: opacity .5s, transform 1.2s var(--az-out); }
+.az-player:hover .az-player__poster { transform: scale(1.02); }
+.az-player__screen::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11, 15, 26, 0) 40%, rgba(11, 15, 26, .55)); pointer-events: none; transition: opacity .4s; }
+.az-player__media { position: absolute; inset: 0; z-index: 2; }
+.az-player__media iframe, .az-player__media video, .az-player__media > div { width: 100%; height: 100%; border: 0; background: #000; }
+.az-player__media:empty { display: none; }
+.az-player__play { position: absolute; z-index: 3; left: 50%; top: 50%; width: 92px; height: 92px; margin: -46px 0 0 -46px; border-radius: 50%; display: grid; place-items: center; background: rgba(255, 255, 255, .94); color: var(--az-ink); box-shadow: 0 12px 40px rgba(0, 0, 0, .35); transition: transform .35s var(--az-spring), background-color .2s; }
+.az-player__play:hover { transform: scale(1.06); background: #fff; }
+.az-player__play .az-ico { width: 34px; height: 34px; margin-left: 4px; }
+.az-player__ring { position: absolute; inset: -2px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .7); animation: az-ping 2.6s var(--az-ease) infinite; pointer-events: none; }
+.az-player__live { position: absolute; z-index: 3; left: 18px; bottom: 16px; display: flex; align-items: center; gap: 9px; color: rgba(255, 255, 255, .86); transition: opacity .3s; }
+.az-player__live i { width: 8px; height: 8px; border-radius: 50%; background: var(--az-wave); box-shadow: 0 0 0 4px rgba(242, 106, 46, .25); }
+.az-player.is-started .az-player__play, .az-player.is-started .az-player__live, .az-player.is-started .az-player__poster { opacity: 0; pointer-events: none; }
+.az-player.is-started .az-player__screen::after { opacity: 0; }
+.az-player__bar { display: flex; align-items: center; gap: 14px; margin-top: 16px; color: var(--az-ink-3); font-size: 14px; }
+.az-player__hint { display: inline-flex; align-items: center; gap: 8px; }
+.az-player__hint .az-ico { width: 18px; height: 18px; }
+.az-player__meter { display: inline-flex; align-items: flex-end; gap: 3px; height: 18px; }
+.az-player__meter i { width: 3px; height: 30%; border-radius: 2px; background: var(--az-ink-4); }
+.az-player.is-playing .az-player__meter i { background: var(--az-wave); animation: az-eq .9s var(--az-ease) infinite alternate; }
+.az-player.is-playing .az-player__meter i:nth-child(2) { animation-delay: -.3s; }
+.az-player.is-playing .az-player__meter i:nth-child(3) { animation-delay: -.6s; }
+.az-player.is-playing .az-player__meter i:nth-child(4) { animation-delay: -.15s; }
+.az-player.is-playing .az-player__meter i:nth-child(5) { animation-delay: -.45s; }
+@keyframes az-eq { from { height: 20%; } to { height: 100%; } }
+
+/* the phone */
+.az-sim { position: absolute; right: 0; bottom: 0; width: clamp(150px, 26%, 210px); z-index: 4; }
+.az-sim__phone { position: relative; aspect-ratio: 9 / 19.2; border-radius: 34px; padding: 7px; background: var(--az-ink); box-shadow: 0 0 0 1px rgba(255, 255, 255, .06) inset, 0 30px 60px -20px rgba(12, 18, 34, .55); transition: transform .8s var(--az-out); }
+.az-sim__phone::before { content: ""; position: absolute; top: 14px; left: 50%; width: 34%; height: 16px; margin-left: -17%; border-radius: 999px; background: #000; z-index: 3; }
+.az-sim__screen { position: relative; width: 100%; height: 100%; border-radius: 28px; overflow: hidden; background: #fff; }
+.az-sim__idle { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 12px; background: linear-gradient(180deg, #fff, var(--az-mist)); transition: opacity .5s; }
+.az-sim__sym { width: 34px; color: var(--az-wave-soft); }
+.az-sim__eq { display: inline-flex; align-items: flex-end; gap: 3px; height: 16px; }
+.az-sim__eq i { width: 3px; height: 30%; border-radius: 2px; background: var(--az-ink-4); animation: az-eq 1.1s var(--az-ease) infinite alternate; }
+.az-sim__eq i:nth-child(2) { animation-delay: -.35s; } .az-sim__eq i:nth-child(3) { animation-delay: -.7s; } .az-sim__eq i:nth-child(4) { animation-delay: -.2s; } .az-sim__eq i:nth-child(5) { animation-delay: -.5s; }
+.az-sim__shot { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: 0; transform: translateY(14%); transition: opacity .6s var(--az-out), transform .9s var(--az-out); }
+.az-sim__shot.is-on { opacity: 1; transform: none; }
+.az-sim.is-active .az-sim__idle { opacity: 0; }
+.az-sim__toast { position: absolute; z-index: 2; left: 8px; right: 8px; top: 30px; display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 14px; background: rgba(250, 250, 252, .9); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); box-shadow: 0 8px 20px -6px rgba(12, 18, 34, .3); font-size: 10.5px; line-height: 1.25; color: var(--az-ink-2); opacity: 0; transform: translateY(-120%); }
+.az-sim__toast b { display: block; font-size: 10px; color: var(--az-ink); text-transform: uppercase; letter-spacing: .04em; }
+.az-sim__toast-ico { width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center; background: linear-gradient(140deg, #ffad7a, var(--az-wave)); color: #fff; }
+.az-sim__toast-ico svg { width: 12px; height: auto; }
+.az-sim.is-toast .az-sim__toast { animation: az-toast 3.2s var(--az-out) forwards; }
+@keyframes az-toast { 0% { opacity: 0; transform: translateY(-120%); } 14% { opacity: 1; transform: none; } 78% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(-120%); } }
+.az-sim__cap { margin-top: 14px; text-align: center; font-size: 10.5px; line-height: 1.4; }
+.is-playing .az-sim__phone { animation: az-buzz .5s var(--az-ease) 1.6s 1; }
+@keyframes az-buzz { 0%, 100% { transform: none; } 25% { transform: rotate(-1.4deg); } 75% { transform: rotate(1.4deg); } }
+@media (max-width: 560px) { .az-try__stage, .az-sheet__stage { padding-right: 0; padding-bottom: 0; } .az-sim { position: relative; width: 58%; margin: -40px 0 0 auto; } }
+
+/* the checklist */
+.az-trysteps { display: grid; gap: 8px; counter-reset: s; }
+.az-trysteps__i { display: grid; grid-template-columns: 40px 1fr; gap: 16px; padding: 18px 18px 20px; border-radius: var(--az-r); cursor: pointer; transition: background-color .35s; }
+.az-trysteps__i.is-on { background: #fff; box-shadow: 0 0 0 1px var(--az-line), var(--az-shadow); }
+.az-sec--white .az-trysteps__i.is-on, .az-dialog .az-trysteps__i.is-on { background: var(--az-mist); box-shadow: none; }
+.az-trysteps__n { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; box-shadow: inset 0 0 0 1px var(--az-line-2); font: 600 14px var(--az-mono); color: var(--az-ink-3); transition: background-color .3s, color .3s, box-shadow .3s; }
+.az-trysteps__n .az-ico { display: none; width: 18px; height: 18px; }
+.az-trysteps__i.is-on .az-trysteps__n { background: var(--az-ink); color: #fff; box-shadow: none; }
+.az-trysteps__i.is-done .az-trysteps__n { background: var(--az-ink); color: #fff; box-shadow: none; }
+.az-trysteps__i.is-done .az-trysteps__n b { display: none; }
+.az-trysteps__i.is-done .az-trysteps__n .az-ico { display: block; }
+.az-trysteps__t { font: 600 19px/1.25 var(--az-display); letter-spacing: -.015em; padding-top: 5px; }
+.az-trysteps__p { margin-top: 6px; font-size: 15.5px; color: var(--az-ink-3); line-height: 1.5; }
+.az-trysteps__i.is-done .az-trysteps__t { color: var(--az-ink-3); }
+.az-trysteps__get { margin-top: 16px; display: grid; gap: 16px; }
+.az-try__mobile { margin-top: 18px; display: grid; grid-template-columns: 20px 1fr; gap: 10px; font-size: 14px; color: var(--az-ink-3); line-height: 1.5; padding: 0 18px; }
+.az-try__mobile .az-ico { width: 18px; height: 18px; margin-top: 1px; }
+@media (hover: hover) and (min-width: 900px) { .az-try__mobile { display: none; } }
+
+.az-stores { display: flex; flex-wrap: wrap; gap: 10px; }
+.az-store { display: inline-flex; align-items: center; gap: 10px; height: 48px; padding: 0 18px 0 14px; border-radius: 12px; background: var(--az-ink); color: #fff; transition: background-color .2s, transform .2s; }
+.az-store:hover { background: #1d2538; transform: translateY(-1px); }
+.az-store svg { width: 22px; height: 22px; }
+.az-store span { display: grid; font-size: 16px; font-weight: 600; line-height: 1.05; letter-spacing: -.01em; }
+.az-store small { font-size: 10px; font-weight: 500; letter-spacing: .02em; opacity: .8; }
+.az-store[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+.az-qr { display: grid; grid-template-columns: 96px 1fr; gap: 16px; align-items: center; }
+.az-qr__code { width: 96px; height: 96px; padding: 8px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px var(--az-line); }
+.az-qr__code svg { width: 100%; height: 100%; }
+.az-qr__code svg path, .az-qr__code svg rect[fill="black"], .az-qr__code svg rect:not([fill="white"]) { fill: var(--az-ink); }
+.az-qr__cap { font-size: 13.5px; color: var(--az-ink-3); line-height: 1.45; }
+@media (hover: none), (max-width: 700px) { .az-qr { display: none; } }

@@ -1,0 +1,14 @@
+{
+  "name": "Audazzio",
+  "colors": {
+    "ink": "#0C1222",
+    "slate": "#3B4152",
+    "grey": "#6B7080",
+    "mist": "#F5F5F7",
+    "line": "#E3E4E8",
+    "white": "#FFFFFF",
+    "wave": "#F26A2E",
+    "peach": "#F89C68"
+  },
+  "type": "Inter Tight (headlines), Inter (text), Geist Mono (labels)"
+}

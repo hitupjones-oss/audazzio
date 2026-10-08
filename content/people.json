@@ -1,0 +1,98 @@
+[
+ {
+  "name": "Roy Terracina",
+  "role": "CEO and Chairman of the Board",
+  "group": "leadership",
+  "photo": "roy-terracina.webp",
+  "short": "Banker, operator and investor: an early backer of Rackspace and ID.me, now Vice Chair of US Global (GROW).",
+  "bio": "After careers in banking, investment banking, and management consulting, Roy became the treasurer of Farm House Foods, a publicly traded company with revenues in excess of $1.4 billion. In 1984, he purchased San Antonio based Sterling Foods, selling the company to Private Equity a decade later. He then became involved in the purchase and a board member of multiple companies. Roy was also an early investor in Rackspace and ID.me. Additionally, he sat on boards of VC and PE firms in Colorado, Chicago, and Philadelphia. Currently he is Vice Chair of US Global (GROW) and is on the Board of The Najim Foundation.",
+  "highlights": [
+   "Early investor, Rackspace & ID.me",
+   "Vice Chair, US Global (GROW)",
+   "Acquired Sterling Foods, 1984",
+   "Former Treasurer, Farm House Foods"
+  ],
+  "linkedin": "https://www.linkedin.com/in/roy-terracina-087b4b/",
+  "linkedin_confidence": "high"
+ },
+ {
+  "name": "Michele Klumb",
+  "role": "Chief Operating Officer",
+  "group": "leadership",
+  "photo": "michele-klumb.webp",
+  "short": "Engineer, marketer and holder of five patents, overseeing Audazzio’s day-to-day operations.",
+  "bio": "An out of the box thinker, Klumb has a unique educational background including a BSME with an MBA. She has over 20 years of experience running the gamut from design - she currently holds 5 patents - to sales, and marketing with expertise in advertising and operations. She is responsible for corporate brand identity, product strategy, marketing collateral design and production, website, and social network presence.",
+  "highlights": [
+   "BSME + MBA",
+   "Holds 5 patents",
+   "20+ years: design, sales, marketing",
+   "Leads brand & product strategy"
+  ],
+  "linkedin": "https://www.linkedin.com/in/michele-klumb-4b0b408/",
+  "linkedin_confidence": "high"
+ },
+ {
+  "name": "Bryan Elliot",
+  "role": "VP of Engineering",
+  "group": "leadership",
+  "photo": "bryan-elliot.webp",
+  "short": "Co-founder of Ping Identity, now leading all of Audazzio’s technology development.",
+  "bio": "SaaS industry veteran with decades of engineering leadership experience bringing products and services to market. Notably, co-founder of Ping Identity Corporation, where he took the initial concept and grew the original engineering team to its early successes. Ping Identity was recently acquired by Thoma Bravo for $2.8 billion. Mr. Elliot is responsible for all technology development, including the software itself, as well as the use of cloud infrastructure to achieve top-tier global scalability.",
+  "highlights": [
+   "Co-founder, Ping Identity",
+   "Decades of SaaS engineering leadership",
+   "Leads all technology development",
+   "Cloud infrastructure at global scale"
+  ],
+  "linkedin": "https://www.linkedin.com/in/bryanelliot/",
+  "linkedin_confidence": "high"
+ },
+ {
+  "name": "Gregorio (Greg) R. Flores",
+  "role": "Board member",
+  "group": "board",
+  "photo": "greg-flores.webp",
+  "short": "",
+  "bio": "Greg has built a career with best-in-class organizations in retail (TJX Companies, Pilot Travel Centers, H.E.B., and Thriftway), consumer products (Pepsico, and Daymon Worldwide), and media information services (Reed Elsevier). In each of these great organizations, he held key executive positions and has had global HR oversight for a combined 35+ years. His leadership approach is to lead and drive international excellence in HR, Succession Planning, Diversity, Equity & Inclusion, Executive Compensation, and Organizational Development and Practices; senior leadership support and alignment with the business values; and competencies and profitability strategies. He has international senior leadership experience in the UK, China, Spain, Mexico, Argentina, Chile, and Canada. He has accomplished this by leading with integrity, and passion, and creating high-performing teams with direct connections to the business and culture. In addition to HR leadership responsibilities, he has also led and managed business P&Ls, operations, and sales teams.",
+  "highlights": [
+   "35+ years global HR leadership",
+   "TJX, PepsiCo, H.E.B., Reed Elsevier",
+   "Leadership across 7 countries",
+   "Led P&Ls, operations & sales"
+  ],
+  "linkedin": "https://www.linkedin.com/in/greg-flores-971169163/",
+  "linkedin_confidence": "medium"
+ },
+ {
+  "name": "Alan C. Gottlob",
+  "role": "Board member",
+  "group": "board",
+  "photo": "alan-c-gottlob.webp",
+  "short": "",
+  "bio": "Alan began his career in the financial industry more than thirty years ago; after graduating with a Degree in Real Estate, Accounting, and Finance from Temple University, Alan devoted himself to overseeing business succession issues for privately held middle-market businesses. Most of his career was spent in accounting for family businesses, developing and implementing family and business strategic plans. Alan was also responsible for bringing the issue of business succession to Mesirow Financial in Chicago, where he spent several years as Senior Vice President of the Business Transition division. He then served as president of his own Registered Investment Advisory business at Pine Valley Private Wealth, where he recently merged with Ethos Financial Group and Family Office. Alan is a Past Member of the New Jersey Technology Council, a Past Member of the Philadelphia Chamber of Commerce, Past Member of the New Jersey Venture Association, Member Union League of Philadelphia, a Past Board Member JDRF Foundation of South Jersey and a Porsche Club of America member. Alan maintains series 63 and 65 FINRA registrations.",
+  "highlights": [
+   "30+ years in finance",
+   "Former SVP, Mesirow Financial",
+   "Founder, Pine Valley Private Wealth",
+   "FINRA Series 63 & 65"
+  ],
+  "linkedin": "https://www.linkedin.com/in/alan-gottlob/",
+  "linkedin_confidence": "high"
+ },
+ {
+  "name": "Larry Mills",
+  "role": "Board member",
+  "group": "board",
+  "photo": "larry-mills.webp",
+  "short": "",
+  "bio": "Larry began his career working for the Holt Companies and has spent 54 years in various positions including parts operations, sales, marketing, IT and Human Resources. Currently, Larry serves as an Executive for the Holt Group. He is involved with Holt Cat, the nation’s largest Caterpillar Dealer, Spurs Sports and Entertainment and many other companies under the Holt banner. His areas of focus include strategic planning, marketing, leadership development, and organizational development. Larry is committed to making a difference in community services and has served on many governing boards including Children’s Hospital of San Antonio, Spurs Sports and Entertainment, Clarity Child Guidance Center, St Mary’s University, Progeria Research Foundation, and TRTF - Texas Research an Technology Foundation.",
+  "highlights": [
+   "54 years with the Holt Companies",
+   "Executive, Holt Group",
+   "Strategic planning & leadership development",
+   "Boards: Children's Hospital of SA, Spurs S&E"
+  ],
+  "linkedin": "",
+  "linkedin_confidence": "low"
+ }
+]
