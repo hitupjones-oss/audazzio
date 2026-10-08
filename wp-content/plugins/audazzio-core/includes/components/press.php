@@ -53,7 +53,7 @@ function az_render_logos( $a ) {
 	}
 	$cell = function ( $l, $hidden ) {
 		$r   = max( 0.6, min( 7.0, az_logo_ratio( $l['logo'] ) ) );
-		$h   = round( 46 / pow( $r, 0.42 ), 1 );
+		$h   = round( min( 50, 58 / pow( $r, 0.4 ) ), 1 );
 		$img = sprintf( '<img src="%s" alt="%s" style="height:%spx" loading="lazy" decoding="async">', esc_url( az_media( $l['logo'] ) ), $hidden ? '' : esc_attr( $l['name'] ?? '' ), esc_attr( $h ) );
 		$url = az_url( $l['url'] ?? '' );
 		return '<li class="az-logo">' . ( $url && ! $hidden ? '<a href="' . esc_url( $url ) . '" target="_blank" rel="noopener">' . $img . '</a>' : $img ) . '</li>';
@@ -104,7 +104,7 @@ function az_schema_press() {
 		'icon'   => 'eicon-post-list',
 		'fields' => az_head_fields( 'Newsroom', "In the news.", '', 'white' ) + array(
 			'items'   => az_f( 'repeater', 'Stories', az_press_default(), array( 'fields' => array(
-				'date'    => az_f( 'text', 'Date (YYYY-MM-DD)', '' ),
+				'date'    => az_f( 'text', 'Date (YYYY-MM-DD, or YYYY-MM for a month)', '' ),
 				'kind'    => az_f( 'select', 'Kind', 'Press release', array( 'options' => array( 'Case study' => 'Case study', 'Press release' => 'Press release', 'Coverage' => 'Coverage', 'Award' => 'Award' ) ) ),
 				'outlet'  => az_f( 'text', 'Outlet or source', '' ),
 				'title'   => az_f( 'textarea', 'Headline', '' ),
@@ -144,11 +144,11 @@ function az_render_press( $a ) {
 			</div>
 		<?php endif; ?>
 		<ul class="az-news">
-			<?php foreach ( $items as $p ) : $url = az_url( $p['url'] ?? '' ); $img = az_media( $p['image'] ?? '' ); $ts = strtotime( (string) ( $p['date'] ?? '' ) ); $pdf = (bool) preg_match( '/\.pdf($|\?)/i', $url ); ?>
+			<?php foreach ( $items as $p ) : $url = az_url( $p['url'] ?? '' ); $img = az_media( $p['image'] ?? '' ); $raw = (string) ( $p['date'] ?? '' ); $month = (bool) preg_match( '/^\d{4}-\d{2}$/', $raw ); $ts = strtotime( $month ? $raw . '-01' : $raw ); $pdf = (bool) preg_match( '/\.pdf($|\?)/i', $url ); ?>
 				<li class="az-new" data-kind="<?php echo esc_attr( $p['kind'] ?? '' ); ?>" data-az-rise>
 					<a class="az-new__a" href="<?php echo esc_url( $url ?: '#' ); ?>"<?php echo $url && ( $pdf || 0 !== strpos( $url, home_url() ) ) ? ' target="_blank" rel="noopener"' : ''; ?>>
 						<?php if ( 'cards' === $layout ) : ?><span class="az-new__pic"><?php if ( $img ) : ?><img src="<?php echo esc_url( $img ); ?>" alt="" loading="lazy" decoding="async"><?php endif; ?></span><?php endif; ?>
-						<span class="az-new__meta az-label"><span><?php echo esc_html( $p['kind'] ?? '' ); ?></span><?php if ( $ts ) : ?><time datetime="<?php echo esc_attr( gmdate( 'Y-m-d', $ts ) ); ?>"><?php echo esc_html( gmdate( 'M j, Y', $ts ) ); ?></time><?php endif; ?><?php if ( ! empty( $p['outlet'] ) ) : ?><span><?php echo esc_html( $p['outlet'] ); ?></span><?php endif; ?></span>
+						<span class="az-new__meta az-label"><span><?php echo esc_html( $p['kind'] ?? '' ); ?></span><?php if ( $ts ) : ?><time datetime="<?php echo esc_attr( gmdate( $month ? 'Y-m' : 'Y-m-d', $ts ) ); ?>"><?php echo esc_html( gmdate( $month ? 'M Y' : 'M j, Y', $ts ) ); ?></time><?php endif; ?><?php if ( ! empty( $p['outlet'] ) ) : ?><span><?php echo esc_html( $p['outlet'] ); ?></span><?php endif; ?></span>
 						<span class="az-new__t"><?php echo esc_html( $p['title'] ?? '' ); ?></span>
 						<?php if ( ! empty( $p['summary'] ) ) : ?><span class="az-new__p"><?php echo esc_html( $p['summary'] ); ?></span><?php endif; ?>
 						<span class="az-new__go" aria-hidden="true"><?php echo az_icon( $pdf ? 'download' : 'arrow-ur' ); // phpcs:ignore ?></span>

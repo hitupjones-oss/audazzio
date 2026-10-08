@@ -1,0 +1,266 @@
+[
+ {
+  "name": "NBC Sports",
+  "file": "nbc-sports.svg",
+  "relationship": "client",
+  "evidence": [
+   {
+    "text": "Audazzio case study: \"NBC Sports Trials Audazzio Second Screen Technology on Tour de France Broadcast\"",
+    "url": "https://www.audazzio.com/hubfs/Audazzio%20-%20NBC%20Sports%20Tour%20de%20France%20Case%20Study%200723.pdf"
+   },
+   {
+    "text": "SVG, 2024-07-16: \"...NBC Sports and USA Swimming...\"; quote from Jim Thompson, NBC Sports Olympics Coordinating Producer",
+    "url": "https://www.sportsvideo.org/2024/07/16/audazzio-engages-audience-of-usa-swimming-olympic-trials-with-real-time-interactive-content/"
+   },
+   {
+    "text": "Audazzio case study: \"NBC Deploys Audazzio During Navy All-American Bowl Engaging Venue Fans\" (01/2026)",
+    "url": "https://www.audazzio.com/hubfs/Audazzio%20-%20Navy%20All-American%20Bowl%20Case%20Study%20012326.pdf"
+   }
+  ],
+  "source": "https://nbcsports.brightspotcdn.com/76/a1/28ae939d488781e23e1813aaecb3/nbc-sports-logo-1.svg"
+ },
+ {
+  "name": "USA Swimming",
+  "file": "usa-swimming.svg",
+  "relationship": "client",
+  "evidence": [
+   {
+    "text": "SVG, 2024-07-16 (quote from Jacob Grosser, USA Swimming Senior Director of Marketing and Communications)",
+    "url": "https://www.sportsvideo.org/2024/07/16/audazzio-engages-audience-of-usa-swimming-olympic-trials-with-real-time-interactive-content/"
+   },
+   {
+    "text": "Audazzio case study: \"USA Swimming Deploys Audazzio During Olympic Trials to Engage Home Audience\" (07/2024)",
+    "url": "https://www.audazzio.com/hubfs/Audazzio%20-%20USA%20Swimming%20Case%20Study%200724.pdf"
+   },
+   {
+    "text": "Audazzio case study: \"USA Swimming Deploys Audazzio During TYR Pro Swim Series Engaging Venue AND Home Audiences\" (05/2025)",
+    "url": "https://www.audazzio.com/hubfs/Audazzio%20-%20USA%20Swimming%20Case%20Study%200525.pdf"
+   },
+   {
+    "text": "usaswimming.org Audazzio content pages (e.g. 2025 TPSS Sacramento)",
+    "url": "https://www.usaswimming.org/usa-swimming-app/audazzio/audazzio-pages/2025-tpss-sacramento/m-100-butterfly"
+   }
+  ],
+  "source": "https://www.usaswimming.org/ResourcePackages/Usas/assets/dist/images/ShieldWebsiteMain.svg"
+ },
+ {
+  "name": "Comcast NBCUniversal SportsTech",
+  "file": "comcast-nbcuniversal-sportstech-boomtown.svg",
+  "relationship": "accelerator",
+  "evidence": [
+   {
+    "text": "Comcast press release, 2021-02-22: The Sonar Company, San Antonio, listed among the 10 selected startups",
+    "url": "https://corporate.comcast.com/press/releases/comcast-nbcuniversal-announces-10-startups-sportstech-accelerator-boomtown"
+   },
+   {
+    "text": "Comcast press release, 2021-05-26: Demo Day results, The Sonar Company POC tests with Comcast Spectacor",
+    "url": "https://corporate.comcast.com/press/releases/sixteen-business-deals-comcast-nbcuniversal-sportstech-accelerator-boomtown"
+   },
+   {
+    "text": "Comcast NBCUniversal LIFT Labs portfolio page titled \"Audazzio\"",
+    "url": "https://lift.comcast.com/portfolio/companies/the-sonar-company/"
+   },
+   {
+    "text": "USPTO TSDR, AUDAZZIO mark serial 90979300: owner Audazzio Inc., \"DBA The Sonar Company\"; registrant Sports Sonar, Inc.",
+    "url": "https://tsdr.uspto.gov/statusview/sn90979300"
+   },
+   {
+    "text": "audazzio.com about page: \"We are a product of the 2021 inaugural Comcast NBCUniversal SportsTech Accelerator\"",
+    "url": "https://www.audazzio.com/about-0-0"
+   }
+  ],
+  "source": "https://www.comcastsportstech.com/wp-content/uploads/2024/08/ST_BOOMTOWN_NEW_COLORonDARK.svg"
+ },
+ {
+  "name": "Comcast",
+  "file": "comcast.svg",
+  "relationship": "partner",
+  "evidence": [
+   {
+    "text": "audazzio.com about page and home \"Selected by / Investment from\" graphic",
+    "url": "https://www.audazzio.com/about-0-0"
+   },
+   {
+    "text": "Home page graphic \"INVESTMENT FROM Comcast / Boomtown\"",
+    "url": "https://www.audazzio.com/hubfs/Home/sportech-block.png"
+   }
+  ],
+  "source": "https://upload.wikimedia.org/wikipedia/commons/8/87/Comcast.svg"
+ },
+ {
+  "name": "Peacock",
+  "file": "peacock.svg",
+  "relationship": "event",
+  "evidence": [
+   {
+    "text": "Audazzio press release (07/15/2024): \"deployed exclusively for the national broadcast audiences on USA Network and Peacock\"",
+    "url": "https://www.audazzio.com/hubfs/Audazzio_USASwimming%20(1).docx"
+   },
+   {
+    "text": "Audazzio case study 0724: \"fully synchronized with the broadcasts on USA Network and Peacock via NBC Sports\"",
+    "url": "https://www.audazzio.com/hubfs/Audazzio%20-%20USA%20Swimming%20Case%20Study%200724.pdf"
+   }
+  ],
+  "source": "https://upload.wikimedia.org/wikipedia/commons/2/20/NBCUniversal_Peacock_Logo_%282026%29.svg"
+ },
+ {
+  "name": "USA Network",
+  "file": "usa-network.svg",
+  "relationship": "event",
+  "evidence": [
+   {
+    "text": "Audazzio case study 0525: \"fully synchronized with the USA Network stream\"",
+    "url": "https://www.audazzio.com/hubfs/Audazzio%20-%20USA%20Swimming%20Case%20Study%200525.pdf"
+   },
+   {
+    "text": "Audazzio press release (07/15/2024)",
+    "url": "https://www.audazzio.com/hubfs/Audazzio_USASwimming%20(1).docx"
+   }
+  ],
+  "source": "https://upload.wikimedia.org/wikipedia/commons/8/84/USA_Network_2020.svg"
+ },
+ {
+  "name": "Navy All-American Bowl",
+  "file": "navy-all-american-bowl.png",
+  "relationship": "event",
+  "evidence": [
+   {
+    "text": "Audazzio case study \"NBC Deploys Audazzio During Navy All-American Bowl Engaging Venue Fans\" (0126)",
+    "url": "https://www.audazzio.com/hubfs/Audazzio%20-%20Navy%20All-American%20Bowl%20Case%20Study%20012326.pdf"
+   },
+   {
+    "text": "Audazzio LinkedIn company posts: \"During the Navy All-American Bowl, NBC deployed Audazzio...\"",
+    "url": "https://www.linkedin.com/company/audazzio"
+   }
+  ],
+  "source": "https://nbcsports.brightspotcdn.com/49/34/b853486843089ac9d25c4e9fecd2/usnaab-logo-color-positive.png"
+ },
+ {
+  "name": "Tour de France",
+  "file": "tour-de-france.svg",
+  "relationship": "event",
+  "evidence": [
+   {
+    "text": "Audazzio case study 0723",
+    "url": "https://www.audazzio.com/hubfs/Audazzio%20-%20NBC%20Sports%20Tour%20de%20France%20Case%20Study%200723.pdf"
+   },
+   {
+    "text": "audazzio.com about page: \"Successfully completed an Audazzio trial during the Tour de France\"",
+    "url": "https://www.audazzio.com/about-0-0"
+   }
+  ],
+  "source": "https://upload.wikimedia.org/wikipedia/commons/e/eb/Tour_de_France_logo.svg"
+ },
+ {
+  "name": "TYR Pro Swim Series",
+  "file": "tyr-pro-swim-series.png",
+  "relationship": "event",
+  "evidence": [
+   {
+    "text": "Audazzio case study 0525",
+    "url": "https://www.audazzio.com/hubfs/Audazzio%20-%20USA%20Swimming%20Case%20Study%200525.pdf"
+   },
+   {
+    "text": "usaswimming.org Audazzio page under /2025-tpss-sacramento/",
+    "url": "https://www.usaswimming.org/usa-swimming-app/audazzio/audazzio-pages/2025-tpss-sacramento/m-100-butterfly"
+   }
+  ],
+  "source": "https://www.usaswimming.org/images/default-source/events/event-logos/tyr-pro-swim-series-logo.png"
+ },
+ {
+  "name": "Sports Video Group",
+  "file": "sports-video-group.svg",
+  "relationship": "event",
+  "evidence": [
+   {
+    "text": "SVG 2022-02-16 \"New SVG Sponsor Spotlight: Audazzio's Danny Abelson...\"",
+    "url": "https://www.sportsvideo.org/2022/02/16/new-svg-sponsor-spotlight-audazzios-danny-abelson-on-connecting-to-mobile-devices-for-second-screen-experiences/"
+   },
+   {
+    "text": "Audazzio press release (01/19/2023) on SVG Summit lead sponsorship",
+    "url": "https://www.audazzio.com/hubfs/Audazzio_SVG22%20(1).docx"
+   }
+  ],
+  "source": "https://www.sportsvideo.org/wp-content/uploads/2025/11/SVGLogoNO-TAG-1.svg"
+ },
+ {
+  "name": "SPORTEL Monaco",
+  "file": "sportel.svg",
+  "relationship": "award",
+  "evidence": [
+   {
+    "text": "SVG 2023-11-16 \"Audazzio Honored at SPORTEL Monaco\"",
+    "url": "https://www.sportsvideo.org/2023/11/16/audazzio-honored-at-sportel-monaco/"
+   },
+   {
+    "text": "Audazzio press release (11/16/2023)",
+    "url": "https://www.audazzio.com/hubfs/Audazzio_SportelPitchPerfect.docx"
+   }
+  ],
+  "source": "https://www.sportelmonaco.com/img/logo/sportel.svg"
+ },
+ {
+  "name": "The Tech Tribune",
+  "file": "the-tech-tribune.svg",
+  "relationship": "award",
+  "evidence": [
+   {
+    "text": "The Tech Tribune list page (Audazzio is entry 10)",
+    "url": "https://thetechtribune.com/10-best-tech-startups-in-san-antonio/"
+   },
+   {
+    "text": "Audazzio press release (11/04/2022)",
+    "url": "https://www.audazzio.com/hubfs/Audazzio_SanAntonio_Top10.docx"
+   }
+  ],
+  "source": "https://thetechtribune.com/wp-content/uploads/2024/01/TTT-Long-Logo.svg"
+ },
+ {
+  "name": "San Antonio Business Journal",
+  "file": "san-antonio-business-journal.png",
+  "relationship": "press",
+  "evidence": [
+   {
+    "text": "audazzio.com resources page entry \"07.16.24: SA Start Up Gets Olympic Lift\" linking to bizjournals.com",
+    "url": "https://www.audazzio.com/resources-audazzio"
+   }
+  ],
+  "source": "https://www.audazzio.com/hubfs/SABJ-1.png"
+ },
+ {
+  "name": "Mix",
+  "file": "mix.svg",
+  "relationship": "press",
+  "evidence": [
+   {
+    "text": "Mixonline 2024-07-16 USA Swimming Olympic Trials item",
+    "url": "https://www.mixonline.com/the-wire/audazzio-engages-audience-of-usa-swimming-olympic-trials-with-real-time-interactive-content"
+   }
+  ],
+  "source": "https://www.mixonline.com/ (inline header SVG extracted from page HTML)"
+ },
+ {
+  "name": "Sound & Video Contractor",
+  "file": "sound-and-video-contractor.svg",
+  "relationship": "press",
+  "evidence": [
+   {
+    "text": "SVC 2022-11-28 \"Audazzio Announces Partnership with The Sports Playmaker\"",
+    "url": "https://www.svconline.com/the-wire/audazzio-announces-partnership-with-the-sports-playmaker"
+   }
+  ],
+  "source": "https://www.svconline.com/ (inline header SVG extracted from page HTML)"
+ },
+ {
+  "name": "ProSoundWeb",
+  "file": "prosoundweb.png",
+  "relationship": "press",
+  "evidence": [
+   {
+    "text": "ProSoundWeb 2023-02-06",
+    "url": "https://www.prosoundweb.com/audazzio-appoints-bryan-elliot-as-vice-president-of-engineering/"
+   }
+  ],
+  "source": "https://www.prosoundweb.com/wp-content/uploads/2019/07/cropped-PSW-Logo-2019_V2-1.png"
+ }
+]

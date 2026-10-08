@@ -123,9 +123,22 @@ const DOCS = [
   ["case-study-nbc-sports-tour-de-france.pdf", "Audazzio_-_NBC_Sports_Tour_de_France_Case_Study_0723.pdf"],
   ["audazzio-privacy-policy.pdf", "Site_Assets_Audazzio-Privacy-Policy-043022.pdf"],
 ];
+// the case studies carry full-size photographs: re-saved as web JPEGs when pikepdf is installed
+// (scripts/media/shrink_pdf.py), and kept whichever file is smaller
+const { execFileSync } = await import("node:child_process");
 for (const [out, src] of DOCS) {
   const f = S("raw", src);
-  if (have(f)) { fs.copyFileSync(f, O("docs", out)); done.push("docs/" + out); }
+  if (!have(f)) continue;
+  fs.copyFileSync(f, O("docs", out));
+  if (out.startsWith("case-study")) {
+    const tmp = path.join(ROOT, "media", "work", out);
+    fs.mkdirSync(path.dirname(tmp), { recursive: true });
+    try {
+      execFileSync("python3", ["-I", path.join(import.meta.dirname, "shrink_pdf.py"), f, tmp], { stdio: "ignore", env: process.env });
+      if (fs.statSync(tmp).size < fs.statSync(f).size) fs.copyFileSync(tmp, O("docs", out));
+    } catch { /* no pikepdf: the original stays */ }
+  }
+  done.push("docs/" + out);
 }
 
 console.log(`media: ${done.length} files -> ${path.relative(ROOT, OUT)}`);
